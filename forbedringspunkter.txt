@@ -1,0 +1,176 @@
+Mulige forbedringspunkter
+-------------------------
+
+Punkter fra Roosa:
+- Skjema burde ha en melding om man fikk sendt inn eller ikke (generelt)
+- Burde vise poeng for laget i lagoppstillingen
+
+Hva må klargjøres til produksjon?
+-   (1) stoppe lagoppstiller hvis den tar mer enn x tid
+-   (3) Må legge inn noen temp-bilder til livetabell siden
+-   (1) lage lagserien svg-logo
+
+Bugliste:
+- Hvis en daglig kjøring som ikke feiler på steg 6, rekjøres, feiler den fordi steg 6 allerede er fullført (er dette en bug)
+- Vis klubber i 1. og 2. divisjon som ikke har poeng enda
+- Trykkbart-felt for verktøy-knappene er større enn der boksene ser ut til å være.
+- Hvis man kjører tilbake i tid (tidligere uttrekksdato), så blir (nok) resultatbytter lagt til senere også tatt med. Det gjør det vanskeligere å sammenlikne. 
+
+Skjermtilpasning:
+- Undersider, Kontakt og Ressurser plasseres rart når de skvises på hver sin linje
+- Nyhetsartiklene på forsiden blir skvist. Tenker det heller burde være så mange man får plass på en linje.
+- Linjehøyden blir veldig stor når ting skvises til to linjer (f.eks "Ikoner er hentet ..." (footer) og "Beste lag i ...")
+- Vanlig tekst kan ta opp mer plass enn skjermbredden.
+- Du må skrolle til høyre i stevnekalenderen når det blir for smått
+- I Lagoppstiller så skvises Mine Resultater og Oppstillingsregler sammen 
+
+Senere:
+- Primærnøkler er feil i noen tabeller i datakatalog.
+- Fjerne ubrukte avhengigheter. Bruker f.eks sortedcontainers?
+- Fjerne varsler.txt, og heller putte de i database
+- legge inn stevneinvitasjoner inn i datakatalog.md
+- * eller annen indikasjon på potensielle nullverdier i datakatalog.md
+- se gjennom mer nøye datakatalog.md. Mange krøkete formuleringer.
+- flytte mellomtidgruppe til øvelse?, og så ha eget felt for om tillater_mellomtid
+- fjerne mellomtidgruppe. Kan heller utledes fra øvelsesinfo ved å fjerne alle nondigits
+- Lage falske data for å teste grensene til kalkulatoren
+- oppstartbatch ikke oppsettbatch (?)
+- legge til en LISENS (finnes standardmaler)
+- sjekk av testdekning (bør kanskje gjøres etter smoketest flyttes)
+- topplag utledes fra arkiv_sluttplasseringer?
+- Smoketester som "enhetstest" ikke feature:
+   - Poengberegner
+   - Tildelingsbatch (?)
+   - Kalkulator
+- fjerne skjemaside
+- egen tabell for logging
+- fjern klubbtilhørighet og ferierepresentasjon-tabellene
+- eget skript for å kjøre testene?
+- lage test som sjekker at alle filer er lenket til
+- fullføre rutiner
+- Fint hvis lagserien:
+    - vises med ikon når man er på en fane
+    - vises med ikon ved googlesøk, kan være samme som ^
+    - vises med Lagserien ikke lagserien.no ved googlesøk
+- Slå sammen batch 2 og 6.
+- I starten av et serieår ønsker man egentlig å kjøre både forrige og neste serieår. Finnes det løsning for å få til dette?
+- lage sikkerhetsnett i oppsettbatch, slik at hvis man er i ferd med å slette elementer så er man klar over det.
+- fjerne tilbakemeldingsskjema
+- bug: i nettsiden vises alle kretser, også ukjent, Sverige og Hedmark. Kanskje kun se på de som er for klubbene i tabellen?
+- removesuffix(" friidrettskrets")
+- prioritet -> sorteringsprioritet eller noe, slik at det er litt mer transparent
+- vurdere å endre navn fra "øvelseskode" til "øvelse_id". Mer konsekvent, men på en annen side så er den ikke int.
+- endre representasjon, og kanskje kalkulatormat til grunnlag. Basically det produsert av Grunnlagsbatch
+- fjerne ferierepresentasjon
+- endre slik at ikke allerede-kjørte batcher ses på som en kjørings-feil.
+- gjør det mulig å gjøre spørringer i admin side. VIKTIG! Unngå sqlinjection!!!!
+- lage dokumentasjon slik at serieutvalget kan forstå seg på database-modellen.
+- tester til klubbkretser
+- BUG: har mange klubbkretser 2025-2025 selv om det er for 2021-2024
+- legge inn en workflow for uttrekk+utdeling+kalkulator. Veldig irriterende når stevnebatch går gjennom og så må jeg manuelt kjøre de enkeltvis via github.
+  EVENTUELT, gjøre slik at den kjører videre selv om den feiler
+- legge inn en måte å reversere en kjøring. Hender noe går galt og så vil jeg fikse og da må jeg reversere og rekjøre. Har ikke den muligheten i dag.
+- Lage et sikkerhets nett med bruk av bilder. Hvis lisensen er for 2025, skal de ikke tas med etter automatisk. Skal ikke være en manuell prosess.
+- Endre rekkefølgen på verktøyene i Verktøy-undersiden.
+- maxwidth og maxheight for klubblogoer/øvelsesikoner som felt i rad i tabell (f.eks oppstilling eller i serietabellen)
+- Ikke la det være mulig å fjerne resultatbytter, dvs. det må kunne være flere og hvis flere for samme resultat_id, velg siste (i utdelingsbatch)
+- Lag under 5000 poeng i 3. div viser fremdeles plassering i lagoversikt. Burde heller si "utenfor 3. divisjon" e.l.
+- uhardkod serieøvelser i kalkulatorformidler
+- i spørringer, erstatt f''' med ''' hvis ikke f-string brukes
+- lagforbedrer - vise hva poeng tilsvarer i resultat  
+- lagforbedrer - hvis man har ekstra tekniske resultater i obl kan disse flyttes ned i val ved behov. Dette støttes ikke nå. Men er det verdt det?
+- egen tråd som kjører lagforbedrer/lagoppstiller, slik at dette ikke sperrer hele appen?
+- I livetabellen ser hver rad til å litt større cellehøyde i 3. divisjon enn 1/2. divisjon. Hvorfor?
+- notisnyheter som genereres automatisk og automatisk blas gjennom under menyen på alle sider
+- automatisk generere diplomer
+- Legge inn python-verktøy: cpython (var ogås et annet. Vurdere hvilket som er best)
+- Legge til et sted man kan se ukas siste resultater
+- fjerne bakgrunn på klubblogoer
+- klubboversikt på tvers av år
+- Lage opprykkslinjer og 5000 poengs linje i livetabell (+ evt i tverrsnittet av tabell i lag-visning)
+- Finne ut hvordan jeg skal organisere tidligere år
+- Legge inn tittel-side (sjangre: serievinner, breddevinner (flest lag), beste forbedring, viktigste utøver, beste klubber ikke gode nok i fjorårets serie)
+- Artikler i forsiden burde vise dato smått
+- Kunne søke på klubb (?)
+- Egen konkurranseside når man trykker på konkurranse i stevnekalenderen eller fra andre steder.
+- Utøverside
+- Legge inn samarbeidsklubber i klubbsiden
+- Hover-over forklaring på hvorfor resultat er fjernet i klubb->resultater-oversikt
+- Finne ut av hvordan jeg får til å lage artikler fra nettsiden
+- Fjern tilganger, masse kode som ikke brukes lenger
+- Legge inn visning av samarbeidsklubber i klubbsiden.
+- Fjerne ferierepresentasjon og klubbtilhørighet tabell?
+- Vise klubboverganger (der overganger allerede er gjort i statistikken) også (?).
+- VIKTIG: Lage admin-side der man kan:
+   - Lage artikkel (hvordan håndtere bilder?)
+   - Flette sammen stevner og stevneinvitasjoner
+   - Se alle som har NULL i poeng tydelig i admin-siden (og andre feil, som f.eks klubber som ikke er i Norge)
+   - Legge inn manuelle resultatbytter
+   - Starte ny isolert kjøring selv (kan det gjøre nettsiden treg(?))
+   - Tilbakemeldinger
+   - Fjernede resultater
+   - diplomer (og kan legge inn verdier selv)
+  (en utfordring er hvordan håndtere oppsettbatch mtp. disse. Mitt forslag er å en gang i året oppdatere oppsettbatch, kanskje
+   med en fil for hvert år (2025.json, 2026.json, osv. slik som i konfigbatch), slik at dataene kan reproduseres hvis databasen streiker)
+- carousel med automatisk forskyvning øverst på livetabell
+- Gir mer beskrivende navn på cache. Klubber er alle_klubbnavn. Serier er alle_serieår. osv.
+- Underområder under verktøy blir ikke i fet skrift
+- sterkere markering når man hoverer nav. Litt vanskelig å se
+- i applikasjon burde det nok være konsekvent på url_for og å gi hele lenken
+- å bruke i_dag rundt omkring i nettsiden er en bug, denne oppdateres ikke. Kan jo bare bruke date.today()
+- virker som det er noe feil med rollbacken - burde lages tester for dette, kan også være pga exit(0) -> batchkjøringer blir lagt inn ved exit(1)
+- '&amp;' ser ut til å komme som erstatning for '&' i klubbnavn
+- Bedre måte å veksle mellom databaser i produksjon og test. Er 3 steder man må endre, burde vært bare 1.
+- lage en avslutningsbatch. Blir veldig enkel, kun å sette neste års topplag, og endre serie til å ha avslutningsdato.
+- utdeling -> omstillingsbatch??, trenger navn
+- for alle periodiseringer, i stedenfor å slette avkuttede og så innsette nye, bare lage en spørring som finner de som skal avkuttes og oppdatere dem
+- Flytte Topplagsetters til rapportbatch
+- Loggfør endringer i antall database-rader
+- Legge til ny tabell: utøverscore, som sier hvor mange flere poeng laget får med utøveren sine resultater enn uten (kan påvirke minnebruk en del)
+- Må også skydatabaser kanskje "vacuumes" (20% mindre plass på 2021-2024 data)? Eller håndteres kanskje supabase det automatisk
+- vise poeng, øvelse og utøver for lagresultater i dokumentasjonen 
+- finne en måte å forkorte (utøver)navn og klubbnavn på slik at de blir mye korte og dermed enklere å lese på nettsiden
+- Indeksere fra_og_med og til_og_med, ettersom de brukes i mange where.
+- i forklaringen om kalkulatortilnærming, inkluder formel for estimering av tid: ser ut som om permutasjonene er prod(kC(k-5) for k in n hvis k > 5) der n er utøverenes antall resultater  
+- bedre feilmeldinger ved validering (ment spesielt for kontrollpanel)
+- logge tiden som tas på ulike steg (særlig kalkulatorberegning og database-handlinger)
+- kopiere over database tar lang tid. Kanskje kopiere hele databasen, heller enn elementene.
+- bulkslett bruker 10 minutter på å slette noe bulkinnsett bruker 3 sekunder på
+- legge inn avslutningsdato i serie. Så kan man bruke denne til å hente avsluttende lagdata fra livetabell.
+- inkluder i readme hvordan man tester og bruker programmet
+- kjøring for periode burde ha validering av ingen batrchkjøringer mellom periode på forhånd
+- VIKTIG. I app.py: Gjør beregn_oppstilling asynkron
+- fjerne Testdatabygger helt? Ble vel brukt fordi alle cls i tilganger må være gitt. I praksis brukes ikke den funksjonaliteten, så den kan også fjernes.  
+- erstatte alle Set([...]) og Liste([...]) med Set.of(...) og Liste.of(...)
+- erstatte alle assert med assert_at
+- oppdatere README.md
+- gjør TODOs i koden
+- finne en konvensjon når det gjelder enkelt- og dobbeltfnutter (' vs ")
+- privatiser metoder som trengs
+- gi alle asserts en brukanes feilmelding
+- forbedre feilmeldinger
+- lage en Set. Hadde vært så fint med en Set.of(), og en contains()
+- Feil eller utfordringer som kan påvirke serien samles i "varsler.txt"
+- har per nå ikke tillatt at man kjører en batch som er kjørt med samme eller senere uttrekksdto før. Men hva hvis
+  man vil sammenlikne med en tidligere kjøring? Burde kanskje ha en kjør_og_last og rekjør_og_sammenlikn
+- fortsette å se på mulighet for Spørring, som wrapper en del av sqlalchemy-domenet ut (feilmeldinger osv.)
+- ta i bruk Liste, Set, Tuple og Dict rundt om i koden. 
+- I fremtiden, HVIS LAGPLASSERINGER TAR MYE PLASS:
+  - Kan fjerne lagplasseringer helt, og legge til nytt felt i laginfo: poenger - en kommaseparert streng med alle poenger: "1000,0998,0991..." ,
+  - (strengt tatt trengs ikke kommaene engang). Strengene blir lange (120-150 tegn lange)
+  - lagplasseringer utledes fra laginfos poeng og poengstrengen.
+  - Forhåpentligvis er dette relativt rett frem og ikke tregt.  
+
+Uttrekksbatch
+- Vurdere indeksering.
+- len(list(spørring.all())) -> spørring.count()
+
+Beregningsbatch
+- lage illustrasjonsforklaringer på hvordan kalkulatoren fungerer
+- cache finn_aktuelle_resultater_fra_obligatoriske?
+- tabellarbeid bør nok gjøres ustatisk.
+
+Applikasjon:
+- asynkronitet
+- sjekke hvilke metoder som burde være POST og hvilke som burde være GET
+- Maks resultater i "mine resultater"?

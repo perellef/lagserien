@@ -1,0 +1,8 @@
+.custom-link {
+    color: inherit;       /* Inherits the text color from the parent */
+    text-decoration: none; /* Removes the underline */
+  }
+
+.custom-link:hover {
+    text-decoration: underline;
+}

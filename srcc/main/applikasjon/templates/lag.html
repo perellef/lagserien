@@ -1,0 +1,263 @@
+{% extends "base.html" %}
+
+{% block innhold %}
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="/livetabell">Livetabell</a></li>
+      <li class="breadcrumb-item"><a href="/livetabell/{{ klubbnavn }}">{{ klubbnavn }}</a></li>
+      <li class="breadcrumb-item active" aria-current="page">1. lag (menn)</li>
+    </ol>
+</nav>
+
+
+<div id="beholder" style="display: flex; flex-wrap: wrap-reverse; justify-content: space-evenly; align-items: flex-end;">
+    <div id="skygge" style="height: 10px; width: 100px;"></div>
+    <div id="tittel" style="align-items: center;">
+        <h3 style="text-align: center; padding-top: 20px">{{klubbnavn}} {{lagnummer}}. lag ({{ kjønn }})</h3>
+        <div style="text-align: center; align-items: center; color: #444444; margin-bottom: 10px;;">
+            <i>{{plassering}}. plass i {{divisjon}}. divisjon</i>
+        </div>
+    </div>
+    <div style="width: 100px">
+        {% if klubb_id is not none %}
+        <a id="klubblogo" href="/livetabell/{{klubbnavn}}">
+        </a>
+        {% endif %}
+    </div>
+</div>
+
+<div style="display: flex; flex-wrap: wrap; justify-content: space-evenly; width: 100%; row-gap: 3px;">
+    <div style="display: flex; justify-content: space-evenly; flex: 1; margin-right: -10px;">
+        <button id="laginfo-knapp" class="lag-hovedknapp" style="background-color: white;">Laginfo</button>
+        <button id="oppstilling-knapp" class="lag-hovedknapp">Oppstilling</button>
+    </div>
+    <div style="display: flex; justify-content: space-evenly; flex: 1; margin-left: -10px;">
+        <button class="lag-hovedknapp"><span style="visibility: hidden;">Utøverbidrag</span></button>
+        <button class="lag-hovedknapp"><span style="visibility: hidden;">Utvikling</span></button>
+    </div>
+</div>
+
+<br>
+<div style="border: 1px lightgray solid; background-color: white;">
+    <div id="laginfo" style="font-size: 0.9rem; padding: 10px 30px 10px 30px">
+        <div style="display: flex; border: 3px #6c8eBf solid; padding: 5px;">
+            <div style="text-align: center">
+                
+                <div style="border: 1.5px lightgray solid; padding: 0 5px 0 5px; display: flex; flex-direction: column; justify-content: space-between;">
+                    <div style="width: 60px; height: 60px; margin: 0 auto;">
+                        {% if klubb_id is not none %}
+                        <a href="/livetabell/{{klubbnavn}}">
+                            <img src="{{ url_for('static', filename='assets/klubblogo/' ~ klubb_id ~ '.png') }}" style="max-width: 100%; max-height: 100%;"/>
+                        </a>
+                        {% endif %}
+                    </div>
+                
+                    <div style="font-weight: 500; font-size: 0.8rem; line-height: 15px; margin-bottom: 6px;">
+                        Lag {{ lagnummer }}
+                    </div>
+                </div>
+                <div>
+                    <a href="/livetabell/{{ klubbnavn }}" style="color: black; font-size: 0.8rem;">Se flere lag</a>
+                </div>
+            </div>
+
+            <div style="flex: 1; display: flex; justify-content: space-between; align-items: center; margin-left: 10px; padding: 5px 10px 5px 20px;">
+              <div>
+                <span style="font-size: 0.9rem; color: gray;">Profil</span>
+                <div style="font-size: 1.3rem; font-weight: 500;">
+                    <div style="display: flex; flex-wrap: wrap; column-gap: 10px;">
+                        <div>
+                            <span class="dashed-underline" data-toggle="tooltip" data-placement="top" title="Rangering av lag er basert på serieplasseringen de siste 5 årene.">Rank</span> <span style="color: rgb(222, 144, 0); font-weight: bold;">{{ rank }}</span>
+                        </div>
+                        <div>
+                            {% if rekordrank is not none %}
+                                <span style="margin-left: 5px; font-size: 0.9rem; color:#222222">
+                                (rekord: <span style="color: rgb(222, 144, 0); font-weight: bold;">{{rekordrank}}</span> fra {{rekordår}})
+                                </span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <span style="font-size: 1rem;">
+                        {% if kretsrank == 1 %}
+                        Beste lag i {{klubbkrets}}
+                        {% else %}
+                        <span style="color: blue;">{{ kretsrank }}.</span> beste lag i {{klubbkrets}}
+                        {% endif %}
+                    </span>
+                    <br>
+                </div>
+              </div>
+              <div style="margin-left: 20px; padding-left: 20px; border-left: 1px lightgray solid;">
+                <span style="text-decoration: underline;">Siste 3 år:</span><br>
+                - <span style="font-weight: 500;">{{siste_3_år[0][0]}}</span>: 
+                {% if siste_3_år[0][1] is not none %}
+                    {{siste_3_år[0][1][1]}}. plass i {{siste_3_år[0][1][0]}}. divisjon <span style="font-size: 0.85rem; display: none;">({{siste_3_år[0][1][2]}}p)</span>
+                {% endif %}
+                <br>
+                - <span style="font-weight: 500;">{{siste_3_år[1][0]}}</span>:
+                {% if siste_3_år[1][1] is not none %}
+                {{siste_3_år[1][1][1]}}. plass i {{siste_3_år[1][1][0]}}. divisjon <span style="font-size: 0.85rem; display: none;">({{siste_3_år[1][1][2]}}p)</span>
+                {% endif %}
+                <br>
+                - <span style="font-weight: 500;">{{siste_3_år[2][0]}}</span>:
+                {% if siste_3_år[2][1] is not none %}
+                {{siste_3_år[2][1][1]}}. plass i {{siste_3_år[2][1][0]}}. divisjon <span style="font-size: 0.85rem; display: none;">({{siste_3_år[2][1][2]}}p)</span>
+                {% endif %}
+                <br>
+            </div>
+            </div>
+          </div>
+        <br>
+        <br>
+
+        <h4>Foreløpig plassering</h4>
+        <div style="width: 100%; max-width: 520px;">
+            <table class="table table-sm divisjonstabell" style="table-layout: fixed">   
+                <thead class="table-light">
+                    <colgroup>
+                        <col style="width: 5%; white-space: no-wrap;">
+                        <col style="width: 7%; white-space: no-wrap;">
+                        <col style="width: 5%; white-space: no-wrap;">
+                        <col style="width: 20%; white-space: no-wrap;">
+                        <col style="width: 8%; white-space: no-wrap;">
+                        <col style="width: 12%; white-space: no-wrap;">
+                        <col style="width: 12%; white-space: no-wrap;">
+                        <col style="width: 21%; white-space: no-wrap;">
+                    </colgroup>
+                    <tr>
+                        <th scope="col"></th>
+                        <th scope="col"></th>
+                        <th scope="col"></th>
+                        <th scope="col">Lag</th>
+                        <th scope="col" colspan="2">Poeng</th>
+                        <th scope="col">Noteringer</th>
+                        <th scope="col" style="padding-left: 20px;">Krets</th>
+                    </tr>
+                </thead>
+                <tbody id="tverrsnitt-lagplasseringer">
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+    <div id="oppstilling" style="background-color: white; display: none;">
+               
+        <label>
+            <input type="checkbox" id="endringer siste 7 dager">
+            endringer siste 7 dager
+        </label>
+        <div id="lag-nå" style="display: block;">
+            <div>
+                <h4 style="color: rgb(61, 61, 61); margin: 30px 0 15px 10%;">Obligatorisk oppstilling</h5>
+                <table class="table table-sm lagoppstilling" style="font-size: 0.9rem; table-layout: fixed">
+                    <thead class="table-light">
+                    <tr>
+                        <th style="width: 10%; visibility: hidden; border:none;"></th>
+                        <th style="width: 5%"></th>
+                        <th style="width: 10%">Poeng</th>
+                        <th style="width: 5%"></th>
+                        <th style="width: 15%">Øvelse</th>
+                        <th style="width: 12%">Resultat</th>
+                        <th style="width: 30%">Navn</th>
+                        <th style="width: 10%">Født</th>
+                        <th style="width: 20%">Sted</th>
+                        <th style="width: 12%">Dato</th>
+                        <th style="width: 10%; visibility: hidden; border:none;"></th>
+                    </tr>
+                    </thead>
+                    <tbody id="obl-oppstilling-nå">
+
+                    </tbody>
+                </table>
+            </div>
+            <div>
+                <h4 style="color: rgb(61, 61, 61); margin: 30px 0 15px 10%;">Valgfri oppstilling</h5>
+                <table class="table table-sm lagoppstilling" style="font-size: 0.9rem; table-layout: fixed">
+                    <thead class="table-light">
+                    <tr>
+                        <th style="width: 10%; visibility: hidden; border:none;"></th>
+                        <th style="width: 5%"></th>
+                        <th style="width: 10%">Poeng</th>
+                        <th style="width: 5%"></th>
+                        <th style="width: 15%">Øvelse</th>
+                        <th style="width: 12%">Resultat</th>
+                        <th style="width: 30%">Navn</th>
+                        <th style="width: 10%">Født</th>
+                        <th style="width: 20%">Sted</th>
+                        <th style="width: 12%">Dato</th>
+                        <th style="width: 10%; visibility: hidden; border:none;"></th>
+                    </tr>
+                    </thead>
+                    <tbody id="val-oppstilling-nå">
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    klubblogo = false
+    function toggleRedBox() {
+        const container = document.getElementById("beholder");
+        const skygge = document.getElementById("skygge");
+        const heading = container.querySelector("h3");
+
+        if (!container || !skygge || !heading) return;
+
+        const children = Array.from(container.children);
+        const firstRowBottom = children[2].offsetTop;
+
+        children.forEach(child => console.log(child.offsetTop))
+        const isSplit = children.some(child => child.offsetTop > firstRowBottom);
+
+        if (isSplit) {
+            skygge.style.display = "none";
+            heading.style.marginLeft = "50px";
+            heading.style.marginRight = "50px";
+        } else {
+            skygge.style.display = "block";
+            heading.style.marginLeft = "0";
+            heading.style.marginRight = "0";
+        }
+
+        if (cached_data["klubblogoer"].includes({{ klubb_id if klubb_id is not none else 'null' }}) && !klubblogo) {
+            logo = `${window.location.origin}/static/assets/klubblogo/{{klubb_id}}.png`;
+            var img = document.createElement('img');
+            img.src = logo;
+            img.style.width = "100px"; 
+            
+            anchor = document.getElementById("klubblogo")
+            anchor.appendChild(img)
+            
+            klubblogo = true
+        }
+    }
+
+    // Run on load + resize
+    document.addEventListener("DOMContentLoaded", toggleRedBox);
+    window.addEventListener("load", toggleRedBox);
+    window.addEventListener("resize", toggleRedBox);
+</script>
+
+<script>
+    var kjønn = {{ kjønn | tojson }};
+    var lagresultater = {{ lagresultater | tojson }};
+    var klubblag = {{ klubblag | tojson }};
+    var lagnummer = {{ lagnummer }};
+    var laginfo = {{ laginfo | tojson }};
+    
+    ikoner = ["sprint", "løp", "kappgang", "hekk", "lengde", "tresteg", "høyde", "stav", "lut", "hut", "kule", "spyd", "slegge", "diskos"];
+    
+    var øvelsesikoner = {};
+    ikoner.forEach(øvelse => {
+        øvelsesikoner[øvelse] = `${window.location.origin}/static/assets/øvelser/${øvelse}.png`;
+    });
+</script>
+
+<script src="{{ url_for('static', filename='lag.js') }}"></script>
+{% endblock %}

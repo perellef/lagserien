@@ -1,0 +1,41 @@
+
+.justerbart-verdifelt {
+  display: flex;
+  justify-content: left; 
+  align-items: center;
+}
+
+.verdifelt-angiver {
+    padding: 0 20px 0 0;
+  }
+  
+.verdifelt {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    line-height: 1.5;
+    border: 1px solid #ccc;
+    background-color: #fff;
+    width: 140px;
+  }
+
+.sideknapp {
+    cursor: pointer;
+    padding: 0 5px 0 5px;
+    transition: background-color 0.3s ease;
+}
+
+.sideknapp:active {
+    background-color: gray;
+}
+
+.ikke-marker:focus {
+    border-color: inherit;
+}
+
+.dashed-underline {
+  display: inline-block;
+  text-decoration-style: dashed;
+  text-decoration: underline dashed gray 1px;
+  text-underline-offset: 2px;
+}

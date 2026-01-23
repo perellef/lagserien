@@ -1,0 +1,162 @@
+{% extends "base.html" %}
+
+{% block innhold %}
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="/verktøy">Verktøy</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Lagoppstiller</li>
+    </ol>
+  </nav>
+
+<div class="tekst">
+  <h1>Lagoppstiller</h1>
+    
+  Lagoppstiller er et verktøy som lar deg samle resultater og så beregne hvordan lagene blir seende ut. Oppstillingen tar utgangspunkt i årets serie. Resultater kan du enten hente fra klubb, eller opprette selv.
+</div>
+<!-- Input element for the dropdown autocomplete -->
+
+
+<div style="display: flex; flex-wrap: wrap; column-gap: 20px; margin: 0 20px 0 20px">
+    <div style="width: fit-content;">
+        <h3 style="padding: 20px 0 0 0">Hent fra klubb</h3>
+        <div id="boks1" class="blåkantet" style="border-style: solid; border-width: 2px; padding: 5px 20px 5px 5px">
+            <table>
+                <tbody>
+                    <tr>
+                        <td style="font-size: 14px;">Kjønn:</td>
+                        <td>
+                            <div class="verdifelt">
+                                <div class="sideknapp" id="oppst-kjønn-venstre"><</div>
+                                <div class="verdi" id="oppst-kjønn">menn</div>
+                                <div class="sideknapp" id="oppst-kjønn-høyre">></div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="font-size: 14px;">Serieår:</td>
+                        <td>
+                            <div class="verdifelt">
+                                <div class="sideknapp" id="oppst-serieår-venstre"><</div>
+                                <div class="verdi" id="oppst-serieår"></div>
+                                <div class="sideknapp" id="oppst-serieår-høyre">></div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="font-size: 14px;">Dato:</td>
+                        <td>
+                            <div class="innholdsside" style="font-size: 0.9rem; line-height: 1.7;">
+                                <select id="uttrekksdatoInput" style="padding: 0 10px 0 5px; border: 1px solid #ccc" name="response">
+                                    <option value="seneste">seneste</option>
+                                    <option value="offisiell-slutt">offisiell slutt</option>
+                                    <option value="egendefinert">egendefinert</option>
+                                </select>
+                                <input id="spesifikk-dato" style="margin-left: 10px; width: 120px; border: 1px solid #ccc;" type="text" disabled>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="font-size: 14px;">Klubb:</td>
+                        <td>
+                            <div style="position:relative;">
+                            <input id="klubbInput" style="padding: 0 10px 0 9px; font-size: 0.9rem; line-height: 1.7; border: 1px solid #ccc" type="text" name="input" autocomplete="off">
+                            <div id="autocompleteList" class="autocomplete-items"></div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>    
+        <div id="error-message2" style="color: red; display: block;"></div>
+        <button id="hent-klubbresultater-knapp" class="knapp" style="background-color: #53a2cd; color: white; border: none; padding: 1px 10px 3px 10px; margin-top: 15px;">Hent</button>
+
+    </div>
+    <div style="width: fit-content;">
+        <h3 style="padding: 20px 0 0 0">Nytt resultat</h3>
+        <div id="boks2" class="blåkantet" style="border-style: solid; border-width: 2px; padding: 5px 20px 5px 5px; display: flex; align-items: center;">
+            <table>
+                <tbody>
+                    <tr>
+                        <td style="font-size: 14px;">Øvelse:</td>
+                        <td>
+                            <div style="position:relative;">
+                            <input id="øvelseInput" style="padding: 0 10px 0 9px; font-size: 0.9rem; line-height: 1.7; border: 1px solid #ccc;" type="text" name="input" autocomplete="off">
+                            <div id="autocompleteList" class="autocomplete-items"></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="font-size: 14px;">Utøver:</td>
+                        <td>
+                            <div style="position:relative;">
+                            <input id="utøverInput" style="padding: 0 10px 0 9px; font-size: 0.9rem; line-height: 1.7; border: 1px solid #ccc" type="text" name="input" autocomplete="off">
+                            <div id="autocompleteList" class="autocomplete-items"></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="font-size: 14px;">Poeng:</td>
+                        <td>
+                            <div style="position:relative;">
+                            <input id="poengInput" style="padding: 0 10px 0 9px; font-size: 0.9rem; line-height: 1.7; width: 70px; border: 1px solid #ccc" type="text" name="input" autocomplete="off">
+                            <div id="autocompleteList" class="autocomplete-items"></div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div id="error-message1" style="color: red; display: block;"></div>
+        <button id="nytt-resultat-knapp" class="knapp" style="background-color: #53a2cd; color: white; border: none; padding: 1px 10px 3px 10px; margin-top: 15px;">Legg til</button>
+    </div>
+</div>
+
+<hr>
+
+<div class="container1">
+    <div style="width: 60%; margin-right: 5%;">
+        <h5 id="mine-resultater-tittel" style="font-size: 1.4rem">Mine resultater (0)</h5>
+        <div style="max-height: 180px;overflow-y: auto; border: 1px lightgray solid; font-size: 0.9rem;">
+            <table id="gridTable" class="table table-sm" style="table-layout: fixed">    
+                <thead id="mitt-lag-header" class="table-light">
+                </thead>
+                <tbody id="mitt-lag">
+                    <!-- Rows will be added here dynamically -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div style="width: 40%;">
+        <h5 id="mine-resultater-tittel" style="font-size: 1.4rem;">Oppstillingsregler</h5>
+        <div id="lagregler" style="max-height: 180px;overflow-y: auto; border: 1px lightgray solid; font-size: 0.85rem; background-color: white; border-radius: 3px;">
+            <span style="padding-left: 5px">⋮</span>
+            <div style="margin: 5px;">
+                <div id="ny-lagregel" style="height: 15px; width: 15px; padding: 0; cursor: pointer;  display: flex; justify-content: center; align-items: center; padding-bottom: 3px; border: 1.7px gray solid">
+                    +
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="error-message" style="color: red; display: block;"></div>
+<button id="oppstiller-knapp" class="knapp" style="background-color: gray; color: white; border: none; padding: 1px 10px 3px 10px; margin-top: 15px;">Oppstill lag</button>
+<img src="{{ url_for('static', filename='loading.gif') }}" alt="My Image" id="beregning" style="height:10px; display:none">
+<hr>
+
+<br>
+<div id="lag" style="display: flex; flex-direction: column; margin-bottom: 20px;">
+    <!-- Lag legges til her -->
+</div>
+
+<script>
+    chevron_down = "{{ url_for('static', filename='assets/ikoner/chevron-compact-down.svg') }}";
+    chevron_up = "{{ url_for('static', filename='assets/ikoner/chevron-compact-up.svg') }}";    
+
+    const div1 = document.getElementById("boks1");
+    const div2 = document.getElementById("boks2");
+
+    div2.style.height = div1.offsetHeight + "px";
+</script>
+
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='oppstill.js') }}"></script>
+{% endblock %}

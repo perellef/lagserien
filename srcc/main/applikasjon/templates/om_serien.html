@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block innhold %}
+<div class="tekst">
+  <h1>Om serien</h1>
+
+  I en individuell idrett som friidrett gir lagserien en ekstra dimensjon.
+
+  <h3>Seriens visjon</h3>
+  <p>
+    Lagserien kan være en stimulans til en økt klubbsamhold, nettopp ved at det er en lagkonkurranse.
+    I tillegg stimulerer den til økt aktivitet ved at hver utøver kan delta med fem resultater. Det
+    innebærer ofte at en enkelt utøver hjelper klubben sin ved å delta i flere øvelser enn utøveren
+    normalt gjør.
+  </p>
+
+  <p>
+    Lagserien har tradisjoner helt tilbake til 1950. I dag er lagserien delt inn i tre divisjoner, og
+    kort fortalt settes resultater fra utøvere innen en klubb sammen til et lag basert på noen enkle
+    regler og prinsipper som du kan finne nedenfor.
+  </p>
+
+  <p>
+    <a a href="{{ url_for('static', filename='statutter-2025.doc') }}" download="statutter-2025.doc">Statutter for Lagserien 2025 i word</a>
+    <br>
+    <a a href="{{ url_for('static', filename='statutter-2025.pdf') }}" download="statutter-2025.pdf">Statutter for Lagserien 2025 i pdf</a>
+  </p>
+
+  <p>
+    Serieutvalget har ansvaret for serien.<br>
+    Har du spørsmål til lagserien, kan du kontakte <a href="#">Bjørge Pedersen</a>.
+  </p>
+</div>
+
+{% endblock %}

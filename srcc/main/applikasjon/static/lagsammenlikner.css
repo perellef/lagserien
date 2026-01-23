@@ -1,0 +1,36 @@
+.rammet-oppstilling {
+    padding: 1px;
+    margin: 5px;
+    border: none;
+}
+
+.rammet-oppstilling td, .rammet-oppstilling th {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.container1 {
+    display: flex;
+}
+
+.rad {
+    padding: 0;
+}
+
+input[disabled] {
+    background-color: lightgray;
+    border: none;
+    height: 26px;
+}
+
+.knapp {
+    border-radius: 5px;
+    border-width: 1px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 equal columns */
+    grid-template-rows: repeat(2, auto);  /* 2 rows */
+}

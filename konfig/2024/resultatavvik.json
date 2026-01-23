@@ -1,0 +1,31 @@
+{
+    "overbygningsklubber": [
+        {"id": 16,       "kjernenavn": "BUL",             "aldersgrupper": [false,true,false], "moderklubber": [[26,"Nesodden"]]},
+        {"id": 134,      "kjernenavn": "Gloppen",         "aldersgrupper": [false,true,true],  "moderklubber": [[64,"Breimsbygda"], [90,"Brodd"], [280,"Fjellhug/Vereide"], [281,"Hyen"], [78,"Sandane"]]},
+        {"id": 65,       "kjernenavn": "Gular",           "aldersgrupper": [false,true,false], "moderklubber": [[128,"Korlevoll-Odda"], [117,"Strandebarm"], [146,"Hovding"]]},
+        {"id": 54,       "kjernenavn": "Kongsvinger",     "aldersgrupper": [false,true,false], "moderklubber": [[361,"Grue"]]},
+        {"id": 61,       "kjernenavn": "Norna-Salhus",    "aldersgrupper": [false,true,false], "moderklubber": [[10000400,"Eidsvåg Åsane"], [143,"Aks-77"], [253,"Loddefjord"]]},
+        {"id": 51,       "kjernenavn": "Steinkjer",       "aldersgrupper": [false,true,false], "moderklubber": [[285,"Beitstad"], [481,"Sør-Beitstad"]]},
+        {"id": 181,      "kjernenavn": "Stord",           "aldersgrupper": [false,true,false], "moderklubber": [[183,"Bremnes"], [182,"Fitjar"]]},
+        {"id": 10000511, "kjernenavn": "Tingvoll",        "aldersgrupper": [false,true,true],  "moderklubber": [[324,"Straumsnes"], [123,"Tingvoll"], [338,"Triumf"]]},
+        {"id": 123,      "kjernenavn": "Tingvoll",        "aldersgrupper": [true,false,false], "moderklubber": [[10000511,"Tingvoll"]]},
+        {"id": 34,       "kjernenavn": "Tjalve",          "aldersgrupper": [false,true,false], "moderklubber": [[19,"Koll"]]},
+        {"id": 25,       "kjernenavn": "Tyrving",         "aldersgrupper": [false,true,false], "moderklubber": [[59,"Nesøya"]]},
+        {"id": 15,       "kjernenavn": "Ullensaker/Kisa", "aldersgrupper": [false,true,false], "moderklubber": [[2,"Eidsvold"], [29,"Hurdal"], [2089, "Hvam"], [385,"Nordre Eidsvoll"], [11,"Sørum"]]}
+    ],
+
+    "klubber unntatt overbygning": [
+        {"id": 3,  "kjernenavn": "Raumnes Årnes", "overklubb": [15,"Ullensaker/Kisa"]},
+        {"id": 21, "kjernenavn": "Lørenskog",     "overklubb": [15,"Ullensaker/Kisa"]}
+    ],    
+
+    "utøvere unntatt overbygning": [
+        {"id": 30465, "navn": "Johannes Hopland", "moderklubb": [143, "Aks-77"]},
+        {"id": 30729, "navn": "Phillip Morken",   "moderklubb": [143, "Aks-77"]}
+    ],
+
+    "rullestolutøvere": [
+        {"id": 57333, "navn": "Anisa Abdihakin Abdulle"},
+        {"id": 57388, "navn": "Sofie Østerbø Jansen"}
+    ]    
+}

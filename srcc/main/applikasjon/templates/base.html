@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Lagserien</title>
+
+        <script type="text/javascript">
+            cached_data = {{ cache | tojson }}
+        </script>
+        <script src="{{ url_for('static', filename='autocomplete.js') }}"></script>
+        <script src="{{ url_for('static', filename='base.js') }}"></script>
+
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+        <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+        <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='assets/favicon.svg') }}">
+    </head>
+    
+    <body>
+        <nav class="navbar navbar-expand-md navbar-dark py-2" style="background-color: #0160c7e8;">
+            <span style></span>
+            <a class="navbar-brand" href="{{ url_for('forside') }}">
+                <img src="{{ url_for('static', filename='assets/logoer/lagserien logo hvit.png') }}" alt="Lagserien logo" style="width:110px;">
+            </a>
+            <a class="navbar-brand" href="https://www.friidrett.no/">
+                <img src="{{ url_for('static', filename='assets/logoer/norsk friidrett.svg') }}" alt="NFIF logo" style="width:70px;">
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <div class="navbar-nav">
+                <a class="nav-item nav-link mx-2 nav-textstr" href="{{ url_for('forside') }}">Hjem</a>
+                <a class="nav-item nav-link mx-2 nav-textstr" href="{{ url_for('livetabell') }}">Livetabell</a>
+                <!-- <a class="nav-item nav-link mx-2 nav-textstr" href="{{ url_for('tidligere_år') }}">Tidligere år</a> -->
+                <a class="nav-item nav-link mx-2 nav-textstr" href="{{ url_for('verktøy') }}">Verktøy</a>
+                <a class="nav-item nav-link mx-2 nav-textstr" href="{{ url_for('stevnestatus') }}">Stevnestatus</a>
+                <a class="nav-item nav-link mx-2 nav-textstr" href="{{ url_for('om_serien') }}">Om serien</a>
+            </div>
+        </nav>
+
+        <div style="width: 95%; margin: 0 auto;">
+            <div style="width: 100%; max-width: 800px; margin: 0 auto;">
+                {% block innhold %}
+                {% endblock %}
+            </div>
+        </div>
+        
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+        
+        <script>
+            $(function () {
+                $('[data-toggle="tooltip"]').tooltip()
+                $('.collapse').collapse()
+            })
+        </script>
+
+        {% block scripts %}
+        {% endblock %}
+
+    </body>
+    <footer style="background-color: #2C3B73; color: #E1EDFF; font-size: 0.85rem;">
+        <div class="flex-container" style="display: flex; flex-wrap: wrap; justify-content: space-evenly; padding: 50px 5px 15px 5px">
+            <div style="text-align: left; margin: 0 10px 0 10px">
+                <h4>Undersider</h4>
+                <br>
+                <div class="innholdsside">
+                    <p style="padding-right: 60px;">
+                        <a href="{{ url_for('forside') }}" style="color: #E1EDFF;">Hjem</a><br>
+                        <a href="{{ url_for('livetabell') }}" style="color: #E1EDFF;">Livetabell</a><br>
+                        <a href="{{ url_for('verktøy') }}" style="color: #E1EDFF;">Verktøy</a><br>
+                        <!-- <a href="{{ url_for('tidligere_år') }}" style="color: #E1EDFF;">Tidligere år</a><br> -->
+                    </p>
+                    <p>
+                        <a href="{{ url_for('stevnestatus') }}" style="color: #E1EDFF;">Stevnestatus</a><br>
+                        <a href="{{ url_for('om_serien') }}" style="color: #E1EDFF;">Om serien</a><br>
+                    </p>
+                </div>
+            </div>
+            <div style="text-align: left; margin: 0 10px 0 10px">
+                <h4>Kontakt</h4>
+                <br>
+                
+                <a href="{{ url_for('skjema') }}" style="color: #E1EDFF;">Tilbakemeldingsskjema</a><br>
+                <p>
+                    <span style="Font-weight: 500;">Leder i serieutvalget</span>: Bjørge Pedersen<br>
+                    bjorgep@online.no<br>
+                    <br>
+                    <span style="Font-weight: 500;">Ansvarlig for nettsiden</span>: Per Ellef Aalerud<br>
+                    per.ellef2000@outlook.com<br>
+                </p>
+            </div>
+            <div style="text-align: left; margin: 0 10px 0 10px">
+                <h4>Ressurser</h4>
+                <br>
+                <p>
+                    <a href="https://www.friidrett.no" style="color: #E1EDFF;">friidrett.no</a><br>
+                    <a href="https://www.minfriidrettsstatistikk.info/" style="color: #E1EDFF;">minfriidrettstatistikk.no</a><br>
+                    <a a href="{{ url_for('static', filename='statutter-2022.pdf') }}" download="statutter-2022.pdf" style="color: #E1EDFF;">statutter</a><br>
+                </p>
+            </div>
+        </div>
+
+        <div class="container-fluid" style="padding-bottom: 30px; width: 90%;">
+            <div class="row">
+                <div class="col-md-6" style="text-align: center">
+                    <a class="navbar-brand" href="{{ url_for('forside') }}">
+                        <img style="height:100px;" class="img-fluid" src="{{ url_for('static', filename='assets/logoer/lagserien logo hvit.png') }}" alt="Lagserien logo">
+                    </a>    
+                </div>
+                <div class="col-md-6" style="text-align: center">
+                    <a class="navbar-brand" href="https://www.friidrett.no/">
+                        <img style="height:70px;" class="img-fluid" src="{{ url_for('static', filename='assets/logoer/norsk friidrett.svg') }}" alt="NFIF logo">
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div style="text-align: center">
+        <span style="font-size: 10px; margin: 0 5% 0 5%;">
+            Ikoner er hentet fra <a href="https://www.flaticon.com/" title="flaticon" style="color: #E1EDFF;">Flaticon</a> og laget av freepik, agustrisana, Leremy, icon_small, riajulislam, Prosymbols Premium.
+        </span>
+        </div>
+    </footer>
+</html>

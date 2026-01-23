@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block innhold %}
+<h3>ADMINSIDE</h3>
+
+<div>
+  <canvas id="myChart"></canvas>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0/dist/chart.umd.min.js"></script>
+<script>
+  const ctx = document.getElementById('myChart');
+
+  const besøkstall_per_dag = {{ besøkstall|tojson }}
+
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: besøkstall_per_dag.map(par => par[0]),
+      datasets: [{
+        label: 'Besøkstall per dag',
+        data: besøkstall_per_dag.map(par => par[1]),
+        borderWidth: 1
+      }]
+    },
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+    }
+  });
+</script>
+{% endblock %}

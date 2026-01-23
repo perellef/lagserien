@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block innhold %}
+<img class="card-img-top" src="{{ url_for('static', filename='assets/artikler/' ~ image) }}" alt="Artikkelbilde">
+<span class="text-muted mt-1" style="font-size: 0.75rem; display: flex; justify-content: space-between; width: 100%;">
+  <span>{{ bildeinnhold }}</span>
+  <span>{{ fotograf }}</span>
+</span>
+<div style="display: flex; justify-content: center;">
+  <div class="tekst">
+    <h1>{{ tittel }}</h1>
+    <br>
+    <b>{{ inngress }}</b>
+    <br>
+    <hr>
+    <span style="display: flex; justify-content: space-between; width: 100%;">
+      <span>{{ skrevet_av}}</span>
+      <span>{{ publisert }}</span>
+    </span>
+    {{ innhold | replace("\n", "<br>") | safe }}
+  </div>
+</div>
+{% endblock %}

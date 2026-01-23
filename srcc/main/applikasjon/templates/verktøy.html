@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block innhold %}
+<div class="tekst" style="margin-bottom: 30px;">
+    <h1>Verktøy</h1>
+</div>
+<div>
+    <a href="{{ url_for('poengkalkulator') }}" style="text-decoration: none; color: initial;">
+        <div style="background-color: white; border: 2px #6c8eBf solid; padding: 1px; width: 300px; display: flex; align-items: center; font-size: 1.1rem; margin: 10px">
+            <i class="bi-calculator" style="font-size: 20px; color: #305a94; margin: 0 10px 0 10px;"></i>
+            <span style="color: #222222">Poengkalkulator</span>
+        </div>
+    </a>
+    <a href="{{ url_for('lagoppstiller') }}" style="text-decoration: none; color: initial;">
+        <div style="background-color: white; border: 2px #6c8eBf solid; padding: 1px; width: 300px; display: flex; align-items: center; font-size: 1.1rem; margin: 10px">
+            <i class="bi-gear-wide-connected" style="font-size: 20px; color: #305a94; margin: 0 10px 0 10px;"></i>
+            <span style="color: #222222">Lagoppstiller</span>
+        </div>
+    </a>
+    <a href="{{ url_for('lagsammenlikner') }}" style="text-decoration: none; color: initial;">
+        <div style="background-color: white; border: 2px #6c8eBf solid; padding: 1px; width: 300px; display: flex; align-items: center; font-size: 1.1rem; margin: 10px">
+            <i class="bi-clipboard2-data-fill" style="font-size: 20px; color: #305a94; margin: 0 10px 0 10px;"></i>
+            <span style="color: #222222">Lagsammenlikner</span>
+        </div>
+    </a>
+    <a href="{{ url_for('lagforbedrer') }}" style="text-decoration: none; color: initial;">
+        <div style="background-color: white; border: 2px #6c8eBf solid; padding: 1px; width: 300px; display: flex; align-items: center; font-size: 1.1rem; margin: 10px">
+            <i class="bi-clipboard2-data-fill" style="font-size: 20px; color: #305a94; margin: 0 10px 0 10px;"></i>
+            <span style="color: #222222">Lagforbedrer</span>
+        </div>
+    </a>
+</div>
+{% endblock %}

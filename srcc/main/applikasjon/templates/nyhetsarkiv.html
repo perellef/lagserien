@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block innhold %}
+
+<h1>Nyhetsarkiv</h1>
+
+<div id="nyheter" class="container mt-4">
+</div>
+<script src="{{ url_for('static', filename='nyhetsarkiv.js') }}"></script>
+
+{% endblock %}

@@ -1,0 +1,5 @@
+Regler:
+- Ethvert løp skal maksimalt gi 1 resultat. Det betyr at mellomtider kan gjelde, hvis den fulle distansen ikke var en serieøvelse.
+- Noen har manglende fødselsår. Disse skal ...
+- Aldersgrense er 11 år, og vil alltid være det.
+- Bør kanskje lage en kobling mellom klubb og utøver. Da må man også ha 

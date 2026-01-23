@@ -1,0 +1,165 @@
+{% extends "base.html" %}
+
+{% block innhold %}
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="/livetabell">Livetabell</a></li>
+      <li class="breadcrumb-item active" aria-current="page">{{ klubbnavn }}</li>
+    </ol>
+</nav>
+
+<div id="beholder" style="display: flex; flex-wrap: wrap-reverse; justify-content: space-evenly; align-items: flex-end;">
+    <div id="skygge" style="height: 10px; width: 100px;"></div>
+    <div id="tittel" style="align-items: center;">
+        <h3 style="padding-top: 20px">{{klubbnavn}}</h3>
+        <div style="text-align: center; align-items: center; color: #444444; margin-bottom: 10px;;">
+            <i>Klubb i {{krets}}</i>
+        </div>
+    </div>
+    <div style="width: 100px">
+        {% if klubb_id is not none %}
+        <a id="klubblogo" href="/livetabell/{{klubbnavn}}">
+        </a>
+        {% endif %}
+    </div>
+</div>
+
+<div style="display: flex; flex-wrap: wrap; row-gap: 3px; justify-content: space-evenly; width: 100%;">
+    <button id="klubbinfo-knapp" class="lag-hovedknapp" style="background-color: white;">Klubbinfo</button>
+    <button id="resultater-knapp" class="lag-hovedknapp">Resultater</button>
+    <button id="historikk-knapp" class="lag-hovedknapp"><span style="visibility: hidden">Historikk</span></button>
+</div>
+
+<div id="klubbinfo" style="display: block;">
+    <br>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <h4>Menn</h4>
+                <table class="table table-sm">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Lagnavn</th>
+                            <th>Divisjon</th>
+                            <th>Plassering</th>
+                            <th>Poeng</th>
+                        </tr>
+                    </thead>
+                    <tbody id="klubblag-menn">
+
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-md-6">
+                <h4>Kvinner</h4>
+                <table class="table table-sm">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Lagnavn</th>
+                            <th>Divisjon</th>
+                            <th>Plassering</th>
+                            <th>Poeng</th>
+                        </tr>
+                    </thead>
+                    <tbody id="klubblag-kvinner">
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="resultater" style="display: none;">
+
+    <div id="resultat-filterboks" style="font-size: 0.85rem; margin-bottom: 5px;  margin-top: 30px">
+    </div>
+
+    <table class="table table-sm" style="table-layout: fixed;">
+        <thead class="table-light">
+            <tr style="font-size: 0.9rem">
+                <th style="width: 7%; cursor: pointer;" id="poeng-th">Poeng</th>
+                <th style="width: 3%"></th>
+                <th style="width: 10%; cursor: pointer;" id="øvelse-th">Øvelse</th>
+                <th style="width: 8%; cursor: pointer;" id="resultat-th">Resultat</th>
+                <th style="width: 3%"></th>
+                <th style="width: 25%; cursor: pointer;" id="navn-th">Navn</th>
+                <th style="width: 6%; cursor: pointer;" id="født-th">Født</th>
+                <th style="width: 10%; cursor: pointer;" id="sted-th">Sted</th>
+                <th style="width: 6%; cursor: pointer;" id="dato-th">Dato</th>
+                <th style="width: 10%; visibility: hidden; border: none;"></th>
+            </tr>
+        </thead>
+        <tbody id="klubbresultater">
+        </tbody>
+    </table>
+
+</div>
+
+<script>
+
+    klubblogo = false
+    function toggleRedBox() {
+        const container = document.getElementById("beholder");
+        const skygge = document.getElementById("skygge");
+        const heading = container.querySelector("h3");
+
+        if (!container || !skygge || !heading) return;
+
+        const children = Array.from(container.children);
+        const firstRowBottom = children[2].offsetTop;
+
+        children.forEach(child => console.log(child.offsetTop))
+        const isSplit = children.some(child => child.offsetTop > firstRowBottom);
+
+        if (isSplit) {
+            skygge.style.display = "none";
+            heading.style.marginLeft = "50px";
+            heading.style.marginRight = "50px";
+        } else {
+            skygge.style.display = "block";
+            heading.style.marginLeft = "0";
+            heading.style.marginRight = "0";
+        }
+        
+        if (cached_data["klubblogoer"].includes({{klubb_id}}) && !klubblogo) {
+            logo = `${window.location.origin}/static/assets/klubblogo/{{klubb_id}}.png`;
+            var img = document.createElement('img');
+            img.src = logo;
+            img.style.width = "100px"; 
+            
+            anchor = document.getElementById("klubblogo")
+            anchor.appendChild(img)
+            
+            klubblogo = true
+        };
+    }
+
+    // Run on load + resize
+    document.addEventListener("DOMContentLoaded", toggleRedBox);
+    window.addEventListener("load", toggleRedBox);
+    window.addEventListener("resize", toggleRedBox);
+</script>
+
+<script>
+    var klubbresultater = {{ klubbresultater | tojson }};
+    const mann_svg = `${window.location.origin}/static/assets/ikoner/mann-ikon.svg`;
+    const kvinne_svg = `${window.location.origin}/static/assets/ikoner/kvinne-ikon.svg`;
+    const info_svg = `${window.location.origin}/static/assets/ikoner/info-circle.svg`;
+
+    kvinner_klubblag = {{ kvinner_klubblag | tojson }}
+    menn_klubblag = {{ menn_klubblag | tojson}}
+
+    ikoner = ["sprint", "løp", "hekk", "lengde", "tresteg", "høyde", "stav", "lut", "hut", "kule", "spyd", "slegge", "diskos"];
+    
+    var øvelsesikoner = {};
+    ikoner.forEach(øvelse => {
+        øvelsesikoner[øvelse] = `${window.location.origin}/static/assets/øvelser/${øvelse}.png`;
+    });
+</script>
+
+
+
+<script src="{{ url_for('static', filename='klubb.js') }}"></script>
+{% endblock %}

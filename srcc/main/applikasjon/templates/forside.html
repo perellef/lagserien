@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+
+{% block innhold %}
+
+<img src="{{ url_for('static', filename='assets/forside.jpg') }}" alt="Forside">
+<p class="text-muted mt-1" style="font-size: 0.75rem; margin: 0; padding: 0">Lene Onsrud Retzius under NM 2023 i Jessheim. Foto: Bildbyrån</p>
+
+<div class="tekst">
+  <h1>Lagserien i norsk friidrett</h1>
+
+  Lagserien i norsk friidrett er en årlig klubbliga som strekker seg helt tilbake til 1950. Konkurransen har som mål å bidra til mangfold og iver. 
+
+  <h3>Nyheter</h3>
+
+  Les siste nytt om Lagserien!
+</div>
+
+<style>
+  .carousel-control-prev {
+    opacity: 1;
+    background: linear-gradient(to right, rgba(0,0,0,0.1), rgba(0,0,0,0)); 
+  }
+
+  .carousel-control-next {
+    opacity: 1;
+    background: linear-gradient(to left, rgba(0,0,0,0.1), rgba(0,0,0,0)); 
+  }
+
+  .carousel-control-next-icon, .carousel-control-prev-icon {
+    filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(0deg) brightness(200%) contrast(100%) opacity(0.2);
+  }
+  .carousel-control-next-icon:hover, .carousel-control-prev-icon:hover {
+    filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(0deg) brightness(200%) contrast(100%) opacity(0.3);
+  }
+
+  .carousel-control-prev-icon {
+    position: absolute;
+    left: 10px;
+  }
+
+  .carousel-control-next-icon {
+    position: absolute;
+    right: 10px;
+  }
+</style>
+
+
+<div id="carouselExample" class="carousel slide" data-bs-wrap="false">
+  <div id="nyheter" class="carousel-inner">
+  </div>
+  <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Previous</span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Next</span>
+  </button>
+</div>
+<a href="{{ url_for('nyheter') }}" style="color: black">Se flere nyheter</a>
+
+<div class="tekst">
+  <h3>Årets serie</h3>
+  Her får du et innblikk i de foreløpige stillingene i årets serie.
+</div>
+
+<div class="container">
+  <div class="row">
+      <div class="col-md-6">
+          <div class="card rounded-0 mt-4">
+              <div class="card-body">
+                  <h5 class="card-title">Menn</h5>
+                  <table class="table table-sm" style="table-layout: fixed;">      
+                    <thead>
+                      <tr>
+                        <th scope="col" style="width: 7%"></th>
+                        <th scope="col" style="width: 10%"></th>
+                        <th scope="col" style="width: 60%">Klubb</th>
+                        <th scope="col" style="width: 20%">Poeng</th>
+                      </tr>
+                    </thead>
+                    <tbody id="menn-topp-5">
+                    </tbody>
+                  </table>
+              </div>
+          </div>
+      </div>
+      <div class="col-md-6">
+          <div class="card rounded-0 mt-4">
+              <div class="card-body">
+                  <h5 class="card-title">Kvinner</h5>
+                  <table class="table table-sm" style="table-layout: fixed;">      
+                    <thead>
+                      <tr>
+                        <th scope="col" style="width: 7%"></th>
+                        <th scope="col" style="width: 10%"></th>
+                        <th scope="col" style="width: 60%">Klubb</th>
+                        <th scope="col" style="width: 20%">Poeng</th>
+                      </tr>
+                    </thead>
+                    <tbody id="kvinner-topp-5">
+                    </tbody>
+                  </table>
+              </div>
+          </div>
+      </div>
+      <a href="/livetabell" style="margin-top: 5px; color: black">Gå til Livetabell</a>
+      <script src="{{ url_for('static', filename='forside.js') }}"></script>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+
+{% endblock %}

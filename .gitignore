@@ -1,0 +1,5 @@
+__pycache__/
+*.db
+srcc/main/applikasjon/**/serieoppsett_*
+ut/**
+.env

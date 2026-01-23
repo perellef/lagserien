@@ -1,0 +1,51 @@
+ideell oppstilling: den beste ellers-gyldige oppstillingen, men der maks-5 kravet brytes
+usikre resultater: resultater som inneholder resterende resultater av de som skal være i oppstillingen, men behøver ikke
+sikre resultater: resultater som er strengt nødvendig i oppstillingen
+
+aktuelle resultater: resultatene avgrenset til kun de nødvendige for beregning av beste lagoppstilling 
+
+(over-, under- og full-) belastet utøver
+
+Intrikate punkter:
+- belastet resultat: resultat som kan måtte las være å brukes fordi utøveren har 5 andre som gir bedre seriepoeng
+- overbelastet utøver: utøver som har med enn 5 (aktuelle) resultater
+
+- hale/hoderesultat: et resultat som er det siste av sin gruppe (obl/val + løp/tek) av resultater
+   - likartet haleresultat: et haleresultat som er likt et annet haleresultat
+  (- likartet oppstilling: en oppstilling lik en annen oppstilling)?
+
+- nedfallbart resultat: (teknisk) resultat som kan tenkes å flyttes ned fra obligatorisk til valgfri oppstilling og gi bedre seriepoeng
+
+Det burde lages noe terminologi som gjør det lettere å prate om reglene til oppstillingsgenerator.
+
+hovedresultat:
+sideresultat:
+oppstilling: obligatoriske og valgfri resultater som oppfyller regler
+formasjon: et generisk oppsett av resultater
+
+Resultater:
+
+A: 1000, Lengde
+A: 800, Høyde
+B: 100, 200m
+C: 100, 400m
+B: 50, 100m
+
+obl: 2
+obl-tak: 0
+val: 2
+val-tek: 1
+
+
+Oppstillinger:
+
+obl:              | obl:
+A: 1000, Lengde   | A: 1000, Lengde
+A: 800, Høyde     | B: 100, 200m
+                  |
+val:              | val:
+B: 100, 200m      | A: 800, Høyde 
+-: -; -           | C: 100, 400m
+
+sum: 1900         | sum: 2000
+

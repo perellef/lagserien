@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block innhold %}
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/verktøy">Verktøy</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Poengkalkulator</li>
+  </ol>
+</nav>
+
+<div class="tekst">
+  <h1>Poengkalkulator</h1>
+  
+  Du kan bruke dette excelarket til å regne ut hva et resultat vil gi av poeng: 
+  <a href="{{ url_for('static', filename='assets/excelfiler/poengkalkulator.xlsx') }}" download="poengkalkulator.xlsx">Poengkalkulator i excel</a>.<br>
+  <br>
+</div>
+{% endblock %}

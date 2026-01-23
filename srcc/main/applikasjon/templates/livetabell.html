@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block innhold %}
+<div class="text-start">
+  <br>
+  <br>
+  
+  <h3 style="padding-top: 20px;">Livetabell {{ serieår }}</h3>
+
+  <p>
+  Her ser du Lagserien beregnet med foreløpige resultater. Oversikten viser endringer <span style="text-decoration: underline;">siste 7 dager</span>. Du kan også laste ned serien på <a href="{{ url_for('static', filename='assets/excelfiler/' ~ zipfil ) }}" download="{{ zipfil }}">excelformat</a>.
+  </p>
+
+  <span class="text-muted mt-1" style="font-size: 0.75rem;">Sist oppdatert {{ sist_oppdatert }}</span>
+</div>
+<div class="card rounded-0" style="background-color: rgb(199, 219, 207);">
+
+  <div style="display: flex; flex-wrap: wrap; margin: 0 auto; column-gap: 60px; padding: 15px 10px 15px 10px;">
+      <div class="col-md-6 justerbart-verdifelt" style="width: 25%; min-width: 150px;">
+          <div class="verdifelt-angiver" style="font-size: 0.9rem">Kjønn:</div>
+          <div class="verdifelt">
+              <div class="sideknapp" id="kjønn-venstre"><</div>
+              <div class="verdi" id="livetabell-kjønn">menn</div>
+              <div class="sideknapp" id="kjønn-høyre">></div>
+          </div>
+      </div>
+
+      <div class="col-md-6 justerbart-verdifelt" style="width: 25%; min-width: 150px;">
+          <div class="verdifelt-angiver" style="font-size: 0.9rem">Divisjon:</div>
+          <div class="verdifelt">
+              <div class="sideknapp" id="divisjon-venstre"><</div>
+              <div class="verdi" id="livetabell-divisjon">1</div>
+              <div class="sideknapp" id="divisjon-høyre">></div>
+          </div>
+      </div>
+
+      <div class="col-md-6 justerbart-verdifelt" style="max-width: 186px;">
+        <label class="verdifelt-angiver" for="kretsalternativer"  style="font-size: 0.9rem">Krets:</label>
+        <select id="kretsalternativer" name="kretsalternativer" style="font-size: 0.8rem; line-height: 1.5; border: 1px solid #ccc; background-color: #fff; padding-left: 10px">
+          <option id="kretsalternativ-alle" value="alle">alle</option>
+        </select>
+      </div>
+  </div>
+
+  <table class="table table-sm divisjonstabell" style="table-layout: fixed;">   
+    <thead class="table-light">
+      <colgroup>
+        <col style="width: 5%; white-space: no-wrap;">
+        <col style="width: 7%; white-space: no-wrap;">
+        <col style="width: 5%; white-space: no-wrap;">
+        <col style="width: 20%; white-space: no-wrap;">
+        <col style="width: 8%; white-space: no-wrap;">
+        <col style="width: 12%; white-space: no-wrap;">
+        <col style="width: 12%; white-space: no-wrap;">
+        <col style="width: 21%; white-space: no-wrap;">
+      </colgroup>
+      <tr>
+        <th scope="col"></th>
+        <th scope="col"></th>
+        <th scope="col"></th>
+        <th scope="col">Lag</th>
+        <th scope="col" colspan="2">Poeng</th>
+        <th scope="col">Noteringer</th>
+        <th scope="col" style="padding-left: 20px;">Krets</th>
+      </tr>
+    </thead>
+    <tbody id="lagplasseringer">
+    </tbody>
+  </table>
+  <button id="eventuell-se-alle-knapp" style="display: none; border-width: 1.5px">Last inn alle lag</button>
+  <script src="{{ url_for('static', filename='livetabell.js') }}"></script>
+</div>
+{% endblock %}

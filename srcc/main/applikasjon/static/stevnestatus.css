@@ -1,0 +1,28 @@
+.button-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin: 0 0 20px 20px;
+}
+.måned-btn {
+    padding: 0;
+    height: 30px;
+    width: 50px;
+    text-align: center;
+    border-color: lightgray;
+    border-width: 0.1px;
+    cursor: pointer;
+    font-size: 15px;
+    background-color: #007BFF;
+    border-radius: 0;
+    color: darkslategray;
+    transition: background 0.3s;
+}
+
+.btn:hover, .btn.active {
+    background-color: #0056b3;
+}
+
+.grid-item {
+    display: flex;
+}

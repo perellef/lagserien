@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+
+{% block innhold %}
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="/verktøy">Verktøy</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Lagforbedrer</li>
+    </ol>
+</nav>
+
+<div class="tekst">
+  <h1>Lagforbedrer</h1>
+
+  Lagforbedrer er et verktøy viser deg hvordan et lag kan forbedres.
+</div>
+
+<div style="display: flex; flex-wrap: wrap; column-gap: 10px;">
+    <div style="width: fit-content;">
+        <h3 style="padding: 20px 0 0 0">Lag</h3>
+        <div class="blåkantet" style="border-style: solid; border-width: 2px; padding: 5px 20px 5px 5px;">
+            <table>
+                <tbody>
+                    <tr>
+                        <td style="font-size: 14px;">Kjønn:</td>
+                        <td>
+                            <div class="verdifelt">
+                                <div class="sideknapp" id="lagforb-kjønn-venstre"><</div>
+                                <div class="verdi" id="lagforb-kjønn">menn</div>
+                                <div class="sideknapp" id="lagforb-kjønn-høyre">></div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="font-size: 14px;">Klubb:</td>
+                        <td>
+                            <div style="position:relative;">
+                            <input id="klubbInput" style="padding: 0 10px 0 9px; font-size: 0.9rem; line-height: 1.7; border: 1px solid #ccc" type="text" name="input" autocomplete="off">
+                            <div id="autocompleteList" class="autocomplete-items"></div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div id="error-message" style="color: red; display: block; font-size: 14px;"></div>
+    </div>
+</div>
+
+<button id="analyser-lagforbedring" class="knapp" style="background-color: #e19e39; color: white; border: none; padding: 1px 10px 3px 10px; margin-top: 15px;">Analyser forbedringer</button>
+<img src="{{ url_for('static', filename='loading.gif') }}" alt="My Image" id="beregning" style="height:10px; display:none">
+<hr>
+<br>
+
+<div id="analysefelt" style="display: none">
+    <h2 id="klubb-som-analyseres"></h2>
+    <div id="dobbeltfelt">
+        <span style="font-size: 14px;">Nedenfor ser du en liste over resultater som vil forbedre laget. Trykk på resultatet for å se hvordan laget endres.</span>
+        <br>
+        <br>
+        <div style="display: flex">
+            <div id="forbedringer-tabell" style="width: 50%">
+            </div>
+
+            <div style="width: 50%">
+                <br>
+                <br>
+                <div style="width: 90%; margin: 0 0 0 auto;">
+                    <div style="border: solid 5px rgb(205, 205, 205)">
+                        <div>
+                            <h6 style="color: rgb(61, 61, 61); margin: 20px 0 8px 10%;">Obligatorisk oppstilling</h5>
+                            <table class="table table-sm" style="font-size: 0.9rem; table-layout: fixed">
+                                <thead class="table-light">
+                                <tr>
+                                    <th style="width: 7%; visibility: hidden; border:none;"></th>
+                                    <th style="width: 10%">Poeng</th>
+                                    <th style="width: 15%">Øvelse</th>
+                                    <th style="width: 30%">Navn</th>
+                                    <th style="width: 5%; visibility: hidden; border:none;"></th>
+                                </tr>
+                                </thead>
+                                <tbody id="lagforbedrer-oppstilling-obl">
+
+                                </tbody>
+                            </table>
+                        </div>
+                        <div>
+                            <h6 style="color: rgb(61, 61, 61); margin: 20px 0 8px 10%;">Valgfri oppstilling</h5>
+                            <table class="table table-sm" style="font-size: 0.9rem; table-layout: fixed">
+                                <thead class="table-light">
+                                <tr>
+                                    <th style="width: 7%; visibility: hidden; border:none;"></th>
+                                    <th style="width: 10%">Poeng</th>
+                                    <th style="width: 15%">Øvelse</th>
+                                    <th style="width: 30%">Navn</th>
+                                    <th style="width: 5%; visibility: hidden; border:none;"></th>
+                                </tr>
+                                </thead>
+                                <tbody id="lagforbedrer-oppstilling-val">
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="{{ url_for('static', filename='lagforbedre.js') }}"></script>
+{% endblock %}

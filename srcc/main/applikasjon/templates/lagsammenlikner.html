@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+
+{% block innhold %}
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="/verktøy">Verktøy</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Lagsammenlikner</li>
+    </ol>
+</nav>
+
+<div class="tekst">
+  <h1>Lagsammenlikner</h1>
+
+  Lagsammenlikner er et verktøy som lar deg sammenlikne to lag mot hverandre.
+</div>
+
+<div style="display: flex; flex-wrap: wrap; column-gap: 10px;">
+    <div style="width: fit-content;">
+        <h3 style="padding: 20px 0 0 0">Første lag</h3>
+        <div class="blåkantet" style="border-style: solid; border-width: 2px; padding: 5px 20px 5px 5px;">
+            <table>
+                <tbody>
+                    <tr>
+                        <td style="font-size: 14px;">Kjønn:</td>
+                        <td>
+                            <div class="verdifelt">
+                                <div class="sideknapp" id="lagsam-kjønn-venstre1"><</div>
+                                <div class="verdi" id="lagsam-kjønn1">menn</div>
+                                <div class="sideknapp" id="lagsam-kjønn-høyre1">></div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="font-size: 14px;">Serieår:</td>
+                        <td>
+                            <div class="verdifelt">
+                                <div class="sideknapp" id="lagsam-serieår-venstre1"><</div>
+                                <div class="verdi" id="lagsam-serieår1"></div>
+                                <div class="sideknapp" id="lagsam-serieår-høyre1">></div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="font-size: 14px;">Dato:</td>
+                        <td>
+                            <div class="innholdsside" style="font-size: 0.9rem; line-height: 1.7;">
+                                <select id="uttrekksdatoInput1" style="padding: 0 10px 0 5px; border: 1px solid #ccc" name="response">
+                                    <option value="seneste">seneste</option>
+                                    <option value="offisiell-slutt">offisiell slutt</option>
+                                    <option value="egendefinert">egendefinert</option>
+                                </select>
+                                <input id="spesifikk-dato-1" style="margin-left: 10px; width: 120px; border: 1px solid #ccc" type="text" disabled>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="font-size: 14px;">Klubb:</td>
+                        <td>
+                            <div style="position:relative;">
+                            <input id="klubbInput1" style="padding: 0 10px 0 9px; font-size: 0.9rem; line-height: 1.7; border: 1px solid #ccc" type="text" name="input" autocomplete="off">
+                            <div id="autocompleteList" class="autocomplete-items"></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="font-size: 14px;">Lagnummer:</td>
+                        <td>
+                            <div class="verdifelt">
+                                <div class="sideknapp" id="lagsam-lag-venstre1"><</div>
+                                <div class="verdi" id="lagsam-lag1">1</div>
+                                <div class="sideknapp" id="lagsam-lag-høyre1">></div>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div id="error-message1" style="color: red; display: block; font-size: 14px;"></div>
+    </div>
+    <div style="width: fit-content; display: flex; align-items: flex-end; justify-content: center;">
+        <button id="bytt-om-lag" class="knapp" style="margin: 0 0 0 0; color: #555555; border: none; padding: 0px 3px 0px 3px; background-color: lightgray;">⇔</button>
+    </div>
+    <div style="width: fit-content;">
+        <h3 style="padding: 20px 0 0 0">Andre lag</h3>
+        <div class="blåkantet" style="border-style: solid; border-width: 2px; padding: 5px 20px 5px 5px">
+            <table>
+                <tbody>
+                    <tr>
+                        <td style="font-size: 14px;">Kjønn:</td>
+                        <td>
+                            <div class="verdifelt">
+                                <div class="sideknapp" id="lagsam-kjønn-venstre2"><</div>
+                                <div class="verdi" id="lagsam-kjønn2">menn</div>
+                                <div class="sideknapp" id="lagsam-kjønn-høyre2">></div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="font-size: 14px;">Serieår:</td>
+                        <td>
+                            <div class="verdifelt">
+                                <div class="sideknapp" id="lagsam-serieår-venstre2"><</div>
+                                <div class="verdi" id="lagsam-serieår2"></div>
+                                <div class="sideknapp" id="lagsam-serieår-høyre2">></div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="font-size: 14px;">Dato:</td>
+                        <td>
+                            <div class="innholdsside" style="font-size: 0.9rem; line-height: 1.7;">
+                                <select id="uttrekksdatoInput2" style="padding: 0 10px 0 5px; border: 1px solid #ccc" name="response">
+                                    <option value="seneste">seneste</option>
+                                    <option value="offisiell-slutt">offisiell slutt</option>
+                                    <option value="egendefinert">egendefinert</option>
+                                </select>
+                                <input id="spesifikk-dato-2" style="margin-left: 10px; width: 120px; border: 1px solid #ccc;" type="text" disabled>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="font-size: 14px;">Klubb:</td>
+                        <td>
+                            <div style="position:relative;">
+                            <input id="klubbInput2" style="padding: 0 10px 0 9px; font-size: 0.9rem; line-height: 1.7; border: 1px solid #ccc" type="text" name="input" autocomplete="off">
+                            <div id="autocompleteList" class="autocomplete-items"></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="font-size: 14px;">Lagnummer:</td>
+                        <td>
+                            <div class="verdifelt">
+                                <div class="sideknapp" id="lagsam-lag-venstre2"><</div>
+                                <div class="verdi" id="lagsam-lag2">1</div>
+                                <div class="sideknapp" id="lagsam-lag-høyre2">></div>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div id="error-message2" style="color: red; display: block; font-size: 14px;"></div>
+    </div>
+</div>
+
+<button id="sammenliknBtn" class="knapp" style="background-color: #3972c8; color: white; border: none; padding: 1px 10px 3px 10px; margin-top: 15px;">Sammenlikn</button>
+
+<hr>
+<br>
+<div id="panel-sammenlikning" style="display: flex; width: 100%;">
+</div>
+
+<script src="{{ url_for('static', filename='sammenlikn.js') }}"></script>
+{% endblock %}

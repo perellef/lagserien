@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+{% block innhold %}
+<div class="tekst">
+  <h1>Stevnestatus</h1>
+  <p>
+    <span style="font-weight: 700;">! Denne siden er ikke ferdig enda og inneholder flere feil.</span><br>
+    <br>
+    Serieutvalget utfører et aktivt arbeid for å få innsendt resultater fra fullførte stevner.<br>
+    <br>
+    I dag er dessverre mange arrangører trege med å sende inn resultater. Dette gjør at serien henger etter.
+    Vi ønsker å få til en kultur der stevner sendes inn fortløpende for en enda mer levende serien.
+  </p>
+  <h3>Progresjon for {{ serieår }}</h3>
+</div>
+
+
+<div class="card rounded-0">
+  <div class="card-body">
+    <div style="display: grid; grid-template-columns: auto auto; grid-template-rows: auto auto; grid-template-columns: max-content auto; width: 100%; row-gap: 10px; column-gap: 30px;">
+      <div style="display: flex; width: fit-content;">Fullførte stevner</div>
+      <div style="display: flex; align-items: center; width: 100%">
+        <div class="progress" role="progressbar" aria-label="Example with label" aria-valuenow="65" aria-valuemin="0" aria-valuemax="100" style="max-width: 400px; width: 100%;">
+          <div class="progress-bar" style="background-color: #3b76ed; width: {{ cache['andel_gjennomførte'][2] }}%">{{ cache['andel_gjennomførte'][2] }}%</div>
+        </div>
+      </div>
+      <div style="display: flex; width: fit-content;">Innrapporterte stevner</div>
+      <div style="display: flex; align-items: center; width: 100%;">
+        <div class="progress" role="progressbar" aria-label="Example with label" aria-valuenow="65" aria-valuemin="0" aria-valuemax="100" style="max-width: 400px; width: 100%;">
+          <div class="progress-bar" style="background-color: #42df79; width: {{ cache['andel_rapportert'][2] }}%">{{ cache['andel_rapportert'][2] }}%</div>
+        </div>
+        <span style="margin-left: 10px; font-size: 10px; font-style: italic;">Mål: alltid over 80%</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="tekst">
+  <h3>Kalender</h3>
+  <p>
+    Her ser du en oversikt over terminliste-stevner (📩) og innsendte stevner (✔️).
+  </p>
+</div>
+
+
+<div class="innholdsside">
+  <h6>Måned:</h6> 
+  <div id="months" class="button-container"></div>
+</div>
+
+<div class="card rounded-0">
+  <div class="card-body">
+
+    <h5 id="valgt-kalenderdato"></h2>
+    <p id="selected-date"></p>
+
+    <div class="table-container stevnekalender" style="max-height: 300px; overflow-y: auto;">
+      <table class="table table-sm" style="min-width: 400px; table-layout: fixed;">
+          <thead class="table-light">
+              <tr>
+                  <th style="width: 12%; position:sticky; top:0;"></th>
+                  <th style="width: 19%; position:sticky; top:0">Dato</th>
+                  <th style="width: 30%; position:sticky; top:0">Arena</th>
+                  <th style="width: 40%; position:sticky; top:0">Stevne</th>
+                  <th style="width: 25%; position:sticky; top:0"></th>
+              </tr>
+          </thead>
+          <tbody id="datoens-stevner">
+          </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+
+ 
+<div class="tekst">
+  <h3>Forsinkelser</h3>
+  <p>
+    Stevner på terminlisten som vi enda ikke har fått resultater for. Vi jobber med å få denne listen ned.
+  </p>
+</div>
+
+
+<div class="table-container forsinkelser" style="max-height: 300px; overflow-y: auto;">
+  <table class="table table-sm" style="table-layout: fixed">   
+    <thead class="table-light">
+      <tr>
+        <th scope="col" style="width: 13%; white-space: nowrap; overflow:hidden; text-overflow: ellipsis">Forsinkelse</th>
+        <th scope="col" style="width: 50%">Stevne</th>
+        <th scope="col" style="width: 24%">Arena</th>
+        <th scope="col" style="width: 15%">Dato</th>
+      </tr>
+    </thead>
+    <tbody id="forsinkelser">
+    </tbody>
+
+    <script src="{{ url_for('static', filename='stevnestatus.js') }}"></script>
+  </table>
+</div>
+{% endblock %}

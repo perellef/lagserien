@@ -1,0 +1,160 @@
+
+body {
+    background-color: #f3f3f3;;
+}
+
+@media (max-width: 740px) {
+    .divisjonstabell col:nth-child(7),
+    .divisjonstabell th:nth-child(6),
+    .divisjonstabell td:nth-child(7) {
+      display: none;
+    }
+}
+
+@media (max-width: 550px) {
+    .divisjonstabell col:nth-child(8),
+    .divisjonstabell th:nth-child(7),
+    .divisjonstabell td:nth-child(8) {
+      display: none;
+    }
+}
+
+@media (max-width: 800px) {
+    .lagoppstilling col:nth-child(9),
+    .lagoppstilling th:nth-child(9),
+    .lagoppstilling td:nth-child(9) {
+      display: none;
+    }
+}
+
+@media (max-width: 680px) {
+    .lagoppstilling col:nth-child(10),
+    .lagoppstilling th:nth-child(10),
+    .lagoppstilling td:nth-child(10) {
+      display: none;
+    }
+}
+
+@media (max-width: 615px) {
+    .lagoppstilling col:nth-child(6),
+    .lagoppstilling th:nth-child(6),
+    .lagoppstilling td:nth-child(6) {
+      display: none;
+    }
+}
+
+@media (max-width: 620px) {
+    .lagoppstilling col:nth-child(8),
+    .lagoppstilling th:nth-child(8),
+    .lagoppstilling td:nth-child(8) {
+      display: none;
+    }
+}
+
+@media (max-width: 720px) {
+    #resultater col:nth-child(10),
+    #resultater th:nth-child(10),
+    #resultater td:nth-child(10) {
+      display: none !important;
+    }
+}
+
+@media (max-width: 650px) {
+    #resultater col:nth-child(8),
+    #resultater th:nth-child(8),
+    #resultater td:nth-child(8) {
+      display: none !important;
+    }
+}
+
+@media (max-width: 570px) {
+    #resultater col:nth-child(9),
+    #resultater th:nth-child(9),
+    #resultater td:nth-child(9) {
+      display: none !important;
+    }
+}
+
+@media (max-width: 510px) {
+    #resultater col:nth-child(7),
+    #resultater th:nth-child(7),
+    #resultater td:nth-child(7) {
+      display: none !important;
+    }
+}
+
+@media (max-width: 460px) {
+    #resultater col:nth-child(2),
+    #resultater th:nth-child(2),
+    #resultater td:nth-child(2) {
+      display: none !important;
+    }
+}
+
+@media (max-width: 660px) {
+    .stevnekalender col:nth-child(3),
+    .stevnekalender th:nth-child(3),
+    .stevnekalender td:nth-child(3) {
+      display: none;
+    }
+}
+
+@media (max-width: 630px) {
+    .forsinkelser col:nth-child(3),
+    .forsinkelser th:nth-child(3),
+    .forsinkelser td:nth-child(3) {
+      display: none;
+    }
+}
+
+h1 {
+    color: #003366;
+    padding-top: 50px;
+    padding-bottom: 20px;
+}
+
+h3 {
+    color: #003366;
+    padding-top: 40px;
+    padding-bottom: 10px;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+.innholdsside {
+    display: flex;
+    width: 100%;
+}
+
+.venstre-marg, .høyre-marg {
+    width: 19%;
+    background-color: #f3f3f3;
+}
+
+.tekst {
+    width: 550px;
+}
+
+.midtseksjon {
+    width: 62%;
+    background-color: #f3f3f3;
+}
+
+.nav-textstr {
+    font-size: 1.05rem;
+}
+
+.nav-textcolor-deact {
+    color: rgb(157, 199, 242);
+}
+
+.active {
+    Font-weight: 500
+}
+
+.deactive {
+    color: rgb(157, 199, 242);
+}

@@ -1,0 +1,9 @@
+.slett-knapp {
+    cursor: pointer;
+    background-color: #feb9b0;
+    width: 15px;
+    height: 15px;
+    text-align: center;
+    color: white;
+    line-height: 11px;
+}

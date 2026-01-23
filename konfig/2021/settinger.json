@@ -1,0 +1,24 @@
+{
+    "øvelseskrav": {
+        "1. div": {
+            "antall_obligatoriske": 15,
+            "maks_obligatoriske_løp": 15,
+            "antall_valgfri": 15,
+            "maks_valgfri_løp": 10
+        },
+        "2. div": {
+            "antall_obligatoriske": 13,
+            "maks_obligatoriske_løp": 13,
+            "antall_valgfri": 12,
+            "maks_valgfri_løp": 8
+        },
+        "3. div": {
+            "antall_obligatoriske": 12,
+            "maks_obligatoriske_løp": 12,
+            "antall_valgfri": 8,
+            "maks_valgfri_løp": 6
+        }
+    },
+    
+    "maks resultater per person": 5
+}
