@@ -87,6 +87,7 @@ class Oppsettbatch():
         serier.append(Serie(serieår=2023, fra_og_med=date.fromisoformat(f'2023-01-01'), til_og_med=date.fromisoformat(f'2023-12-31'), avsluttet=None))
         serier.append(Serie(serieår=2024, fra_og_med=date.fromisoformat(f'2024-01-01'), til_og_med=date.fromisoformat(f'2024-12-31'), avsluttet=None))
         serier.append(Serie(serieår=2025, fra_og_med=date.fromisoformat(f'2025-01-01'), til_og_med=date.fromisoformat(f'2025-12-31'), avsluttet=None))
+        serier.append(Serie(serieår=2026, fra_og_med=date.fromisoformat(f'2026-01-01'), til_og_med=date.fromisoformat(f'2026-12-31'), avsluttet=None))
         seriedata.bulkinnsett_ignorer(serier)
 
     @staticmethod
@@ -191,7 +192,11 @@ class Oppsettbatch():
             (72,   "Urædd Friidrett"           , "Urædd"), 
             (2067, "Hattfjelldal IL"           , "Hattfjelldal"), 
             (91,   "Sem IF"                    , "Sem"), 
-            (60,   "FIK Orion"                 , "Orion"), 
+            (60,   "FIK Orion"                 , "Orion"),
+            (132,  "IL Bjarg"                  , "Bjarg"),
+            (214,  "Mjøsdalen IL"              , "Mjøsdalen"),
+            (126,  "Os Turnforening"           , "Os"),
+            (87,  "Varegg IL"                  , "Varegg"),
         ]
 
         klubber = []

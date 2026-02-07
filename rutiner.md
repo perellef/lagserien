@@ -12,7 +12,10 @@
 ### Avslutt serie:
 1. *Avrundingsbatch*: Kjør.
 2. *Oppsettbatch*:
-    - Legg inn nye verdier for arkiv_sluttplasseringer (csv-fil) og eventuelle resultatbytter.
+    - Legg inn: 
+        - nye verdier for arkiv_sluttplasseringer (csv-fil)
+        - eventuelle resultatbytter
+        - eventuelle klubber for topplag som ikke allerede er lagt inn
     - Kjør.
 
 ### Nytt resultatbytte

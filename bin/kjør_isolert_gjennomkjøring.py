@@ -5,6 +5,7 @@ from bin.skript.excel_serieark import ExcelSerieark
 
 from srcc.main.kontrollsenter.seriedata import Seriedata
 from srcc.main.kontrollsenter.database import Database
+from srcc.main.utils.orm._serie import Serie
 
 from srcc.main.batch_6_kontroll.kontrollbatch import Kontrollbatch
 from srcc.main.batch_0_oppsett.oppsettbatch import Oppsettbatch
@@ -41,6 +42,8 @@ def kjør(batch):
     seriedata.commit()
 
 kjør(Oppsettbatch)
+assert seriedata.hent(Serie).filter_by(serieår=serieår).count() == 1, f"Kjøring med serieår {serieår} forutsetter en Serie med serieår {serieår}."
+
 kjør(Grunnlagsbatch)
 kjør(Kontrollbatch)
 kjør(Uttrekksbatch)
@@ -57,6 +60,6 @@ print(datetime.now(), f"Skriver til filer.")
 for filnavn, bytesIO in excelfiler.items():
     with open(f"{UT}/{filnavn}.xlsx", "wb") as f:
         f.write(bytesIO.getvalue())
-        print(f" + {UT}/div_1_2.xlsx")
+        print(f" + {UT}/{filnavn}.xlsx")
 
-print(datetime.now(), "Fullført.")
+print(datetime.now(), "Fullført.")  

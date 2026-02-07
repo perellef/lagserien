@@ -25,7 +25,7 @@ pip install -r requirements.txt
 
 
    - **Med lokal database**  
-        1. Erstatt alle forekomster av `Database.SUPABASE` med `Database.TESTDATA`.
+        1. Erstatt alle forekomster av `Database.PRODUKSJON` med `Database.TESTDATA`.
 
    - **Med produksjonsdata**  
      1. Opprett en `.env`-fil i prosjektmappen.  

@@ -33,19 +33,6 @@ class Seriedata:
     def connect(self):
         return self.__engine.connect()
 
-    #def __enter__(self):
-    #    self.åpne()
-    #    return self
-
-    #def __exit__(self, exc_type, exc_value, traceback):
-    #    try:
-    #        if exc_type is None:
-    #            self.__session.commit()
-    #        else:
-    #            self.__session.rollback()
-    #    finally:
-    #        self.__session.close()
-
     def hent(self, cls):
         return self.__session.query(cls)
     
