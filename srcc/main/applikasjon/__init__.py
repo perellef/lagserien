@@ -6,8 +6,6 @@ from srcc.main.applikasjon.databaselogger import queue, lytt_og_loggfør_i_db
 from srcc.main.applikasjon.routes.adminside import adminside
 from srcc.main.applikasjon.routes.forside import forside
 from srcc.main.applikasjon.routes.nyhetsarkiv import nyheter
-from srcc.main.applikasjon.routes.skjema import skjema
-from srcc.main.applikasjon.routes.skjema_send_svar import skjema_send_svar
 from srcc.main.applikasjon.routes.om_serien import om_serien
 from srcc.main.applikasjon.routes.livetabell import livetabell
 from srcc.main.applikasjon.routes.tidligere_år import tidligere_år
@@ -53,14 +51,12 @@ def create_app():
     app.route("/verktøy/lagsammenlikner") (lagsammenlikner)
     app.route("/verktøy/lagforbedrer") (lagforbedrer)
     app.route("/om_serien") (om_serien)
-    app.route("/om_serien/skjema") (skjema)
     app.route(f"/adminside/{ADMIN_NØKKEL}") (adminside)
 
     app.route('/verktøy/lagoppstiller/hent_resultater', methods=['POST']) (lagoppstiller_hent_resultater)
     app.route("/verktøy/lagoppstiller/beregn", methods=['POST']) (lagoppstiller_oppstill_lag)
     app.route("/verktøy/lagsammenlikner/sammenlikn", methods=['POST']) (lagsammenlikner_sammenlikn)
     app.route("/verktøy/lagforbedrer/analyser", methods=['POST']) (lagforbedrer_analyser)
-    app.route("/om_serien/skjema/send_svar", methods=['POST']) (skjema_send_svar)
 
     threading.Thread(target=cache.lytt_etter_og_oppdater_cache, daemon=True).start()
     threading.Thread(target=lytt_og_loggfør_i_db, daemon=True).start()
