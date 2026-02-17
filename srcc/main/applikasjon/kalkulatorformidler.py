@@ -6,6 +6,7 @@ from srcc.main.batch_4_kalkulator.kalkulatorbatch import Kalkulatorbatch
 from srcc.main.batch_4_kalkulator.oppstillingsgenerator_forbedringer import OppstillingsgeneratorForbedringer
 from srcc.main.batch_4_kalkulator.kalkulator import Kalkulator
 from srcc.main.batch_4_kalkulator.diverse import Resultattype
+from srcc.main.batch_3_utdeling.poengberegner import Poengberegner
 from srcc.main.utils.beholdere.liste import Liste 
 
 from srcc.main.utils.testverktøy._testdatabygger import Testdatabygger
@@ -119,7 +120,7 @@ class Kalkulatorformidler:
         return [(laginfoer[el[0]], el[1]) for el in list(sorted(lag_usortert.items(), key=lambda x: x[0]))]
 
     @staticmethod
-    def analyser_lagforbedringer(klubbresultater, lagresultater, oppstillingskrav, serieøvelser, øvelser):
+    def analyser_lagforbedringer(kjønn, klubbresultater, lagresultater, oppstillingskrav, serieøvelser, øvelser):
         alle_øvelser = set(el[1] for el in serieøvelser)
         obl_øvelser = set(el[1] for el in serieøvelser if el[2])
         tek_øvelser = set(el[1] for el in serieøvelser if el[3])
@@ -162,7 +163,7 @@ class Kalkulatorformidler:
 
                 if (øvelse, hvem_da) not in brukt:
                     brukt.add((øvelse, hvem_da))
-                    forbedringer.append((øvelse, hvem_da, poeng, oppst))
+                    forbedringer.append((øvelse, hvem_da, poeng, Poengberegner.prestasjon_fra_poeng(kjønn, øvelse, int(poeng)), oppst))
 
         
         resultatIDer = {}
@@ -176,7 +177,7 @@ class Kalkulatorformidler:
                 i += 1
 
         berikede_oppstillinger = [Kalkulatorformidler.finn_beriket_oppstilling(oppstillingskrav, forrige, forrige, set(), set(), {})]
-        for (øvelse, hvem_da, poeng, (obl, val)) in forbedringer:
+        for (øvelse, hvem_da, poeng, _, (obl, val)) in forbedringer:
             ny_obl, ny_val = Kalkulatorformidler.oppdater_oppstilling_med_nytt_resultat(oppstillingskrav, obl, val, (poeng, øvelse, hvem_da), obl_øvelser, tek_øvelser, serieøvelser, utøvere)
             
             neste = {"OBLIGATORISK": [], "VALGFRI": []}
@@ -196,7 +197,7 @@ class Kalkulatorformidler:
         } for b_oppst in berikede_oppstillinger]
          
         oppstillinger = [oppstillinger[0]] + list(e[1] for e in sorted(zip(forbedringer, oppstillinger[1:]), key=lambda x: (x[0][2], øvelsesprioritet[x[0][0]])))
-        forbedringer = [(poeng,øvelser[øvelse],utøvere[hvem] if hvem in utøvere else hvem) for (øvelse, hvem, poeng, _) in sorted(forbedringer, key=lambda x: (x[2], øvelsesprioritet[x[0]]))]
+        forbedringer = [(poeng,øvelser[øvelse],prestasjon,utøvere[hvem] if hvem in utøvere else hvem) for (øvelse, hvem, poeng, prestasjon, _) in sorted(forbedringer, key=lambda x: (x[2], øvelsesprioritet[x[0]]))]
         
         return forbedringer, oppstillinger
     

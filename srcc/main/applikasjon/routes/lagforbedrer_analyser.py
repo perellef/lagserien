@@ -18,7 +18,7 @@ def lagforbedrer_analyser():
         serieøvelser = db_hent_serieøvelser(peker, kjønn, serieår)
         øvelser = db_hent_øvelsene(peker)
 
-    analyser_lagforbedringer = Kalkulatorformidler.analyser_lagforbedringer(klubbresultater, lagresultater, oppstillingskrav[2:], serieøvelser, øvelser)
+    analyser_lagforbedringer = Kalkulatorformidler.analyser_lagforbedringer(kjønn, klubbresultater, lagresultater, oppstillingskrav[2:], serieøvelser, øvelser)
 
     return jsonify(analyser_lagforbedringer)
 

@@ -107,6 +107,14 @@ body {
     }
 }
 
+@media (max-width: 770px) {
+    #laganalyse col:nth-child(2),
+    #laganalyse th:nth-child(2),
+    #laganalyse td:nth-child(2) {
+      display: none;
+    }
+}
+
 h1 {
     color: #003366;
     padding-top: 50px;

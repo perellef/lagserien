@@ -188,25 +188,29 @@ function vis_forbedringer(forbedringsdata) {
     var kol1 = document.createElement('th')
     var kol2 = document.createElement('th')
     var kol3 = document.createElement('th')
+    var kol4 = document.createElement('th')
     
     kol1.textContent = "Poeng";
     kol2.textContent = "Øvelse";
-    kol3.textContent = "Utøver";
+    kol3.textContent = "Resultat";
+    kol4.textContent = "Utøver";
 
     kol1.style.width = "20%"
     kol2.style.width = "30%"
-    kol3.style.width = "50%"
+    kol3.style.width = "20%"
+    kol4.style.width = "40%"
 
     tr.appendChild(kol1)
     tr.appendChild(kol2)
     tr.appendChild(kol3)
+    tr.appendChild(kol4)
     thead.appendChild(tr)
 
     var tbody = document.createElement('tbody');
 
     forbedringsdata[0].forEach(function(forbedring, indeks) {
         var tr = document.createElement('tr');
-        forbedring.forEach(function(verdi) {
+        forbedring.forEach(function(verdi, i) {
             var celle = document.createElement('td');
 
             celle.style.whiteSpace = "nowrap";
@@ -249,6 +253,7 @@ function vis_forbedringer(forbedringsdata) {
     var table = document.createElement('table');
     table.classList.add("table");
     table.classList.add("table-sm");
+    table.setAttribute('id', 'laganalyse');
     table.appendChild(thead);
     table.appendChild(tbody);
     table.style.tableLayout = "fixed";
