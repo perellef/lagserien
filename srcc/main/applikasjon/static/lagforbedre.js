@@ -196,9 +196,9 @@ function vis_forbedringer(forbedringsdata) {
     kol4.textContent = "Utøver";
 
     kol1.style.width = "20%"
-    kol2.style.width = "30%"
-    kol3.style.width = "20%"
-    kol4.style.width = "40%"
+    kol2.style.width = "27%"
+    kol3.style.width = "25%"
+    kol4.style.width = "37%"
 
     tr.appendChild(kol1)
     tr.appendChild(kol2)

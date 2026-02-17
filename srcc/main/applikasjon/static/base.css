@@ -143,7 +143,8 @@ img {
 }
 
 .tekst {
-    width: 550px;
+    word-wrap: break-word;
+    white-space: normal;
 }
 
 .midtseksjon {
