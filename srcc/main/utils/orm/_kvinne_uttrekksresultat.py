@@ -10,8 +10,6 @@ class KvinneUttrekksresultat(DeklarativBase):
     resultat_id = Column(Integer, ForeignKey("bakgrunn.resultater.resultat_id", onupdate="CASCADE"), nullable=False)
     fra_og_med = Column(DATE, nullable=False)
     til_og_med = Column(DATE, nullable=True)
-    
-    # TODO: klubb er midlertidig. Fjernes når klubbtilhørighet utøver er kjent gjennom endepunkt.
     klubb_id = Column(Integer, ForeignKey("bakgrunn.klubber.klubb_id", onupdate="CASCADE"), nullable=True)
 
     resultat = relationship("Resultat")

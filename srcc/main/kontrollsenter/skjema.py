@@ -2,11 +2,9 @@ from srcc.main.utils.orm._arkiv_kvinne_sluttplasseringer import ArkivKvinneSlutt
 from srcc.main.utils.orm._arkiv_mann_sluttplasseringer import ArkivMannSluttplassering
 from srcc.main.utils.orm._artikkel import Artikkel
 from srcc.main.utils.orm._batchkjøring import Batchkjøring
-from srcc.main.utils.orm._ferierepresentasjon import Ferierepresentasjon
 from srcc.main.utils.orm._klubb import Klubb
 from srcc.main.utils.orm._klubb_unntatt_overbygning import KlubbUnntattOverbygning
 from srcc.main.utils.orm._klubbkrets import Klubbkrets
-from srcc.main.utils.orm._klubbtilhørighet import Klubbtilhørighet
 from srcc.main.utils.orm._kvinne_lag import KvinneLag
 from srcc.main.utils.orm._kvinne_laginfo import KvinneLaginfo
 from srcc.main.utils.orm._kvinne_lagresultat import KvinneLagresultat

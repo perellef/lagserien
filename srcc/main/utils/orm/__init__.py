@@ -2,11 +2,9 @@ from ._arkiv_kvinne_sluttplasseringer import ArkivKvinneSluttplassering
 from ._arkiv_mann_sluttplasseringer import ArkivMannSluttplassering
 from ._artikkel import Artikkel
 from ._batchkjøring import Batchkjøring
-from ._ferierepresentasjon import Ferierepresentasjon
 from ._klubb import Klubb
 from ._klubb_unntatt_overbygning import KlubbUnntattOverbygning
 from ._klubbkrets import Klubbkrets
-from ._klubbtilhørighet import Klubbtilhørighet
 from ._kvinne_lag import KvinneLag
 from ._kvinne_laginfo import KvinneLaginfo
 from ._kvinne_lagresultat import KvinneLagresultat
