@@ -4,7 +4,7 @@ from sqlalchemy import Column, Integer, Boolean, String, DATE
 
 class Stevne(DeklarativBase):
 
-    __tablename__ = "bakgrunn.stevner"
+    __tablename__ = "uttrekk.stevner"
 
     stevne_id = Column(Integer, primary_key=True, nullable=False)
     stevnedato = Column(DATE, nullable=False)

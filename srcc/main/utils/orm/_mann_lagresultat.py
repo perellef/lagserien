@@ -10,7 +10,7 @@ class MannLagresultat(DeklarativBase):
     serieår = Column(Integer, nullable=False)
     klubb_id = Column(Integer, nullable=False)
     lagnummer = Column(Integer, nullable=False)
-    resultat_id = Column(Integer, ForeignKey("bakgrunn.resultater.resultat_id", onupdate="CASCADE"), nullable=False)
+    resultat_id = Column(Integer, ForeignKey("uttrekk.resultater.resultat_id", onupdate="CASCADE"), nullable=False)
     fra_og_med = Column(DATE, nullable=False)
     til_og_med = Column(DATE, nullable=True)
     oppstillingstype = Column(String, nullable=False)

@@ -1,10 +1,10 @@
 import sys
 sys.path.append('./')
 
-from srcc.main.utils.dokumentasjon_bakgrunn.feature import Feature
-from srcc.main.utils.dokumentasjon_bakgrunn.bakgrunn import Bakgrunn
-from srcc.main.utils.dokumentasjon_bakgrunn.scenario import Scenario
-from srcc.main.utils.dokumentasjon_bakgrunn.råtabell import Råtabell
+from srcc.main.utils.dokumentasjon_uttrekk.feature import Feature
+from srcc.main.utils.dokumentasjon_uttrekk.bakgrunn import Bakgrunn
+from srcc.main.utils.dokumentasjon_uttrekk.scenario import Scenario
+from srcc.main.utils.dokumentasjon_uttrekk.råtabell import Råtabell
 
 def en_tom_feature():
     return Feature(None, None, None)

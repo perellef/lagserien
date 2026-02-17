@@ -5,11 +5,11 @@ from sqlalchemy.orm import relationship
 
 class UtøverUnntattOverbygning(DeklarativBase):
 
-    __tablename__ = "representasjon.utøvere_unntatt_overbygning"
+    __tablename__ = "tildeling.utøvere_unntatt_overbygning"
 
     serieår = Column(Integer, nullable=False)
-    utøver_id = Column(Integer, ForeignKey("bakgrunn.utøvere.utøver_id", onupdate="CASCADE"), nullable=False)
-    moderklubb_id = Column(Integer, ForeignKey("bakgrunn.klubber.klubb_id", onupdate="CASCADE"), nullable=False)
+    utøver_id = Column(Integer, ForeignKey("uttrekk.utøvere.utøver_id", onupdate="CASCADE"), nullable=False)
+    moderklubb_id = Column(Integer, ForeignKey("uttrekk.klubber.klubb_id", onupdate="CASCADE"), nullable=False)
     
     utøver = relationship('Utøver')
     moderklubb = relationship('Klubb')

@@ -5,9 +5,9 @@ from sqlalchemy.orm import relationship
 
 class Stevneinvitasjon(DeklarativBase):
 
-    __tablename__ = "nettside.stevneinvitasjoner"
+    __tablename__ = "uttrekk.stevneinvitasjoner"
 
-    stevne_id = Column(Integer, ForeignKey("bakgrunn.stevner.stevne_id", onupdate="CASCADE"), unique=True, nullable=True)
+    stevne_id = Column(Integer, ForeignKey("uttrekk.stevner.stevne_id", onupdate="CASCADE"), unique=True, nullable=True)
     stevnedato = Column(DATE, nullable=False)
     stevnetittel = Column(String, nullable=False)
     arena = Column(String, nullable=False)

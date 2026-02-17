@@ -5,10 +5,10 @@ from sqlalchemy.orm import relationship
 
 class Rullestolutøver(DeklarativBase):
 
-    __tablename__ = "gyldighet.rullestolutøvere"
+    __tablename__ = "tildeling.rullestolutøvere"
     
     serieår = Column(Integer, nullable=False)
-    utøver_id = Column(Integer, ForeignKey("bakgrunn.utøvere.utøver_id", onupdate="CASCADE"), nullable=False)
+    utøver_id = Column(Integer, ForeignKey("uttrekk.utøvere.utøver_id", onupdate="CASCADE"), nullable=False)
     
     utøver = relationship('Utøver')
 

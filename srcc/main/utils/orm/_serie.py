@@ -4,7 +4,7 @@ from sqlalchemy import Column, Integer, DATE
 
 class Serie(DeklarativBase):
 
-    __tablename__ = "bakgrunn.serier"
+    __tablename__ = "uttrekk.serier"
     
     serieår = Column(Integer, primary_key=True, nullable=False)
     fra_og_med = Column(DATE, nullable=False)

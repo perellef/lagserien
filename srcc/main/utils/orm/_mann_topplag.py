@@ -5,10 +5,10 @@ from sqlalchemy.orm import relationship
 
 class MannTopplag(DeklarativBase):
 
-    __tablename__ = "kalkulatormat.menn_topplag"
+    __tablename__ = "serie.menn_topplag"
 
     serieår = Column(Integer, nullable=False)
-    klubb_id = Column(Integer, ForeignKey("bakgrunn.klubber.klubb_id", onupdate="CASCADE"), nullable=False)
+    klubb_id = Column(Integer, ForeignKey("uttrekk.klubber.klubb_id", onupdate="CASCADE"), nullable=False)
     lagnummer = Column(Integer, nullable=False)
     divisjon = Column(Integer, nullable=False)
     

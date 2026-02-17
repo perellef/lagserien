@@ -1,8 +1,8 @@
 import sys
 sys.path.append('./')
 
-from srcc.main.utils.dokumentasjon_bakgrunn.tabelloversetter import Tabelloversetter 
-from srcc.main.utils.dokumentasjon_bakgrunn.defaultobjekter import defaultobjekter
+from srcc.main.utils.dokumentasjon_uttrekk.tabelloversetter import Tabelloversetter 
+from srcc.main.utils.dokumentasjon_uttrekk.defaultobjekter import defaultobjekter
 
 from srcc.main.utils.orm._klubb import Klubb
 from srcc.main.utils.orm._klubbkrets import Klubbkrets

@@ -43,7 +43,7 @@ class Skjema(Enum):
      METADATA = (Batchkjøring,)
      BAKGRUNN = (Serie, Klubb, Stevne, Øvelse, Utøver, Resultat, Resultatbytte)
      GYLDIGHET = (Øvelsesregel, Rullestolutøver)
-     REPRESENTASJON = (Klubbtilhørighet, Ferierepresentasjon, Overklubb, Overbygning, KlubbUnntattOverbygning, UtøverUnntattOverbygning)
+     REPRESENTASJON = (Overklubb, Overbygning, KlubbUnntattOverbygning, UtøverUnntattOverbygning)
      KALKULATORMAT = (KvinneTopplag, MannTopplag, KvinneSerieøvelse, MannSerieøvelse, Oppstillingskrav)
      UTTREKK = (Klubbkrets, MannUttrekksresultat, KvinneUttrekksresultat)
      MANIPULATOR = (MannSerieresultat, KvinneSerieresultat)

@@ -5,10 +5,10 @@ from sqlalchemy.orm import relationship
 
 class Resultatbytte(DeklarativBase):
 
-    __tablename__ = "bakgrunn.resultatbytter"
+    __tablename__ = "uttrekk.resultatbytter"
 
     statistikk_resultat_id = Column(Integer, primary_key=True, nullable=False)
-    klubb_id = Column(Integer, ForeignKey("bakgrunn.klubber.klubb_id", onupdate="CASCADE"), nullable=True)
+    klubb_id = Column(Integer, ForeignKey("uttrekk.klubber.klubb_id", onupdate="CASCADE"), nullable=True)
     registrert = Column(TIMESTAMP, nullable=False)
     notat = Column(String, nullable=False)
     

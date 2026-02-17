@@ -4,7 +4,7 @@ from sqlalchemy import Column, Integer, PrimaryKeyConstraint
 
 class Oppstillingskrav(DeklarativBase):
 
-    __tablename__ = "kalkulatormat.oppstillingskrav"
+    __tablename__ = "serie.oppstillingskrav"
 
     serieår = Column(Integer, nullable=False)
     divisjon = Column(Integer, nullable=False)

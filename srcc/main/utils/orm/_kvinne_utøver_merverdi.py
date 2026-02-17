@@ -8,8 +8,8 @@ class KvinneUtøverMerverdi(DeklarativBase):
     __tablename__ = "serie.kvinner_utøver_merverdi"
     
     serieår = Column(Integer, nullable=False)
-    klubb_id = Column(Integer, ForeignKey("bakgrunn.klubber.klubb_id", onupdate="CASCADE"), nullable=True)
-    utøver_id = Column(Integer, ForeignKey("bakgrunn.utøvere.utøver_id", onupdate="CASCADE"), nullable=True)
+    klubb_id = Column(Integer, ForeignKey("uttrekk.klubber.klubb_id", onupdate="CASCADE"), nullable=True)
+    utøver_id = Column(Integer, ForeignKey("uttrekk.utøvere.utøver_id", onupdate="CASCADE"), nullable=True)
     fra_og_med = Column(DATE, nullable=False)
     til_og_med = Column(DATE, nullable=True)
     poeng = Column(Integer, nullable=False)

@@ -8,7 +8,7 @@ class MannLag(DeklarativBase):
     __tablename__ = "serie.menn_lag"
     
     serieår = Column(Integer, nullable=False)
-    klubb_id = Column(Integer, ForeignKey("bakgrunn.klubber.klubb_id", onupdate="CASCADE"), nullable=False)
+    klubb_id = Column(Integer, ForeignKey("uttrekk.klubber.klubb_id", onupdate="CASCADE"), nullable=False)
     lagnummer = Column(Integer, nullable=False)
     
     klubb = relationship("Klubb")

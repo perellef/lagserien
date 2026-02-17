@@ -5,10 +5,10 @@ from sqlalchemy.orm import relationship
 
 class Øvelsesregel(DeklarativBase):
 
-    __tablename__ = "gyldighet.øvelsesregler"
+    __tablename__ = "tildeling.øvelsesregler"
 
     serieår = Column(Integer, nullable=False)
-    øvelseskode = Column(String, ForeignKey("bakgrunn.øvelser.øvelseskode", onupdate="CASCADE"), nullable=False)
+    øvelseskode = Column(String, ForeignKey("uttrekk.øvelser.øvelseskode", onupdate="CASCADE"), nullable=False)
     mellomtidgruppe = Column(String, nullable=True)
     mellomtidgruppe_distanse = Column(Integer, nullable=True)
     forutsetter_elektronisk_tidtaking = Column(Boolean, nullable=False)

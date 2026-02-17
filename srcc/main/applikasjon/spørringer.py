@@ -25,7 +25,7 @@ def db_hent_serier(peker):
                 AND senere_kjøring.batch IS NULL
         )
         SELECT serie.serieår, avsluttet, uttrekksdato
-        FROM "bakgrunn.serier" AS serie
+        FROM "uttrekk.serier" AS serie
             JOIN siste_kjøring ON (siste_kjøring.serieår = serie.serieår)
         ;
     ''', ())
@@ -51,9 +51,9 @@ def db_hent_sist_kjørt(peker, serieår):
 def db_hent_seriens_øvelser(peker, serieår):
     resultat = execute(peker, '''
         SELECT øvelse.øvelsesnavn
-        FROM "bakgrunn.øvelser" AS øvelse
-            LEFT JOIN "kalkulatormat.menn_serieøvelser" AS mann_serieøvelse ON (øvelse.øvelseskode = mann_serieøvelse.øvelseskode)
-            LEFT JOIN "kalkulatormat.kvinner_serieøvelser" AS kvinne_serieøvelse ON (øvelse.øvelseskode = kvinne_serieøvelse.øvelseskode)
+        FROM "uttrekk.øvelser" AS øvelse
+            LEFT JOIN "serie.menn_serieøvelser" AS mann_serieøvelse ON (øvelse.øvelseskode = mann_serieøvelse.øvelseskode)
+            LEFT JOIN "serie.kvinner_serieøvelser" AS kvinne_serieøvelse ON (øvelse.øvelseskode = kvinne_serieøvelse.øvelseskode)
         WHERE coalesce(mann_serieøvelse.prioritet, kvinne_serieøvelse.prioritet) IS NOT NULL
             AND mann_serieøvelse.serieår = {placeholder}
             AND kvinne_serieøvelse.serieår = {placeholder}
@@ -65,7 +65,7 @@ def db_hent_seriens_øvelser(peker, serieår):
 def db_hent_øvelsene(peker):
     resultat = execute(peker, '''
         SELECT øvelseskode, øvelsesnavn
-        FROM "bakgrunn.øvelser" AS øvelse
+        FROM "uttrekk.øvelser" AS øvelse
         ;
     ''', ())
     return {x[0]: x[1] for x in resultat}
@@ -73,7 +73,7 @@ def db_hent_øvelsene(peker):
 def db_hent_serieøvelser(peker, kjønn, serieår):
     return execute(peker, f'''
         SELECT *
-        FROM "kalkulatormat.{kjønn}_serieøvelser"
+        FROM "serie.{kjønn}_serieøvelser"
         WHERE serieår = {{placeholder}}
         ;
     ''', (serieår,))
@@ -81,7 +81,7 @@ def db_hent_serieøvelser(peker, kjønn, serieår):
 def db_hent_klubber(peker):
     resultat = execute(peker, '''
         SELECT klubbnavn
-        FROM "bakgrunn.klubber"
+        FROM "uttrekk.klubber"
         ORDER BY klubbnavn;
     ''', ())
     return [x[0] for x in resultat]
@@ -89,7 +89,7 @@ def db_hent_klubber(peker):
 def db_hent_klubb_id(peker, klubbnavn):
     resultat = execute(peker, '''
         SELECT klubb_id
-        FROM "bakgrunn.klubber"
+        FROM "uttrekk.klubber"
         WHERE klubbnavn = {placeholder}
         ;
     ''', (klubbnavn,))
@@ -117,7 +117,7 @@ def db_hent_lagplasseringer(peker, serieår, dato, kjønn, divisjon):
                     AND klubbkrets.fra_og_med <= {{placeholder}}
                     AND coalesce(klubbkrets.til_og_med, '9999-01-01') >= {{placeholder}}
                 )
-                JOIN "bakgrunn.klubber" AS klubb ON (lag.klubb_id = klubb.klubb_id)
+                JOIN "uttrekk.klubber" AS klubb ON (lag.klubb_id = klubb.klubb_id)
                 LEFT JOIN "serie.{kjønn}_lagplasseringer" AS tabell ON (
                     lag.serieår = tabell.serieår
                     AND lag.klubb_id = tabell.klubb_id
@@ -168,9 +168,9 @@ def db_hent_kretser(peker, dato):
     resultat = execute(peker, '''
         SELECT DISTINCT krets
         FROM "uttrekk.klubbkretser" AS klubbkrets
-            JOIN (SELECT * FROM "manipulator.menn_serieresultater"
+            JOIN (SELECT * FROM "tildeling.menn_serieresultater"
                   UNION
-                  SELECT * FROM "manipulator.kvinner_serieresultater") a ON (a.klubb_id = klubbkrets.klubb_id)
+                  SELECT * FROM "tildeling.kvinner_serieresultater") a ON (a.klubb_id = klubbkrets.klubb_id)
         WHERE {placeholder} BETWEEN klubbkrets.fra_og_med AND coalesce(klubbkrets.til_og_med, '9999-01-01')
         ORDER BY krets
         ;
@@ -213,9 +213,9 @@ def db_hent_besøksdata(peker):
 def db_hent_noteringer_til_lag(peker, kjønn, serieår, klubbnavn, lagnummer):
     return execute(peker, f'''
         SELECT antall_obligatoriske, antall_valgfri
-        FROM "bakgrunn.klubber" AS klubb
-            JOIN "kalkulatormat.oppstillingskrav" AS krav ON (1 = 1)
-            LEFT JOIN "kalkulatormat.{kjønn}_topplag" AS topplag ON (
+        FROM "uttrekk.klubber" AS klubb
+            JOIN "serie.oppstillingskrav" AS krav ON (1 = 1)
+            LEFT JOIN "serie.{kjønn}_topplag" AS topplag ON (
                 krav.serieår = topplag.serieår
                 AND topplag.klubb_id = klubb.klubb_id
                 AND topplag.lagnummer = {{placeholder}}
@@ -229,7 +229,7 @@ def db_hent_lagplassering(peker, kjonn, serieår, uttrekksdato, klubbnavn, lagnu
         return execute(peker, f'''
         SELECT divisjon, plassering
         FROM "serie.{kjonn}_lagplasseringer" AS lagplassering
-            JOIN "bakgrunn.klubber" AS klubb ON (lagplassering.klubb_id = klubb.klubb_id)
+            JOIN "uttrekk.klubber" AS klubb ON (lagplassering.klubb_id = klubb.klubb_id)
         WHERE serieår = {{placeholder}}
             AND {{placeholder}} BETWEEN fra_og_med AND coalesce(til_og_med, '9999-01-01')
             AND klubb.klubbnavn = {{placeholder}}
@@ -239,7 +239,7 @@ def db_hent_lagplassering(peker, kjonn, serieår, uttrekksdato, klubbnavn, lagnu
 def db_hent_maksimalt_antall_noteringer(peker, serieår, divisjon):
     return execute(peker, '''
         SELECT antall_valgfri+antall_obligatoriske
-        FROM "kalkulatormat.oppstillingskrav"
+        FROM "serie.oppstillingskrav"
         WHERE serieår = {placeholder}
             AND divisjon = {placeholder};
     ''', (serieår, divisjon))[0][0]
@@ -247,7 +247,7 @@ def db_hent_maksimalt_antall_noteringer(peker, serieår, divisjon):
 def db_hent_oppstillingskrav(peker, serieår, divisjon):
     return execute(peker, '''
         SELECT antall_obligatoriske, antall_valgfri, maks_obligatoriske_løp, maks_valgfri_løp
-        FROM "kalkulatormat.oppstillingskrav"
+        FROM "serie.oppstillingskrav"
         WHERE serieår = {placeholder}
             AND divisjon = {placeholder};
     ''', (serieår, divisjon))[0]
@@ -255,9 +255,9 @@ def db_hent_oppstillingskrav(peker, serieår, divisjon):
 def db_hent_oppstillingskrav_til_lag(peker, kjønn, serieår, klubbnavn, lagnummer):
     return execute(peker, f'''
         SELECT krav.*
-        FROM "bakgrunn.klubber" AS klubb
-            JOIN "kalkulatormat.oppstillingskrav" AS krav ON (1 = 1)
-            LEFT JOIN "kalkulatormat.{kjønn}_topplag" AS topplag ON (
+        FROM "uttrekk.klubber" AS klubb
+            JOIN "serie.oppstillingskrav" AS krav ON (1 = 1)
+            LEFT JOIN "serie.{kjønn}_topplag" AS topplag ON (
                 krav.serieår = topplag.serieår
                 AND topplag.klubb_id = klubb.klubb_id
                 AND topplag.lagnummer = {{placeholder}}
@@ -273,10 +273,10 @@ def db_hent_lagets_resultater(peker, kjønn, klubbnavn, lagnummer, serieår, dat
             poeng,
             resultat.*
         FROM "serie.{kjønn}_lag" AS lag
-            JOIN "bakgrunn.klubber" AS klubb ON (klubb.klubb_id = lag.klubb_id)
+            JOIN "uttrekk.klubber" AS klubb ON (klubb.klubb_id = lag.klubb_id)
             JOIN "serie.{kjønn}_lagresultater" AS lagresultat ON (lag.serieår = lagresultat.serieår AND lag.klubb_id = lagresultat.klubb_id AND lag.lagnummer = lagresultat.lagnummer)
-            JOIN "manipulator.{kjønn}_serieresultater" AS serieresultat ON (serieresultat.resultat_id = lagresultat.resultat_id)
-            JOIN "bakgrunn.resultater" AS resultat ON (resultat.resultat_id = lagresultat.resultat_id)
+            JOIN "tildeling.{kjønn}_serieresultater" AS serieresultat ON (serieresultat.resultat_id = lagresultat.resultat_id)
+            JOIN "uttrekk.resultater" AS resultat ON (resultat.resultat_id = lagresultat.resultat_id)
         WHERE lag.serieår = {{placeholder}}
             AND klubbnavn = {{placeholder}}
             AND lag.lagnummer = {{placeholder}}
@@ -302,13 +302,13 @@ def db_hent_lagresultater(peker, kjønn, klubbnavn, lagnummer, serieår, dato):
                   CAST(dato AS text) AS dato,
                   lagresultat.resultat_id
             FROM "serie.{kjønn}_lag" AS lag
-                JOIN "bakgrunn.klubber" AS klubb ON (klubb.klubb_id = lag.klubb_id)
+                JOIN "uttrekk.klubber" AS klubb ON (klubb.klubb_id = lag.klubb_id)
                 JOIN "serie.{kjønn}_lagresultater" AS lagresultat ON (lag.serieår = lagresultat.serieår AND lag.klubb_id = lagresultat.klubb_id AND lag.lagnummer = lagresultat.lagnummer)
-                JOIN "manipulator.{kjønn}_serieresultater" AS serieresultat ON (serieresultat.resultat_id = lagresultat.resultat_id)
-                JOIN "bakgrunn.resultater" AS resultat ON (resultat.resultat_id = lagresultat.resultat_id)
-                JOIN "bakgrunn.stevner" AS stevne ON (stevne.stevne_id = resultat.stevne_id) 
-                JOIN "bakgrunn.utøvere" AS utøver ON (utøver.utøver_id = resultat.utøver_id) 
-                JOIN "bakgrunn.øvelser" AS øvelse ON (øvelse.øvelseskode = resultat.øvelseskode) 
+                JOIN "tildeling.{kjønn}_serieresultater" AS serieresultat ON (serieresultat.resultat_id = lagresultat.resultat_id)
+                JOIN "uttrekk.resultater" AS resultat ON (resultat.resultat_id = lagresultat.resultat_id)
+                JOIN "uttrekk.stevner" AS stevne ON (stevne.stevne_id = resultat.stevne_id) 
+                JOIN "uttrekk.utøvere" AS utøver ON (utøver.utøver_id = resultat.utøver_id) 
+                JOIN "uttrekk.øvelser" AS øvelse ON (øvelse.øvelseskode = resultat.øvelseskode) 
             WHERE lag.serieår = {{placeholder}}
                 AND klubbnavn = {{placeholder}}
                 AND lag.lagnummer = {{placeholder}}
@@ -320,7 +320,7 @@ def db_hent_lagresultater(peker, kjønn, klubbnavn, lagnummer, serieår, dato):
         obligatoriske_lagresultater AS (
             SELECT oppstillingstype, poeng, øvelsesnavn, prestasjon, navn, fødselsår, sted, dato, resultat_id
             FROM lagresultater AS lagresultat
-                JOIN "kalkulatormat.{kjønn}_serieøvelser" AS serieøvelse ON (
+                JOIN "serie.{kjønn}_serieøvelser" AS serieøvelse ON (
                     lagresultat.serieår = serieøvelse.serieår
                     AND lagresultat.øvelseskode = serieøvelse.øvelseskode
                 )
@@ -353,9 +353,9 @@ def db_hent_resultatplasseringer_til_klubb(peker, kjønn, serieår, dato, klubbn
                     resultat.øvelseskode AS øvelseskode,
                     lagresultat.klubb_id AS klubb_id
                 FROM "serie.{kjønn}_lagresultater" AS lagresultat
-                    JOIN "manipulator.{kjønn}_serieresultater" AS serieresultat ON (lagresultat.resultat_id = serieresultat.resultat_id)
-                    JOIN "bakgrunn.resultater" AS resultat ON (lagresultat.resultat_id = resultat.resultat_id)
-                    LEFT JOIN "kalkulatormat.{kjønn}_topplag" AS topplag ON (
+                    JOIN "tildeling.{kjønn}_serieresultater" AS serieresultat ON (lagresultat.resultat_id = serieresultat.resultat_id)
+                    JOIN "uttrekk.resultater" AS resultat ON (lagresultat.resultat_id = resultat.resultat_id)
+                    LEFT JOIN "serie.{kjønn}_topplag" AS topplag ON (
                         topplag.klubb_id = lagresultat.klubb_id
                         AND topplag.lagnummer = lagresultat.lagnummer
                         AND topplag.serieår = {{placeholder}}
@@ -375,7 +375,7 @@ def db_hent_resultatplasseringer_til_klubb(peker, kjønn, serieår, dato, klubbn
         SELECT rangert.resultat_id,
             rangert.rangering
         FROM rangerte_lagresultater AS rangert
-            JOIN "bakgrunn.klubber" AS klubb ON (klubb.klubb_id = rangert.klubb_id)
+            JOIN "uttrekk.klubber" AS klubb ON (klubb.klubb_id = rangert.klubb_id)
         WHERE klubb.klubbnavn = {{placeholder}}
         ;
     ''', (serieår, serieår, dato, dato, dato, dato, klubbnavn))
@@ -393,7 +393,7 @@ def db_hent_laginfo(peker, kjønn, klubbnavn, lagnummer, serieår, dato):
             coalesce(poeng_obligatoriske + poeng_valgfri, 0),
             coalesce(antall_noteringer, 0),
             coalesce(antall_deltakere, 0)
-        FROM "bakgrunn.klubber" AS klubb
+        FROM "uttrekk.klubber" AS klubb
             LEFT JOIN "serie.{kjønn}_lag" AS lag ON (
                 lag.serieår = {{placeholder}}
                 AND lag.lagnummer ={{placeholder}}
@@ -429,7 +429,7 @@ def db_hent_klubblag(peker, kjønn, klubbnavn, serieår, dato):
             poeng_obligatoriske + poeng_valgfri,
             antall_noteringer,
             antall_deltakere
-        FROM "bakgrunn.klubber" AS klubb
+        FROM "uttrekk.klubber" AS klubb
             JOIN "serie.{kjønn}_lag" AS lag ON (1 = 1)
             JOIN "serie.{kjønn}_lagplasseringer" AS tabell ON (
                 lag.serieår = tabell.serieår
@@ -481,7 +481,7 @@ def db_hent_rekordranking(peker, kjønn, klubbnavn, lagnummer):
                         else 5*(14*(plass5.divisjon-1)+plass5.plassering)
                     end
                     AS rangeringsverdi
-                FROM "bakgrunn.klubber" AS klubb
+                FROM "uttrekk.klubber" AS klubb
                     LEFT JOIN "rapport.arkiv_{kjønn}_sluttplasseringer" AS plass1 ON (plass1.klubb_id = klubb.klubb_id)
                     LEFT JOIN "rapport.arkiv_{kjønn}_sluttplasseringer" AS plass2 ON (coalesce(plass1.serieår-1, plass2.serieår) = plass2.serieår AND plass2.klubb_id = klubb.klubb_id AND coalesce(plass1.lagnummer, plass2.lagnummer) = plass2.lagnummer)
                     LEFT JOIN "rapport.arkiv_{kjønn}_sluttplasseringer" AS plass3 ON (coalesce(plass1.serieår-2, plass2.serieår-1, plass3.serieår) = plass3.serieår AND plass3.klubb_id = klubb.klubb_id AND coalesce(plass1.lagnummer, plass2.lagnummer, plass3.lagnummer) = plass3.lagnummer)
@@ -536,7 +536,7 @@ def db_hent_ranking(peker, kjønn, serieår, klubbnavn, lagnummer):
                         else 5*(14*(plass5.divisjon-1)+plass5.plassering)
                     end
                     AS rangeringsverdi
-                FROM "bakgrunn.klubber" AS klubb
+                FROM "uttrekk.klubber" AS klubb
                     LEFT JOIN "rapport.arkiv_{kjønn}_sluttplasseringer" AS plass1 ON ({{placeholder}}-1 = plass1.serieår AND plass1.klubb_id = klubb.klubb_id)
                     LEFT JOIN "rapport.arkiv_{kjønn}_sluttplasseringer" AS plass2 ON ({{placeholder}}-2 = plass2.serieår AND plass2.klubb_id = klubb.klubb_id AND coalesce(plass1.lagnummer, plass2.lagnummer) = plass2.lagnummer)
                     LEFT JOIN "rapport.arkiv_{kjønn}_sluttplasseringer" AS plass3 ON ({{placeholder}}-3 = plass3.serieår AND plass3.klubb_id = klubb.klubb_id AND coalesce(plass1.lagnummer, plass2.lagnummer, plass3.lagnummer) = plass3.lagnummer)
@@ -590,7 +590,7 @@ def db_hent_ranking_i_krets(peker, kjønn, serieår, dato, klubbnavn, lagnummer)
                         else 5*(14*(plass5.divisjon-1)+plass5.plassering)
                     end
                     AS rangeringsverdi
-                FROM "bakgrunn.klubber" AS klubb
+                FROM "uttrekk.klubber" AS klubb
                     JOIN "uttrekk.klubbkretser" AS klubbkrets ON (klubbkrets.klubb_id = klubb.klubb_id)
                     LEFT JOIN "rapport.arkiv_{kjønn}_sluttplasseringer" AS plass1 ON ({{placeholder}}-1 = plass1.serieår AND plass1.klubb_id = klubb.klubb_id)
                     LEFT JOIN "rapport.arkiv_{kjønn}_sluttplasseringer" AS plass2 ON ({{placeholder}}-2 = plass2.serieår AND plass2.klubb_id = klubb.klubb_id AND coalesce(plass1.lagnummer, plass2.lagnummer) = plass2.lagnummer)
@@ -620,7 +620,7 @@ def db_hent_sluttplassering(peker, kjønn, serieår, klubbnavn, lagnummer):
     resultat = execute(peker, f'''
         SELECT divisjon, plassering, poeng
         FROM "rapport.arkiv_{kjønn}_sluttplasseringer" AS plass
-            JOIN "bakgrunn.klubber" AS klubb ON (plass.klubb_id = klubb.klubb_id AND klubb.klubbnavn = {{placeholder}})
+            JOIN "uttrekk.klubber" AS klubb ON (plass.klubb_id = klubb.klubb_id AND klubb.klubbnavn = {{placeholder}})
         WHERE serieår = {{placeholder}}
             AND lagnummer >= {{placeholder}};
     ''', (klubbnavn, serieår, lagnummer))
@@ -629,7 +629,7 @@ def db_hent_sluttplassering(peker, kjønn, serieår, klubbnavn, lagnummer):
 def db_hent_klubbkrets(peker, klubbnavn, dato):
     return execute(peker, '''
         SELECT krets
-        FROM "bakgrunn.klubber" AS klubb
+        FROM "uttrekk.klubber" AS klubb
             JOIN "uttrekk.klubbkretser" AS klubbkrets ON (klubb.klubb_id = klubbkrets.klubb_id)
         WHERE klubbnavn = {placeholder}
             AND {placeholder} BETWEEN fra_og_med AND coalesce(til_og_med, '9999-01-01');
@@ -643,12 +643,12 @@ def db_hent_klubbresultater(peker, kjønn, klubbnavn, serieår, uttrekksdato):
             øvelse.øvelsesnavn,
             utøver.utøver_id,
             utøver.navn
-        FROM "bakgrunn.serier" AS serie
-            JOIN "bakgrunn.resultater" AS resultat ON (resultat.dato BETWEEN serie.fra_og_med AND serie.til_og_med)
-            JOIN "manipulator.{kjønn}_serieresultater" AS serieresultat ON (resultat.resultat_id = serieresultat.resultat_id)
-            JOIN "bakgrunn.klubber" AS klubb ON (serieresultat.klubb_id = klubb.klubb_id)
-            JOIN "bakgrunn.øvelser" AS øvelse ON (resultat.øvelseskode = øvelse.øvelseskode)
-            JOIN "bakgrunn.utøvere" AS utøver ON (resultat.utøver_id = utøver.utøver_id)
+        FROM "uttrekk.serier" AS serie
+            JOIN "uttrekk.resultater" AS resultat ON (resultat.dato BETWEEN serie.fra_og_med AND serie.til_og_med)
+            JOIN "tildeling.{kjønn}_serieresultater" AS serieresultat ON (resultat.resultat_id = serieresultat.resultat_id)
+            JOIN "uttrekk.klubber" AS klubb ON (serieresultat.klubb_id = klubb.klubb_id)
+            JOIN "uttrekk.øvelser" AS øvelse ON (resultat.øvelseskode = øvelse.øvelseskode)
+            JOIN "uttrekk.utøvere" AS utøver ON (resultat.utøver_id = utøver.utøver_id)
         WHERE serie.serieår = {{placeholder}}
             AND klubbnavn = {{placeholder}}
             AND {{placeholder}} BETWEEN serieresultat.fra_og_med AND COALESCE(serieresultat.til_og_med, '9999-01-01')
@@ -669,13 +669,13 @@ def db_hent_klubbresultater_med_overgangsinfo(peker, klubbnavn, serieår, uttrek
                         (klubb_til.klubb_id IS NOT NULL) AND (klubb_fra.klubbnavn <> {{placeholder}}) AND (coalesce(klubb_til.klubbnavn, '') = {{placeholder}}) AS er_klubbovergang_til,
                         (klubb_til.klubb_id IS NOT NULL) AND (coalesce(klubb_til.klubbnavn, '') <> {{placeholder}}) AS er_klubbovergang_fra
                 FROM "uttrekk.kvinner_uttrekksresultater" AS uttres
-                    JOIN "bakgrunn.klubber" AS klubb_fra ON (uttres.klubb_id = klubb_fra.klubb_id)
-                    JOIN "manipulator.kvinner_serieresultater" AS serieres ON (
+                    JOIN "uttrekk.klubber" AS klubb_fra ON (uttres.klubb_id = klubb_fra.klubb_id)
+                    JOIN "tildeling.kvinner_serieresultater" AS serieres ON (
                         uttres.resultat_id = serieres.resultat_id
                         AND serieres.fra_og_med <= {{placeholder}}
                         AND coalesce(serieres.til_og_med, '9999-01-01') >= {{placeholder}}
                     )
-                    LEFT JOIN "bakgrunn.klubber" AS klubb_til ON (serieres.klubb_id = klubb_til.klubb_id)
+                    LEFT JOIN "uttrekk.klubber" AS klubb_til ON (serieres.klubb_id = klubb_til.klubb_id)
                 WHERE uttres.fra_og_med <= {{placeholder}}
                     AND coalesce(uttres.til_og_med, '9999-01-01') >= {{placeholder}}
                     AND (klubb_fra.klubbnavn = {{placeholder}} OR coalesce(klubb_til.klubbnavn, '') = {{placeholder}})
@@ -692,13 +692,13 @@ def db_hent_klubbresultater_med_overgangsinfo(peker, klubbnavn, serieår, uttrek
                         (klubb_til.klubb_id IS NOT NULL) AND (klubb_fra.klubbnavn <> {{placeholder}}) AND (coalesce(klubb_til.klubbnavn, '') = {{placeholder}}) AS er_klubbovergang_til,
                         (klubb_til.klubb_id IS NOT NULL) AND (coalesce(klubb_til.klubbnavn, '') <> {{placeholder}}) AS er_klubbovergang_fra
                 FROM "uttrekk.menn_uttrekksresultater" AS uttres
-                    JOIN "bakgrunn.klubber" AS klubb_fra ON (uttres.klubb_id = klubb_fra.klubb_id)
-                    JOIN "manipulator.menn_serieresultater" AS serieres ON (
+                    JOIN "uttrekk.klubber" AS klubb_fra ON (uttres.klubb_id = klubb_fra.klubb_id)
+                    JOIN "tildeling.menn_serieresultater" AS serieres ON (
                         uttres.resultat_id = serieres.resultat_id
                         AND serieres.fra_og_med <= {{placeholder}}
                         AND coalesce(serieres.til_og_med, '9999-01-01') >= {{placeholder}}
                     )
-                    LEFT JOIN "bakgrunn.klubber" AS klubb_til ON (serieres.klubb_id = klubb_til.klubb_id)
+                    LEFT JOIN "uttrekk.klubber" AS klubb_til ON (serieres.klubb_id = klubb_til.klubb_id)
                 WHERE uttres.fra_og_med <= {{placeholder}}
                     AND coalesce(uttres.til_og_med, '9999-01-01') >= {{placeholder}}
                     AND (klubb_fra.klubbnavn = {{placeholder}} OR coalesce(klubb_til.klubbnavn, '') = {{placeholder}})
@@ -710,11 +710,11 @@ def db_hent_klubbresultater_med_overgangsinfo(peker, klubbnavn, serieår, uttrek
                         UNION
                         SELECT * FROM menn_resultater
                     ) AS serieresultat
-                        JOIN "bakgrunn.serier" AS serie ON (serie.serieår = {{placeholder}})
-                        JOIN "bakgrunn.resultater" AS resultat ON (serieresultat.resultat_id = resultat.resultat_id)
-                        JOIN "bakgrunn.øvelser" AS øvelse ON (resultat.øvelseskode = øvelse.øvelseskode)
-                        JOIN "bakgrunn.stevner" AS stevne ON (resultat.stevne_id = stevne.stevne_id)
-                        JOIN "bakgrunn.utøvere" AS utøver ON (resultat.utøver_id = utøver.utøver_id)
+                        JOIN "uttrekk.serier" AS serie ON (serie.serieår = {{placeholder}})
+                        JOIN "uttrekk.resultater" AS resultat ON (serieresultat.resultat_id = resultat.resultat_id)
+                        JOIN "uttrekk.øvelser" AS øvelse ON (resultat.øvelseskode = øvelse.øvelseskode)
+                        JOIN "uttrekk.stevner" AS stevne ON (resultat.stevne_id = stevne.stevne_id)
+                        JOIN "uttrekk.utøvere" AS utøver ON (resultat.utøver_id = utøver.utøver_id)
                     WHERE resultat.dato >= serie.fra_og_med
                         AND resultat.dato <= serie.til_og_med
             )
@@ -728,14 +728,14 @@ def db_hent_resultater(peker, kjønn, klubbnavn, serieår, dato):
         WITH 
             klubbresultater as (
                 SELECT poeng, øvelsesnavn, resultat.øvelseskode, prestasjon, navn, fødselsår, resultat.utøver_id, sted, dato
-                FROM "manipulator.{kjønn}_serieresultater" AS serieresultat
-                    JOIN "bakgrunn.serier" AS serie ON (serie.serieår = {{placeholder}})
-                    JOIN "bakgrunn.resultater" AS resultat ON (serieresultat.resultat_id = resultat.resultat_id)
-                    JOIN "kalkulatormat.{kjønn}_serieøvelser" AS serieøvelse ON (serieøvelse.øvelseskode = resultat.øvelseskode)
-                    JOIN "bakgrunn.klubber" AS klubb ON (klubb.klubbnavn = {{placeholder}})
-                    JOIN "bakgrunn.øvelser" AS øvelse ON (resultat.øvelseskode = øvelse.øvelseskode)
-                    JOIN "bakgrunn.stevner" AS stevne ON (resultat.stevne_id = stevne.stevne_id)
-                    JOIN "bakgrunn.utøvere" AS utøver ON (resultat.utøver_id = utøver.utøver_id)
+                FROM "tildeling.{kjønn}_serieresultater" AS serieresultat
+                    JOIN "uttrekk.serier" AS serie ON (serie.serieår = {{placeholder}})
+                    JOIN "uttrekk.resultater" AS resultat ON (serieresultat.resultat_id = resultat.resultat_id)
+                    JOIN "serie.{kjønn}_serieøvelser" AS serieøvelse ON (serieøvelse.øvelseskode = resultat.øvelseskode)
+                    JOIN "uttrekk.klubber" AS klubb ON (klubb.klubbnavn = {{placeholder}})
+                    JOIN "uttrekk.øvelser" AS øvelse ON (resultat.øvelseskode = øvelse.øvelseskode)
+                    JOIN "uttrekk.stevner" AS stevne ON (resultat.stevne_id = stevne.stevne_id)
+                    JOIN "uttrekk.utøvere" AS utøver ON (resultat.utøver_id = utøver.utøver_id)
                 WHERE serieøvelse.serieår = {{placeholder}}
                     AND resultat.dato >= serie.fra_og_med
                     AND resultat.dato <= serie.til_og_med
@@ -780,7 +780,7 @@ def db_hent_forsinkede_stevner(peker, dato):
         SELECT stevnetittel,
             arena,
             CAST(stevnedato AS text)
-        FROM "nettside.stevneinvitasjoner"
+        FROM "uttrekk.stevneinvitasjoner"
         WHERE stevnedato < {placeholder}
             AND stevne_id IS NULL
             AND skal_vises
@@ -794,20 +794,20 @@ def db_hent_andel_rapporterte_stevner(peker, serieår, dato):
                 stevnetittel AS stevnetittel,
                 0 AS er_rapportert,
                 stevnedato  
-            FROM "nettside.stevneinvitasjoner"
+            FROM "uttrekk.stevneinvitasjoner"
             WHERE stevne_id IS NULL AND skal_vises
             UNION ALL
             SELECT COALESCE(er_nasjonalt, true) AS er_nasjonalt,
                 stevnetittel AS stevntittel,
                 1 AS er_rapportert,
                 stevnedato  
-            FROM "bakgrunn.stevner"
+            FROM "uttrekk.stevner"
         )
         SELECT COALESCE(SUM(er_rapportert),0) AS antall_stevne,
             COALESCE(COUNT(*) - SUM(er_rapportert),0) AS antall_forsinkede,
             COALESCE(100*SUM(er_rapportert)/COUNT(*), 100) AS prosent_stevne
         FROM stevner AS stevne
-            JOIN "bakgrunn.serier" AS serie ON (
+            JOIN "uttrekk.serier" AS serie ON (
                 serie.fra_og_med <= stevne.stevnedato
                 AND stevne.stevnedato <= serie.til_og_med  
             )
@@ -824,20 +824,20 @@ def db_hent_andel_gjennomførte_stevner(peker, serieår, dato):
                 stevnetittel AS stevnetittel,
                 stevnedato < {placeholder} AS er_avsluttet,
                 stevnedato  
-            FROM "nettside.stevneinvitasjoner"
+            FROM "uttrekk.stevneinvitasjoner"
             WHERE stevne_id IS NULL AND skal_vises
             UNION ALL
             SELECT COALESCE(er_nasjonalt, true) AS er_nasjonalt,
                 stevnetittel AS stevntittel,
                 true AS er_avsluttet,
                 stevnedato  
-            FROM "bakgrunn.stevner"
+            FROM "uttrekk.stevner"
         )
         SELECT COALESCE(SUM(CAST(er_avsluttet AS int)),0) AS antall_stevne,
             COALESCE(COUNT(*) - SUM(CAST(er_avsluttet AS int)),0) AS antall_forsinkede,
             COALESCE(100*SUM(CAST(er_avsluttet AS int))/COUNT(*), 100) AS prosent_stevne
         FROM stevner AS stevne
-            JOIN "bakgrunn.serier" AS serie ON (
+            JOIN "uttrekk.serier" AS serie ON (
                 serie.fra_og_med <= stevne.stevnedato
                 AND stevne.stevnedato <= serie.til_og_med  
             )
@@ -865,8 +865,8 @@ def db_hent_fjernede_resultater_siste_uke(peker, kjønn, dato, klubbnavn, lagnum
         (SELECT serieresultat.resultat_id
         FROM (
                     SELECT resultat.resultat_id, utøver_id, klubb_id, poeng, øvelseskode, fra_og_med, til_og_med
-                    FROM "manipulator.{kjønn}_serieresultater" AS serieresultat
-                        JOIN "bakgrunn.resultater" AS resultat ON (resultat.resultat_id = serieresultat.resultat_id)
+                    FROM "tildeling.{kjønn}_serieresultater" AS serieresultat
+                        JOIN "uttrekk.resultater" AS resultat ON (resultat.resultat_id = serieresultat.resultat_id)
                     WHERE {{placeholder}} BETWEEN fra_og_med AND coalesce(til_og_med, '9999-01-01')
                         AND klubb_id IS NOT NULL
                         AND poeng IS NOT NULL
@@ -874,8 +874,8 @@ def db_hent_fjernede_resultater_siste_uke(peker, kjønn, dato, klubbnavn, lagnum
         ) serieresultat
             LEFT JOIN (
                     SELECT resultat.resultat_id, utøver_id, klubb_id, poeng, øvelseskode, fra_og_med, til_og_med
-                    FROM "manipulator.{kjønn}_serieresultater" AS serieresultat
-                        JOIN "bakgrunn.resultater" AS resultat ON (resultat.resultat_id = serieresultat.resultat_id)
+                    FROM "tildeling.{kjønn}_serieresultater" AS serieresultat
+                        JOIN "uttrekk.resultater" AS resultat ON (resultat.resultat_id = serieresultat.resultat_id)
                     WHERE klubb_id IS NOT NULL
                         AND poeng IS NOT NULL
         ) tilsvarende_serieresultat ON (
@@ -888,14 +888,14 @@ def db_hent_fjernede_resultater_siste_uke(peker, kjønn, dato, klubbnavn, lagnum
         WHERE tilsvarende_serieresultat.resultat_id IS NULL)
         UNION
         (SELECT utøverresultat.resultat_id
-         FROM "bakgrunn.klubber" AS klubb 
+         FROM "uttrekk.klubber" AS klubb 
             JOIN "serie.{kjønn}_lagresultater" AS lagresultat ON (
                 lagresultat.klubb_id = klubb.klubb_id
                 AND lagresultat.lagnummer < {{placeholder}}
                 AND {{placeholder}} BETWEEN lagresultat.fra_og_med AND coalesce(lagresultat.til_og_med, '9999-01-01')
             )
-            JOIN "bakgrunn.resultater" AS resultat ON (resultat.resultat_id = lagresultat.resultat_id)
-            JOIN "bakgrunn.resultater" AS utøverresultat ON (resultat.utøver_id = utøverresultat.utøver_id)
+            JOIN "uttrekk.resultater" AS resultat ON (resultat.resultat_id = lagresultat.resultat_id)
+            JOIN "uttrekk.resultater" AS utøverresultat ON (resultat.utøver_id = utøverresultat.utøver_id)
          WHERE klubb.klubbnavn = {{placeholder}}
         )
         ;
@@ -923,14 +923,14 @@ def db_hent_stevnekalender(peker, serieår, uttrekksdato):
                 ) AS antall_resultater,
                 true AS er_rapportert,
                 (CASE WHEN stevneinvitasjon.stevne_id IS NULL THEN false ELSE true END) AS er_invitasjon  
-            FROM "bakgrunn.stevner" AS stevne
-                LEFT JOIN "bakgrunn.resultater" AS resultat ON (stevne.stevne_id = resultat.stevne_id)
+            FROM "uttrekk.stevner" AS stevne
+                LEFT JOIN "uttrekk.resultater" AS resultat ON (stevne.stevne_id = resultat.stevne_id)
                 LEFT JOIN "uttrekk.kvinner_uttrekksresultater" AS kvinne_resultat ON (kvinne_resultat.resultat_id = resultat.resultat_id)
                 LEFT JOIN "uttrekk.menn_uttrekksresultater" AS menn_resultat ON (
                        menn_resultat.resultat_id = resultat.resultat_id
                        AND greatest(kvinne_resultat.fra_og_med, menn_resultat.fra_og_med) <= least(kvinne_resultat.til_og_med, menn_resultat.til_og_med, '9999-01-01')
                 )
-                LEFT JOIN "nettside.stevneinvitasjoner" AS stevneinvitasjon ON (stevne.stevne_id = stevneinvitasjon.stevne_id)
+                LEFT JOIN "uttrekk.stevneinvitasjoner" AS stevneinvitasjon ON (stevne.stevne_id = stevneinvitasjon.stevne_id)
             WHERE er_nasjonalt
             GROUP BY stevne.stevne_id,
                 stevne.stevnetittel,
@@ -944,7 +944,7 @@ def db_hent_stevnekalender(peker, serieår, uttrekksdato):
                 null AS antall_resultater,
                 false AS er_rapportert,
                 true AS er_invitasjon  
-            FROM "nettside.stevneinvitasjoner"
+            FROM "uttrekk.stevneinvitasjoner"
             WHERE stevne_id IS NULL)
         )
         SELECT CAST(stevnedato AS text),
@@ -954,7 +954,7 @@ def db_hent_stevnekalender(peker, serieår, uttrekksdato):
             er_rapportert,
             er_invitasjon
         FROM stevneinfo AS stevne
-            JOIN "bakgrunn.serier" AS serie ON (stevnedato BETWEEN fra_og_med AND til_og_med)
+            JOIN "uttrekk.serier" AS serie ON (stevnedato BETWEEN fra_og_med AND til_og_med)
         WHERE serie.serieår = {placeholder}
         ORDER BY stevnedato
         ;

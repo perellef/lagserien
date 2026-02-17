@@ -5,10 +5,10 @@ from sqlalchemy.orm import relationship
 
 class KvinneSerieøvelse(DeklarativBase):
 
-    __tablename__ = "kalkulatormat.kvinner_serieøvelser"
+    __tablename__ = "serie.kvinner_serieøvelser"
 
     serieår = Column(Integer, nullable=False)
-    øvelseskode = Column(String, ForeignKey("bakgrunn.øvelser.øvelseskode", onupdate="CASCADE"), nullable=False)
+    øvelseskode = Column(String, ForeignKey("uttrekk.øvelser.øvelseskode", onupdate="CASCADE"), nullable=False)
     er_obligatorisk = Column(Boolean, nullable=False)
     er_teknisk = Column(Boolean, nullable=False)
     prioritet = Column(Integer, nullable=False)

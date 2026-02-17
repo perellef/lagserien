@@ -4,7 +4,7 @@ from sqlalchemy import Column, String, Integer
 
 class Utøver(DeklarativBase):
 
-    __tablename__ = "bakgrunn.utøvere"
+    __tablename__ = "uttrekk.utøvere"
 
     utøver_id =  Column(Integer, primary_key=True, nullable=False)
     navn =  Column(String, nullable=False)

@@ -61,16 +61,13 @@ class Seriedata:
             insert_statement = insert(cls).values(dict_objekter)
             self.__session.execute(insert_statement)
 
-    def slett_alt(self, cls):
-        self.__session.execute(delete(cls))
-
     def slett_og_bulkinnsett(self, objekter):
         if not objekter:
             return
         
         cls = type(objekter[0])
     
-        self.slett_alt(cls)
+        self.slett_alle(cls)
         
         for i in range(0,len(objekter),BULKSIZE):
             bulkobjekter = objekter[i:i+BULKSIZE] 

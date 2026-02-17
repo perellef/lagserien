@@ -5,10 +5,10 @@ from sqlalchemy.orm import relationship
 
 class Overklubb(DeklarativBase):
 
-    __tablename__ = "representasjon.overklubber"
+    __tablename__ = "tildeling.overklubber"
 
     serieår = Column(Integer, nullable=False)
-    overklubb_id = Column(Integer, ForeignKey("bakgrunn.klubber.klubb_id", onupdate="CASCADE"), nullable=False)
+    overklubb_id = Column(Integer, ForeignKey("uttrekk.klubber.klubb_id", onupdate="CASCADE"), nullable=False)
     alder_11_14 = Column(Boolean, nullable=False)
     alder_15_19 = Column(Boolean, nullable=False)
     alder_20_pluss = Column(Boolean, nullable=False)

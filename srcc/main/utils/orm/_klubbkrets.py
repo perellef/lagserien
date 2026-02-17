@@ -7,7 +7,7 @@ class Klubbkrets(DeklarativBase):
 
     __tablename__ = "uttrekk.klubbkretser"
 
-    klubb_id = Column(Integer, ForeignKey("bakgrunn.klubber.klubb_id", onupdate="CASCADE"), nullable=False)
+    klubb_id = Column(Integer, ForeignKey("uttrekk.klubber.klubb_id", onupdate="CASCADE"), nullable=False)
     fra_og_med = Column(DATE, nullable=False)
     til_og_med = Column(DATE, nullable=True)
     krets = Column(String, nullable=False)

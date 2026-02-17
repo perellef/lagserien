@@ -10,7 +10,7 @@ class ArkivMannSluttplassering(DeklarativBase):
     serieår = Column(Integer, nullable=False)
     divisjon = Column(Integer, nullable=False)
     plassering = Column(Integer, nullable=False)
-    klubb_id = Column(Integer, ForeignKey("bakgrunn.klubber.klubb_id", onupdate="CASCADE"), nullable=True)
+    klubb_id = Column(Integer, ForeignKey("uttrekk.klubber.klubb_id", onupdate="CASCADE"), nullable=True)
     lagnummer = Column(Integer, nullable=False)
     poeng = Column(Integer, nullable=False)
     

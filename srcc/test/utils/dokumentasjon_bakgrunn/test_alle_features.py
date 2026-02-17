@@ -3,8 +3,8 @@ sys.path.append('./')
 
 import os
 
-from srcc.main.utils.dokumentasjon_bakgrunn.feature import Feature
-from srcc.main.utils.dokumentasjon_bakgrunn.featureparser import Featureparser
+from srcc.main.utils.dokumentasjon_uttrekk.feature import Feature
+from srcc.main.utils.dokumentasjon_uttrekk.featureparser import Featureparser
 
 def test_koden_overholder_dokumentasjonen():
     # TODO: refaktorer alt dette surret

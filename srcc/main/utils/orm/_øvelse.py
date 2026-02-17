@@ -4,7 +4,7 @@ from sqlalchemy import Column, String
 
 class Øvelse(DeklarativBase):
 
-    __tablename__ = "bakgrunn.øvelser"
+    __tablename__ = "uttrekk.øvelser"
 
     øvelseskode = Column(String, primary_key=True, nullable=False)
     øvelsesnavn = Column(String, unique=True, nullable=False)

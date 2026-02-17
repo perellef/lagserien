@@ -4,7 +4,7 @@ sys.path.append('./')
 from srcc.main.utils.testverktøy._testdatabygger import Testdatabygger
 from srcc.main.kontrollsenter.tilganger import Tilganger
 
-from srcc.main.utils.dokumentasjon_bakgrunn.utsagn import Utsagn
+from srcc.main.utils.dokumentasjon_uttrekk.utsagn import Utsagn
 
 class Feature:
 
@@ -45,7 +45,7 @@ class Feature:
         self.__tilstand = Feature.Tilstand()
 
         handlingsforløp = [
-            (self.__bakgrunn.gitt, self.utfør_gitt),
+            (self.__uttrekk.gitt, self.utfør_gitt),
             (eksempel.gitt, self.utfør_gitt),
             (eksempel.når, self.utfør_når),
             (eksempel.så, self.utfør_så)

@@ -4,7 +4,7 @@ from sqlalchemy import Column, String, Integer, CheckConstraint
 
 class Klubb(DeklarativBase):
 
-    __tablename__ = "bakgrunn.klubber"
+    __tablename__ = "uttrekk.klubber"
 
     klubb_id = Column(Integer, primary_key=True, nullable=False)
     klubbnavn = Column(String, unique=True, nullable=False)

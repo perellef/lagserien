@@ -1,4 +1,4 @@
-from srcc.main.utils.dokumentasjon_bakgrunn.råtabell import Råtabell
+from srcc.main.utils.dokumentasjon_uttrekk.råtabell import Råtabell
 
 class Scenario:
 
