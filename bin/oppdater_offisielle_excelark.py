@@ -21,7 +21,7 @@ except Exception:
     print(f"{argv[0]} <serieår>")
     sys.exit(1)
 
-database = Database.TESTDATA
+database = Database.PRODUKSJON
 
 seriedata = Seriedata(database)
 seriedata.åpne()

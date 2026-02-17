@@ -680,8 +680,7 @@ oppdaterDato(true)
 autocomplete(document.getElementById("øvelseInput"), cached_data.øvelser);
 autocomplete(document.getElementById("klubbInput"), cached_data.klubber);
 
-siste_serieår = Object.keys(cached_data.serier).reduce((a, b) => obj[a] > obj[b] ? a : b);
-
+siste_serieår = Object.keys(cached_data.serier).reduce((a, b) => a > b ? a : b);
 
 document.getElementById("oppst-serieår").textContent = siste_serieår
 document.getElementById("spesifikk-dato").value = datoTilNormalform(cached_data.serier[siste_serieår].siste_dato)

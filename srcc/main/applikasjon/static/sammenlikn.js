@@ -526,7 +526,7 @@ autocomplete(document.getElementById("klubbInput2"), cached_data.klubber);
 oppdaterDato1(true)
 oppdaterDato2(true)
 
-siste_serieår = Object.keys(cached_data.serier).reduce((a, b) => obj[a] > obj[b] ? a : b);
+siste_serieår = Object.keys(cached_data.serier).reduce((a, b) => a > b ? a : b);
 
 document.getElementById("lagsam-serieår1").textContent = siste_serieår
 document.getElementById("lagsam-serieår2").textContent = siste_serieår
