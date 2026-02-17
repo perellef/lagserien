@@ -6,7 +6,6 @@ from srcc.main.kontrollsenter.kontrollpanel import Kontrollpanel
 from srcc.main.batch_2_uttrekk.uttrekksbatch import Uttrekksbatch
 from srcc.main.batch_3_utdeling.utdelingsbatch import Utdelingsbatch
 from srcc.main.batch_4_kalkulator.kalkulatorbatch import Kalkulatorbatch
-from srcc.main.batch_6_kontroll.kontrollbatch import Kontrollbatch
 
 from datetime import date
 
@@ -49,10 +48,6 @@ print(f"Serieår: {serieår}")
 print(f"Uttrekksdato: {uttrekksdato}")
 print("")
 
-try:
-    Kontrollpanel.kjør(Kontrollbatch, serieår, uttrekksdato)
-except SystemExit:
-    ...
 Kontrollpanel.kjør(Uttrekksbatch, serieår, uttrekksdato)
 Kontrollpanel.kjør(Utdelingsbatch, serieår, uttrekksdato)
 Kontrollpanel.kjør(Kalkulatorbatch, serieår, uttrekksdato)

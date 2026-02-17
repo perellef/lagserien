@@ -3,7 +3,6 @@ from srcc.main.batch_1_grunnlag.grunnlagsbatch import Grunnlagsbatch
 from srcc.main.batch_2_uttrekk.uttrekksbatch import Uttrekksbatch
 from srcc.main.batch_3_utdeling.utdelingsbatch import Utdelingsbatch
 from srcc.main.batch_4_kalkulator.kalkulatorbatch import Kalkulatorbatch
-from srcc.main.batch_6_kontroll.kontrollbatch import Kontrollbatch
 #from srcc.main.batch_5_serierapport ... TODO
 
 from srcc.main.kontrollsenter.skjema import Skjema
@@ -97,5 +96,4 @@ Tilganger.batchtilgang = {
     Uttrekksbatch: Tilganger.UTTREKK,
     Utdelingsbatch: Tilganger.MANIPULATOR,
     Kalkulatorbatch: Tilganger.KALKULATOR,
-    Kontrollbatch: Tilganger.STEVNEKONTROLL,
 }

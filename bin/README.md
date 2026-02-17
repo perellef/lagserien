@@ -10,7 +10,6 @@ Det er en rekke skript for å kjøre batchene:
 - Batch 3: `kjør_serieutdeling.py`
 - Batch 4: `kjør_seriekalkulator.py`, eventuelt `kjør_seriekalkulator_for_periode.py` ved simulering tilbake i tid ved oppstart
 - Batch 5: (mangler)
-- Batch 6: `kjør_stevnekontroll.py`
 
 Batch 6, 2, 3, 4 kan kjøres sekvensielt med `kjør_rutine.py`.
 

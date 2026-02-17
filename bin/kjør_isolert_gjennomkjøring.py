@@ -7,7 +7,6 @@ from srcc.main.kontrollsenter.seriedata import Seriedata
 from srcc.main.kontrollsenter.database import Database
 from srcc.main.utils.orm._serie import Serie
 
-from srcc.main.batch_6_kontroll.kontrollbatch import Kontrollbatch
 from srcc.main.batch_0_oppsett.oppsettbatch import Oppsettbatch
 from srcc.main.batch_1_grunnlag.grunnlagsbatch import Grunnlagsbatch
 from srcc.main.batch_2_uttrekk.uttrekksbatch import Uttrekksbatch
@@ -45,7 +44,6 @@ kjør(Oppsettbatch)
 assert seriedata.hent(Serie).filter_by(serieår=serieår).count() == 1, f"Kjøring med serieår {serieår} forutsetter en Serie med serieår {serieår}."
 
 kjør(Grunnlagsbatch)
-kjør(Kontrollbatch)
 kjør(Uttrekksbatch)
 kjør(Utdelingsbatch)
 kjør(Kalkulatorbatch)

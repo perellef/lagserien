@@ -13,7 +13,6 @@ from srcc.main.utils.orm._kvinne_serieresultat import KvinneSerieresultat
 from srcc.main.utils.orm._klubbkrets import Klubbkrets
 from srcc.main.utils.orm._oppstillingskrav import Oppstillingskrav
 
-from srcc.main.batch_6_kontroll.kontrollbatch import Kontrollbatch
 from srcc.main.batch_0_oppsett.oppsettbatch import Oppsettbatch
 from srcc.main.batch_1_grunnlag.grunnlagsbatch import Grunnlagsbatch
 from srcc.main.batch_2_uttrekk.uttrekksbatch import Uttrekksbatch
@@ -81,7 +80,6 @@ seriedata.slett_og_bulkinnsett([
     Oppstillingskrav(serieår=serieår, divisjon=3, antall_obligatoriske=9, antall_valgfri=6, maks_obligatoriske_løp=9, maks_valgfri_løp=5, maks_resultater_per_utøver=5),
 ])
 
-kjør(Kontrollbatch)
 kjør(Uttrekksbatch)
 kjør(Utdelingsbatch)
 

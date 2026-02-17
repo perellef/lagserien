@@ -8,11 +8,10 @@ I tillegg til webapplikasjonen er systemet er delt inn i 7 batcher.
 
   0. **Oppsettbatch** : Innleder systemet. *Kjøres ved første anledning.*
   1. **Grunnlagsbatch**: Forbereder ny serie. *Kjøres ved start av serie.*
-  2. **Uttrekksbatch**: Leser inn resultater. *Kjøres daglig etter batch 6.*
+  2. **Uttrekksbatch**: Leser inn stevner og resultater. *Kjøres daglig.*
   3. **Tildelingsbatch**: Beregner resultatenes poeng og avgjør klubben de tilhører. *Kjøres daglig etter batch 2.*
   4. **Kalkulatorbatch**: Beregner lag og tabell. *Kjøres daglig etter batch 3.*
-  5. **Avrundingsbatch**: Merker sluttdato for serien. *Kjøres årlig.*
-  6. **Kontrollbatch**: Leser inn stevner. *Kjøres daglig.* (Skal sammenslås med batch 2.)
+  5. **Avrundingsbatch**: Markerer sluttdato for serien. *Kjøres årlig.*
 
 ## Kom i gang
 

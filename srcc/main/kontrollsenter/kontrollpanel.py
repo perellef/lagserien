@@ -11,7 +11,6 @@ from srcc.main.batch_1_grunnlag.grunnlagsbatch import Grunnlagsbatch
 from srcc.main.batch_2_uttrekk.uttrekksbatch import Uttrekksbatch
 from srcc.main.batch_3_utdeling.utdelingsbatch import Utdelingsbatch
 from srcc.main.batch_4_kalkulator.kalkulatorbatch import Kalkulatorbatch
-from srcc.main.batch_6_kontroll.kontrollbatch import Kontrollbatch
 
 import traceback
 import sys
@@ -102,7 +101,7 @@ class Kontrollpanel:
 
     @staticmethod
     def valider_batch(batch):
-        assert batch in (Oppsettbatch, Grunnlagsbatch, Uttrekksbatch, Utdelingsbatch, Kalkulatorbatch, Kontrollbatch)
+        assert batch in (Oppsettbatch, Grunnlagsbatch, Uttrekksbatch, Utdelingsbatch, Kalkulatorbatch)
     
     @staticmethod
     def valider_tillatte_argumenter(serieår, uttrekksdato):

@@ -23,15 +23,6 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Kjører stevnekontroll
-        run: |
-          python bin/kjør_stevnekontroll.py ${{ secrets.LAGSERIEN_SERIEAR }}
-          EXIT_CODE=$?
-          if [ $EXIT_CODE -ne 0 ]; then
-            echo "::warning::The command failed with exit code $EXIT_CODE"
-          fi
-          exit 0  # Ensure the step still passes
-
       - name: Kjører serieuttrekk
         run: python bin/kjør_serieuttrekk.py ${{ secrets.LAGSERIEN_SERIEAR }}
         
