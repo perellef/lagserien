@@ -1,11 +1,11 @@
 import sys
 sys.path.append('./')
 
-from srcc.main.utils.dokumentasjon_uttrekk.råtabell import Råtabell
+from srcc.main.utils.dokumentasjon_bakgrunn.råtabell import Råtabell
 
-from srcc.main.utils.dokumentasjon_uttrekk.domenespråk import Domenepråk
-from srcc.main.utils.dokumentasjon_uttrekk.defaultobjekter import defaultobjekter
-from srcc.main.utils.dokumentasjon_uttrekk.defaultverdier import defaultverdier
+from srcc.main.utils.dokumentasjon_bakgrunn.domenespråk import Domenepråk
+from srcc.main.utils.dokumentasjon_bakgrunn.defaultobjekter import defaultobjekter
+from srcc.main.utils.dokumentasjon_bakgrunn.defaultverdier import defaultverdier
 
 class Tabelloversetter:
     

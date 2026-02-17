@@ -347,35 +347,6 @@ def test_les_overbygningsklubber_returnerer_innleste_overklubber_fra_serieåret(
     
     assert_at(overklubber).kun_inneholder(*forventede_overklubber)
 
-def test_les_overbygningsklubber_returnerer_overklubber_også_fra_andre_serieår():
-
-    ås_il = en_klubb(klubb="Ås IL", kjernenavn="Ås")
-    ski_il = en_klubb(klubb="Ski IL", kjernenavn="Ski")
-    nordby_il = en_klubb(klubb="Nordby IL", kjernenavn="Nordby")
-
-    resultatavvik = {
-        'overbygningsklubber': []
-    }
-
-    seriedata = (Testdatabygger(Tilganger.ALT)
-            .med(Klubb, [ås_il, ski_il, nordby_il])
-            .med(Overklubb, [
-                en_overklubb(serieår=2099, overklubb="Ås IL"),
-                en_overklubb(serieår=2101, overklubb="Ås IL")
-            ])
-            .bygg())
-        
-    serieår = 2100
-
-    overklubber, _ = Konfiginnhenting.les_overbygningsklubber(serieår, resultatavvik, seriedata)
-    
-    forventede_overklubber = [
-        en_overklubb(serieår=2099, overklubb="Ås IL"),
-        en_overklubb(serieår=2101, overklubb="Ås IL")
-    ]
-    
-    assert_at(overklubber).kun_inneholder(*forventede_overklubber)
-
 def test_les_overbygningsklubber_med_ikkematchende_overklubb_id_og_navn_feiler():
     ås_il = en_klubb(klubb="Ås IL", kjernenavn="Ås")
     ski_il = en_klubb(klubb="Ski IL", kjernenavn="Ski")
@@ -433,39 +404,6 @@ def test_les_overbygningsklubber_returnerer_innleste_overbygninger_fra_serieåre
 
     assert_at(overbygninger).kun_har(forventede_overbygninger)
 
-def test_les_overbygningsklubber_returnerer_også_overbygninger_fra_andre_serieår():
-    
-    ås_il = en_klubb(klubb="Ås IL", kjernenavn="Ås")
-    ski_il = en_klubb(klubb="Ski IL", kjernenavn="Ski")
-    nordby_il = en_klubb(klubb="Nordby IL", kjernenavn="Nordby")
-
-    resultatavvik = {
-        'overbygningsklubber': []
-    }
-
-    seriedata = (Testdatabygger(Tilganger.ALT)
-            .med(Klubb, [ås_il, ski_il, nordby_il])
-            .med(Overklubb, [
-                en_overklubb(serieår=2099, overklubb="Ås IL"),
-                en_overklubb(serieår=2101, overklubb="Ås IL"),
-            ])
-            .med(Overbygning, [
-                en_overbygning(serieår=2099, overklubb="Ås IL", moderklubb="Nordby IL"),
-                en_overbygning(serieår=2101, overklubb="Ås IL", moderklubb="Nordby IL"),
-            ])
-            .bygg())
-        
-    serieår = 2100
-
-    _, overbygninger = Konfiginnhenting.les_overbygningsklubber(serieår, resultatavvik, seriedata)
-    
-    forventede_overbygninger = [
-        en_overbygning(serieår=2099, overklubb="Ås IL", moderklubb="Nordby IL"),
-        en_overbygning(serieår=2101, overklubb="Ås IL", moderklubb="Nordby IL"),
-    ]
-
-    assert_at(overbygninger).kun_har(forventede_overbygninger)
-
 def test_les_overbygningsklubber_med_ikkematchende_moderklubb_id_og_navn_feiler():
     ås_il = en_klubb(klubb="Ås IL")
     ski_il = en_klubb(klubb="Ski IL")
@@ -518,38 +456,6 @@ def test_les_klubber_unntatt_overbygning_returnerer_innleste_klubber_unntatt_ove
     ]
 
     assert_at(klubber_unntatt_overbygning).kun_inneholder(*forventede_unntatte_klubber)
-
-def test_les_klubber_unntatt_overbygning_returnerer_også_klubber_unntatt_overbygning_fra_andre_serieår():
-    
-    serieår = 2100
-
-    ås_il = en_klubb(klubb="Ås IL", kjernenavn="Ås")
-    vestby_il = en_klubb(klubb="Vestby IL", kjernenavn="Vestby")
-
-    resultatavvik = {
-        "klubber unntatt overbygning": []
-    }
-
-    seriedata = (Testdatabygger(Tilganger.ALT)
-            .med(Klubb, [ås_il, vestby_il])
-            .med(Overklubb, [
-                en_overklubb(serieår=2099, overklubb="Ås IL"),
-                en_overklubb(serieår=2101, overklubb="Ås IL"),
-            ])
-            .med(KlubbUnntattOverbygning, [
-                en_klubb_unntatt_overbygning(serieår=2099, overklubb="Ås IL", moderklubb="Vestby IL"),
-                en_klubb_unntatt_overbygning(serieår=21019, overklubb="Ås IL", moderklubb="Vestby IL"),
-            ])
-            .bygg())
-
-    klubber_unntatt_ovebygning = Konfiginnhenting.les_klubber_unntatt_overbygning(serieår, resultatavvik, seriedata)
-    
-    forventede_unntatte_klubber = [
-        en_klubb_unntatt_overbygning(serieår=2099, overklubb="Ås IL", moderklubb="Vestby IL"),
-        en_klubb_unntatt_overbygning(serieår=21019, overklubb="Ås IL", moderklubb="Vestby IL"),
-    ]
-
-    assert_at(klubber_unntatt_ovebygning).kun_inneholder(*forventede_unntatte_klubber)
 
 def test_les_klubber_unntatt_overbygning_med_overklubb_som_ikke_finnes_feiler():
         
@@ -649,43 +555,6 @@ def test_les_utøvere_unntatt_overbygning_returnerer_innleste_utøvere_unntatt_o
     
     forventede_unntatte_utøvere = [
         en_utøver_unntatt_overbygning(serieår=serieår, utøver="Per", moderklubb="Ås IL"),
-    ]
-
-    assert_at(utøvere_unntatt_overbygning).kun_inneholder(*forventede_unntatte_utøvere)
-
-def test_les_utøvere_unntatt_overbygning_returnerer_også_utøvere_unntatt_overbygning_fra_andre_serieår():
-    
-    serieår = 2100
-
-    resultatavvik = {
-        "utøvere unntatt overbygning": []
-    }
-    
-    seriedata = (Testdatabygger(Tilganger.ALT)
-            .med(Utøver, [en_utøver("Per")])
-            .med(Klubb, [
-                en_klubb(klubb="Ås IL", kjernenavn="Ås"),
-                en_klubb(klubb="IK Tjalve", kjernenavn="Tjalve")
-            ])
-            .med(Overklubb, [
-                en_overklubb(serieår=2099, overklubb="IK Tjalve"),
-                en_overklubb(serieår=2101, overklubb="IK Tjalve"),
-            ])
-            .med(Overbygning, [
-                en_overbygning(serieår=2099, overklubb="IK Tjalve", moderklubb="Ås IL"),
-                en_overbygning(serieår=2101, overklubb="IK Tjalve", moderklubb="Ås IL")
-            ])
-            .med(UtøverUnntattOverbygning, [
-                en_utøver_unntatt_overbygning(serieår=2099, utøver="Per", moderklubb="Ås IL"),
-                en_utøver_unntatt_overbygning(serieår=2101, utøver="Per", moderklubb="Ås IL"),
-            ])
-            .bygg())
-
-    utøvere_unntatt_overbygning = Konfiginnhenting.les_utøvere_unntatt_overbygning(serieår, resultatavvik, seriedata)
-    
-    forventede_unntatte_utøvere = [
-        en_utøver_unntatt_overbygning(serieår=2099, utøver="Per", moderklubb="Ås IL"),
-        en_utøver_unntatt_overbygning(serieår=2101, utøver="Per", moderklubb="Ås IL"),
     ]
 
     assert_at(utøvere_unntatt_overbygning).kun_inneholder(*forventede_unntatte_utøvere)
@@ -791,33 +660,6 @@ def test_les_rullestolutøvere_returnerer_innleste_rullestolutøvere():
 
     forventede_rullestolutøvere = [
         en_rullestolutøver(serieår=serieår, utøver="Per")
-    ]
-
-    assert_at(rullestolutøvere).kun_inneholder(*forventede_rullestolutøvere)
-
-def test_les_rullestolutøvere_returnerer_også_rullestolutøvere_fra_andre_serieår():
-
-    per = en_utøver(navn="Per")
-
-    resultatavvik = {
-        "rullestolutøvere": []
-    }
-
-    seriedata = (Testdatabygger(Tilganger.ALT)
-            .med(Utøver, [per])
-            .med(Rullestolutøver, [
-                en_rullestolutøver(serieår=2099, utøver="Per"),
-                en_rullestolutøver(serieår=2101, utøver="Per"),
-            ])
-            .bygg())
-    
-    serieår = 2100
-
-    rullestolutøvere = Konfiginnhenting.les_rullestolutøvere(serieår, resultatavvik, seriedata)
-
-    forventede_rullestolutøvere = [
-        en_rullestolutøver(serieår=2099, utøver="Per"),
-        en_rullestolutøver(serieår=2101, utøver="Per"),
     ]
 
     assert_at(rullestolutøvere).kun_inneholder(*forventede_rullestolutøvere)

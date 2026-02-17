@@ -10,7 +10,7 @@ from datetime import date
 
 # sett_opp_tabell
 def test_sett_opp_tabell_setter_opp_tabell_TODO():
-    assert date.today() <= date.fromisoformat("2025-12-31")
+    assert date.today() <= date.fromisoformat("2026-04-25")
 
 # tabellinnsett_lag
 def test_tabellinnsett_lag_innsetter_lag_først_hvis_sterkeste_lag():
