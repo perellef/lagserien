@@ -51,19 +51,21 @@ class Konfiginnhenting:
 
         overklubber, overbygninger = Konfiginnhenting.les_overbygningsklubber(serieår, resultatavvik, seriedata)
         
-        seriedata.slett_alt(Overbygning)        
-        seriedata.slett_og_bulkinnsett(overklubber)
+        seriedata.bulkslett(seriedata.hent(Overbygning).filter_by(serieår=serieår).all())        
+        seriedata.bulkslett(seriedata.hent(Overklubb).filter_by(serieår=serieår).all())        
+        seriedata.bulkinnsett(overklubber)
         seriedata.bulkinnsett(overbygninger)
 
         klubber_unntatt_overbygning = Konfiginnhenting.les_klubber_unntatt_overbygning(serieår, resultatavvik, seriedata)
         utøvere_unntatt_overbygning = Konfiginnhenting.les_utøvere_unntatt_overbygning(serieår, resultatavvik, seriedata)
         rullestolutøvere = Konfiginnhenting.les_rullestolutøvere(serieår, resultatavvik, seriedata)
 
-        seriedata.slett_alt(KlubbUnntattOverbygning)
-        seriedata.slett_alt(UtøverUnntattOverbygning)
+        seriedata.bulkslett(seriedata.hent(KlubbUnntattOverbygning).filter_by(serieår=serieår).all())
+        seriedata.bulkslett(seriedata.hent(UtøverUnntattOverbygning).filter_by(serieår=serieår).all())
+        seriedata.bulkslett(seriedata.hent(Rullestolutøver).filter_by(serieår=serieår).all())
         seriedata.bulkinnsett(klubber_unntatt_overbygning)
         seriedata.bulkinnsett(utøvere_unntatt_overbygning)
-        seriedata.slett_og_bulkinnsett(rullestolutøvere)
+        seriedata.bulkinnsett(rullestolutøvere)
 
     @staticmethod
     def innsett_øvelsesinfo(serieår, årkonfig, seriedata):
@@ -127,8 +129,8 @@ class Konfiginnhenting:
 
     @staticmethod
     def les_overbygningsklubber(serieår, resultatavvik, seriedata):
-        overklubber = list(seriedata.hent(Overklubb).filter((Overklubb.serieår != serieår)).all())
-        overbygninger = list(seriedata.hent(Overbygning).filter((Overbygning.serieår != serieår)).all())
+        overklubber = []
+        overbygninger = []
 
         for overgang in resultatavvik["overbygningsklubber"]:
             overklubb_id = overgang["id"]
@@ -155,7 +157,7 @@ class Konfiginnhenting:
                 
     @staticmethod
     def les_klubber_unntatt_overbygning(serieår, resultatavvik, seriedata):
-        klubber_unntatt_overbygning = list(seriedata.hent(KlubbUnntattOverbygning).filter((KlubbUnntattOverbygning.serieår != serieår)).all())
+        klubber_unntatt_overbygning = []
         
         for klubbunntak in resultatavvik["klubber unntatt overbygning"]:
             moderklubb_id = klubbunntak["id"]
@@ -172,8 +174,7 @@ class Konfiginnhenting:
 
     @staticmethod
     def les_utøvere_unntatt_overbygning(serieår, resultatavvik, seriedata):
-        utøvere_unntatt_overbygning = list(seriedata.hent(UtøverUnntattOverbygning).filter((UtøverUnntattOverbygning.serieår != serieår)).all())
-        
+        utøvere_unntatt_overbygning = []
         for utøverunntak in resultatavvik["utøvere unntatt overbygning"]:
             utøver_id = utøverunntak["id"]
             _ = utøverunntak["navn"]
@@ -189,7 +190,7 @@ class Konfiginnhenting:
 
     @staticmethod
     def les_rullestolutøvere(serieår, resultatavvik, seriedata):
-        rullestolutøvere =  list(seriedata.hent(Rullestolutøver).filter((Rullestolutøver.serieår != serieår)).all())
+        rullestolutøvere = []
         
         for utøverdata in resultatavvik["rullestolutøvere"]:
             utøver_id = utøverdata["id"]

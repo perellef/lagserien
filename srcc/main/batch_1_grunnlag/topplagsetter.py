@@ -35,6 +35,11 @@ class Topplagsetter:
             menn_div2lag = [(8, "Sandvin", 1), (89, "Skjalg", 1), (62, "Moelven", 1), (69, "Sørild", 1), (44, "Tønsberg", 1), (181, "Stord", 1), (259, "Hind", 1), (145, "Ask", 1), (93, "Dimna", 1), (16, "BUL", 3), (65, "Gular", 1), (2067, "Hattfjelldal", 1), (28, "Moss", 1), (25, "Tyrving", 2)]
             kvinner_div1lag = [(34, "Tjalve", 1), (61, "Norna-Salhus", 1), (83, "Sandnes", 1), (25, "Tyrving", 1), (16, "BUL", 1), (15, "Ullensaker/Kisa", 1), (34, "Tjalve", 2), (89, "Skjalg", 1), (31, "Fredrikstad", 1), (171, "Ranheim", 1), (13, "Vidar", 1), (75, "Gneist", 1), (53, "Haugesund", 1), (69, "Sørild", 1)]
             kvinner_div2lag = [(93, "Dimna", 1), (109, "Fana", 1), (25, "Tyrving", 2), (73, "Kristiansands", 1), (50, "Bækkelagets", 1), (61, "Norna-Salhus", 2), (2180, "Fyllingen", 1), (10, "Nittedal", 1), (27, "Sturla", 1), (44, "Tønsberg", 1), (91, "Sem", 1), (60, "Orion", 1), (51, "Steinkjer", 1), (71, "Laksevåg", 1)]
+        elif serieår == 2026:
+            menn_div1lag = [(34, "Tjalve", 1), (83, "Sandnes", 1), (13, "Vidar", 1), (15, "Ullensaker/Kisa", 1), (16, "BUL", 1), (61, "Norna-Salhus", 1), (75, "Gneist", 1), (25, "Tyrving", 1), (34, "Tjalve", 2), (16, "BUL", 2), (8, "Sandvin", 1), (62, "Moelven", 1), (69, "Sørild", 1), (181, "Stord", 1)]
+            menn_div2lag = [(109, "Fana", 1), (171, "Ranheim", 1), (73, "Kristiansands", 1), (2180, "Fyllingen", 1), (89, "Skjalg", 1), (44, "Tønsberg", 1), (259, "Hind", 1), (145, "Ask", 1), (16, "BUL", 3), (28, "Moss", 1), (104, "Osterøy", 1), (176, "BUL Tromsø", 1), (13, "Vidar", 2), (31, "Fredrikstad", 1)]
+            kvinner_div1lag = [(34, "Tjalve", 1), (61, "Norna-Salhus", 1), (83, "Sandnes", 1), (25, "Tyrving", 1), (16, "BUL", 1), (15, "Ullensaker/Kisa", 1), (34, "Tjalve", 2), (171, "Ranheim", 1), (53, "Haugesund", 1), (13, "Vidar", 1), (2180, "Fyllingen", 1), (73, "Kristiansands", 1), (50, "Bækkelagets", 1), (93, "Dimna", 1)]
+            kvinner_div2lag = [(75, "Gneist", 1), (69, "Sørild", 1), (31, "Fredrikstad", 1), (89, "Skjalg", 1), (109, "Fana", 1), (25, "Tyrving", 2), (10, "Nittedal", 1), (27, "Sturla", 1), (44, "Tønsberg", 1), (91, "Sem", 1), (13, "Vidar", 2), (6, "Lambertseter", 1), (174, "Hareid", 1), (318, "Hamar", 1)]
         else:
             raise ValueError
 
@@ -42,7 +47,6 @@ class Topplagsetter:
             for klubb_id, kjernenavn, lagnummer in divlag:
                 if kjernenavn_fra_klubb_id[klubb_id] != kjernenavn:
                     raise ValueError(f"Topplagets klubb_id {klubb_id} ({kjernenavn_fra_klubb_id[klubb_id]}) matchet ikke oppgitt kjernenavn {kjernenavn}.")
-            
         menn_topplag = list(seriedata.hent(MannTopplag).filter((MannTopplag.serieår != serieår)).all())
         for klubb_id, _, lagnummer in menn_div1lag:
             menn_topplag.append(MannTopplag(serieår=serieår, divisjon=1, klubb_id=klubb_id, lagnummer=lagnummer))

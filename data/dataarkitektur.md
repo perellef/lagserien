@@ -4,7 +4,7 @@ For å få et robust seriesystem har det vært viktig med en solid dataarkitektu
 
 ## Prinsipper
 
-I seriesystemet er det særlig to sentrale prinsipper for dataarkitektur:
+I seriesystemet har sentrale prinsipper for dataarkitektur:
 - **Datakvalitet**: Data skal være korrekte fra de registreres. Inkorrekt data lagres trygt uten å påvirke systemet.
 
 - **Skalerbarhet**: Dataarkitekturen må kunne håndtere økende datamengder og trafikk.
