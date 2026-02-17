@@ -1,4 +1,9 @@
+import sys
+sys.path.append('./')
+
 from srcc.main.batch_3_utdeling.grenseverdier import grenseverdier
+
+import math
 
 tillegg_ved_manuell_tid = {
     "60": 0.24,
@@ -68,6 +73,14 @@ class Poengberegner:
             raise ValueError(f"Ukjent resultatformat: {prestasjon}")
         
         return float(resultat)
+
+    @staticmethod
+    def til_lesveennlig_format(prestasjon):
+        if prestasjon > 3600:
+            return f"{int(prestasjon)//3600},{(int(prestasjon)%3600)//60},{(int(prestasjon)%60)//1},{100*(prestasjon % 1):.0f}"
+        if prestasjon > 60:
+            return f"{(int(prestasjon)%3600)//60},{(int(prestasjon)%60)//1},{100*(prestasjon % 1):.0f}"
+        return str(prestasjon).replace(".",",")
     
     @staticmethod
     def finn_nedre_grense_ved_binærsøk(grenser, flytverdi):
@@ -86,3 +99,27 @@ class Poengberegner:
             return -1
         
         raise ValueError("Skal ikke kunne ha et resultat bedre enn øverste grenseverdi")
+
+    def prestasjon_fra_poeng(kjønn, øvelse, poeng):
+        if poeng % 1 != 0:
+            raise ValueError(f"Poeng skal være et heltall, men var: {poeng}")
+        poeng = int(poeng)
+
+        if poeng < 0:
+            raise ValueError("Ingen prestasjon gir negative poenger.")
+        if poeng == 0:
+            raise ValueError("Det finnes ikke en svakeste prestastasjon som gir 0 poeng.")
+        if poeng > 1300:
+            raise ValueError("Det er ikke definert noen prestasjon for poenger større enn 1300")
+        
+        grenser = grenseverdier[kjønn][øvelse]
+
+        if poeng % 50 == 0:
+            return Poengberegner.til_lesveennlig_format(grenser[poeng//50])
+
+        under = grenser[poeng//50]
+        over = grenser[poeng//50+1]
+
+        prestasjon = math.ceil(100*(under+(over-under)*(poeng/50-poeng//50)))/100
+
+        return Poengberegner.til_lesveennlig_format(prestasjon)
