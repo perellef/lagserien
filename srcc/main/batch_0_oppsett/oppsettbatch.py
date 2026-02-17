@@ -196,7 +196,9 @@ class Oppsettbatch():
             (132,  "IL Bjarg"                  , "Bjarg"),
             (214,  "Mjøsdalen IL"              , "Mjøsdalen"),
             (126,  "Os Turnforening"           , "Os"),
-            (87,  "Varegg IL"                  , "Varegg"),
+            (87,   "Varegg IL"                 , "Varegg"),
+            (174,  "Hareid IL"                 , "Hareid"),
+            (318,  "Hamar IL"                  , "Hamar"),
         ]
 
         klubber = []

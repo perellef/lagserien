@@ -11,7 +11,7 @@ Det er en rekke skript for å kjøre batchene:
 - Batch 4: `kjør_seriekalkulator.py`, eventuelt `kjør_seriekalkulator_for_periode.py` ved simulering tilbake i tid ved oppstart
 - Batch 5: (mangler)
 
-Batch 6, 2, 3, 4 kan kjøres sekvensielt med `kjør_rutine.py`.
+Batch 2, 3, 4 kan kjøres sekvensielt med `kjør_rutine.py`.
 
 ### Annet:
 -  `start_nettside.py` starter nettsiden lokalt
