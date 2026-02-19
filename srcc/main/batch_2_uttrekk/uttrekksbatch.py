@@ -17,8 +17,11 @@ class Uttrekksbatch:
     def kjør(seriedata, serieår, uttrekksdato):
         assert uttrekksdato == date.today(), f"Uttrekksdato for uttrekksbatch må være dagens dato ({date.today()}), men var: {uttrekksdato}"
 
-        Stevneuthenter.registrer_stevner(serieår, seriedata, uttrekksdato)
-        stevneinvitasjoner = Terminlisteuthenter.finn_stevneinvitasjoner(serieår, seriedata)
+        stevner = Stevneuthenter.registrer_stevner(serieår, seriedata, uttrekksdato)
+        seriedata.bulkinnsett_erstatt(stevner)
+
+        stevneinvitasjoner = list(seriedata.hent(Stevneinvitasjon).filter(Stevneinvitasjon.stevnedato < date.today()).all())
+        Terminlisteuthenter.finn_stevneinvitasjoner(serieår, stevneinvitasjoner)
 
         tilordnede_stevneinvitasjoner = Stevneforbinder.forbind_stevneinvitasjon_med_stevne(seriedata, serieår, stevneinvitasjoner)
 

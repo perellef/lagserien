@@ -41,7 +41,10 @@ def lag(kjonn, lagnavn):
 
         noteringer = db_hent_noteringer_til_lag(peker, kjonn, serieår, klubbnavn, lagnummer)
         divisjon, plassering = db_hent_lagplassering(peker, kjonn, serieår, i_dag, klubbnavn, lagnummer)
-
+        
+        if plassering == None:
+            abort(404)
+            
     berikede_lagresultater = Kalkulatorformidler.finn_beriket_oppstilling(noteringer, lagresultater, tidligere_lagresultater, nye_resultater, fjernede_resultater, resultatplasseringer)
         
     return render_template(

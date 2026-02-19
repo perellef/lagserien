@@ -47,4 +47,4 @@ class Stevneuthenter:
                     rapportert=stevner[stevne_id].rapportert if (stevne_id in stevner) else date.today()
                 )
 
-        seriedata.bulkinnsett_erstatt(list(stevner.values()))
+        return list(stevner.values())

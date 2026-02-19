@@ -18,7 +18,7 @@ url = "https://www.friidrett.no/terminliste/"
 class Terminlisteuthenter:
 
     @staticmethod
-    def finn_stevneinvitasjoner(serieår, seriedata):
+    def finn_stevneinvitasjoner(serieår, stevneinvitasjoner):
 
         options = Options()
         options.add_argument("--headless")  # Run in headless mode (no GUI)
@@ -78,7 +78,6 @@ class Terminlisteuthenter:
 
             stevner_info.add((dato, stevnetittel, arena, arrangør, krets))
 
-        nye_stevneinvitasjoner = []
         for (dato, stevnetittel, arena, arrangør, krets) in stevner_info:
             stevneinvitasjon = Stevneinvitasjon(
                 stevne_id=None,
@@ -90,10 +89,6 @@ class Terminlisteuthenter:
                 skal_vises=True,
                 er_manuelt_satt_stevne_id=False
             )
-            nye_stevneinvitasjoner.append(stevneinvitasjon)
+            stevneinvitasjoner.append(stevneinvitasjon)
 
         driver.quit()
-
-        utløpte_stevneinvitasjoner = list(seriedata.hent(Stevneinvitasjon).filter(Stevneinvitasjon.stevnedato < date.today()).all())
-        
-        return utløpte_stevneinvitasjoner + nye_stevneinvitasjoner

@@ -226,7 +226,7 @@ def db_hent_noteringer_til_lag(peker, kjønn, serieår, klubbnavn, lagnummer):
     ''', (lagnummer, serieår, klubbnavn))[0]
 
 def db_hent_lagplassering(peker, kjonn, serieår, uttrekksdato, klubbnavn, lagnummer):
-        return execute(peker, f'''
+    result = execute(peker, f'''
         SELECT divisjon, plassering
         FROM "serie.{kjonn}_lagplasseringer" AS lagplassering
             JOIN "uttrekk.klubber" AS klubb ON (lagplassering.klubb_id = klubb.klubb_id)
@@ -234,7 +234,10 @@ def db_hent_lagplassering(peker, kjonn, serieår, uttrekksdato, klubbnavn, lagnu
             AND {{placeholder}} BETWEEN fra_og_med AND coalesce(til_og_med, '9999-01-01')
             AND klubb.klubbnavn = {{placeholder}}
             AND lagnummer = {{placeholder}}
-    ''', (serieår, uttrekksdato, klubbnavn, lagnummer))[0]
+    ''', (serieår, uttrekksdato, klubbnavn, lagnummer))
+    if len(result) == 0:
+        return (None, None)
+    return result[0]
 
 def db_hent_maksimalt_antall_noteringer(peker, serieår, divisjon):
     return execute(peker, '''
