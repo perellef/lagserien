@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+
+{% block innhold %}
+<h1>Utmerkelser {{ serieår }}</h1>
+
+<div class="container1">
+    <div style="margin-right: 2%;">
+        <br>
+        <span style="display: inline-block; color: gray; margin-bottom: 5px;">Utøvere</span><br>
+        <button id="sterkeste-enkeltresultat-knapp" style="width: 200px; text-align: left; margin: 4px; border-width: 1.5px;">Sterkeste enkeltresultat</button><br>
+        <button id="mest-aktive-utøver-knapp" style="width: 200px; text-align: left; margin: 4px; border-width: 1.5px;">Mest aktive utøver</button><br>
+        <button id="mest-avgjørende-utøver-knapp" style="width: 200px; text-align: left; margin: 4px; border-width: 1.5px;">Mest avgjørende utøver</button><br>
+        <br>
+        <span style="display: inline-block; color: gray; margin-bottom: 5px;">Klubber</span><br>
+        <button id="klubb-med-størst-bredde-knapp" style="width: 200px; text-align: left; margin: 4px; border-width: 1.5px;">Klubb med størst bredde</button><br>
+        <button id="klubb-med-størst-forbedring-knapp" style="width: 200px; text-align: left; margin: 4px; border-width: 1.5px;">Klubb med størst forbedring</button><br>
+        <br>
+        <span style="display: inline-block; color: gray; margin-bottom: 5px;">Øvelser</span><br>
+        <button id="mest-populære-øvelse-knapp" style="width: 200px; text-align: left; margin: 4px; border-width: 1.5px;">Mest populære øvelse</button>
+    </div>
+    <div>
+
+        <div style="margin: 2%;">        
+            <div id="sterkeste-enkeltresultat-visning" style="display: block">
+                <h5>Sterkeste enkeltresultat</h5>
+                <div style="border: solid 3px rgb(204, 204, 204);">
+                    <div style="overflow-y: auto; max-height: 420px;">
+                        <table class="table table-sm divisjonstabell" style="table-layout: fixed; margin: 0;">   
+                            <thead class="table-light" style="position: sticky; top: 0; ">
+                                <tr style="font-size: 14px;">
+                                    <th style="width: 7%; padding-top: 2px; padding-bottom: 2px;"></th>
+                                    <th style="width: 15%; padding-top: 2px; padding-bottom: 2px;">Poeng</th>
+                                    <th style="width: 40%; padding-top: 2px; padding-bottom: 2px;">Navn</th>
+                                    <th style="width: 10%; padding-top: 2px; padding-bottom: 2px;">F.år</th>
+                                    <th style="width: 20%; padding-top: 2px; padding-bottom: 2px;">Øvelse</th>
+                                    <th style="width: 20%; padding-top: 2px; padding-bottom: 2px;">Resultat</th>
+                                </tr>
+                            </thead>
+                            <tbody id="sterkeste-enkeltresultat" style="font-size: 14px;"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="mest-aktive-utøver-visning" style="display: none">
+                <h5>Mest aktive utøver</h5>
+                <div style="border: solid 3px rgb(204, 204, 204);">
+                    <div style="overflow-y: auto; max-height: 420px;">
+                        <table class="table table-sm divisjonstabell" style="table-layout: fixed; margin: 0;">   
+                            <thead class="table-light" style="position: sticky; top: 0; ">
+                                <tr style="font-size: 14px;">
+                                    <th style="width: 7%; padding-top: 2px; padding-bottom: 2px;"></th>
+                                    <th style="width: 15%; padding-top: 2px; padding-bottom: 2px;">Poeng</th>
+                                    <th style="width: 40%; padding-top: 2px; padding-bottom: 2px;">Navn</th>
+                                    <th style="width: 10%; padding-top: 2px; padding-bottom: 2px;">F.år</th>
+                                    <th style="width: 20%; padding-top: 2px; padding-bottom: 2px;">Øvelser</th>
+                                </tr>
+                            </thead>
+                            <tbody id="mest-aktive-utøver" style="font-size: 14px;"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="mest-avgjørende-utøver-visning"  style="display: none">
+                <h5>Mest avgjørende utøver</h5>
+                <div style="border: solid 3px rgb(204, 204, 204);">
+                    <div style="overflow-y: auto; max-height: 420px;">
+                        <table class="table table-sm divisjonstabell" style="table-layout: fixed; margin: 0;">   
+                            <thead class="table-light" style="position: sticky; top: 0; ">
+                                <tr style="font-size: 14px;">
+                                    <th style="width: 7%; padding-top: 2px; padding-bottom: 2px;"></th>
+                                    <th style="width: 14%; padding-top: 2px; padding-bottom: 2px;">Score</th>
+                                    <th style="width: 30%; padding-top: 2px; padding-bottom: 2px;">Navn</th>
+                                    <th style="width: 12%; padding-top: 2px; padding-bottom: 2px;">F.år</th>
+                                    <th style="width: 18%; padding-top: 2px; padding-bottom: 2px;">Seriepoeng</th>
+                                    <th style="width: 30%; padding-top: 2px; padding-bottom: 2px;">Lag</th>
+                                </tr>
+                            </thead>
+                            <tbody id="mest-avgjørende-utøver" style="font-size: 14px;"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="klubb-med-størst-bredde-visning"  style="display: none">
+                <h5>Klubb med størst bredde</h5>
+                <div style="border: solid 3px rgb(204, 204, 204);">
+                    <div style="overflow-y: auto; max-height: 420px;">
+                        <table class="table table-sm divisjonstabell" style="table-layout: fixed; margin: 0;">   
+                            <thead class="table-light" style="position: sticky; top: 0; ">
+                                <tr style="font-size: 14px;">
+                                    <th style="width: 7%; padding-top: 2px; padding-bottom: 2px;"></th>
+                                    <th style="width: 25%; padding-top: 2px; padding-bottom: 2px;">Seriepoeng totalt</th>
+                                    <th style="width: 40%; padding-top: 2px; padding-bottom: 2px;">Klubb</th>
+                                    <th style="width: 20%; padding-top: 2px; padding-bottom: 2px;">Antall lag</th>
+                                </tr>
+                            </thead>
+                            <tbody id="klubb-med-størst-bredde" style="font-size: 14px;"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div id="klubb-med-størst-forbedring-visning"  style="display: none">
+                <h5>Klubb med størst forbedring</h5>
+                <div style="border: solid 3px rgb(204, 204, 204);">
+                    <div style="overflow-y: auto; max-height: 420px;">
+                        <table class="table table-sm divisjonstabell" style="table-layout: fixed; margin: 0;">   
+                            <thead class="table-light" style="position: sticky; top: 0; ">
+                                <tr style="font-size: 14px;">
+                                    <th style="width: 7%; padding-top: 2px; padding-bottom: 2px;"></th>
+                                    <th style="width: 20%; padding-top: 2px; padding-bottom: 2px;">Forbedring</th>
+                                    <th style="width: 40%; padding-top: 2px; padding-bottom: 2px;">Klubb</th>
+                                    <th style="width: 20%; padding-top: 2px; padding-bottom: 2px;">I år</th>
+                                    <th style="width: 20%; padding-top: 2px; padding-bottom: 2px;">I fjor</th>
+                                </tr>
+                            </thead>
+                            <tbody id="klubb-med-størst-forbedring" style="font-size: 14px;"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="mest-populære-øvelse-visning"  style="display: none">
+                <h5>Mest populære øvelse</h5>
+                <div style="border: solid 3px rgb(204, 204, 204);">
+                    <div style="overflow-y: auto; max-height: 420px;">
+                        <table class="table table-sm divisjonstabell" style="table-layout: fixed; margin: 0;">   
+                            <thead class="table-light" style="position: sticky; top: 0; ">
+                                <tr style="font-size: 14px;">
+                                    <th style="width: 7%; padding-top: 2px; padding-bottom: 2px;"></th>
+                                    <th style="width: 25%; padding-top: 2px; padding-bottom: 2px;">Seriepoeng totalt</th>
+                                    <th style="width: 35%; padding-top: 2px; padding-bottom: 2px;">Øvelse</th>
+                                    <th style="width: 20%; padding-top: 2px; padding-bottom: 2px;">Resultater</th>
+                                </tr>
+                            </thead>
+                            <tbody id="mest-populære-øvelse" style="font-size: 14px;"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+<script src="{{ url_for('static', filename='rangeringer.js') }}"></script>
+
+{% endblock %}

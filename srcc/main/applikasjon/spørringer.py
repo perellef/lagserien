@@ -239,7 +239,216 @@ def db_hent_lagplassering(peker, kjonn, serieår, uttrekksdato, klubbnavn, lagnu
         return (None, None)
     return result[0]
 
+def db_hent_rangering_sterkeste_enkeltresultat(peker, serieår):
+    return execute(peker, '''
+        SELECT poeng, navn, fødselsår, øvelse.øvelsesnavn, prestasjon
+        FROM (
+            SELECT * FROM "tildeling.menn_serieresultater" WHERE til_og_med IS NULL
+            UNION
+            SELECT * FROM "tildeling.kvinner_serieresultater" WHERE til_og_med IS NULL
+        ) AS serieresultat
+            JOIN "uttrekk.resultater" AS resultat ON (serieresultat.resultat_id = resultat.resultat_id)
+            JOIN "uttrekk.serier" AS serie ON (serie.fra_og_med <= resultat.dato AND resultat.dato <= serie.til_og_med)
+            JOIN "uttrekk.utøvere" AS utøver ON (resultat.utøver_id = utøver.utøver_id)
+            JOIN "uttrekk.øvelser" AS øvelse ON (resultat.øvelseskode = øvelse.øvelseskode)
+        WHERE serie.serieår = {placeholder}
+            AND serieresultat.klubb_id IS NOT NULL
+            AND serieresultat.poeng IS NOT NULL
+        ORDER BY poeng DESC
+        LIMIT 100
+        ;
+    ''', (serieår,))
+
+def db_hent_rangering_mest_aktive_utøver(peker, serieår):
+    return execute(peker, '''
+        SELECT SUM(poeng), navn, fødselsår, COUNT(poeng) 
+        FROM (
+            SELECT * FROM "tildeling.menn_serieresultater" WHERE til_og_med IS NULL
+            UNION
+            SELECT * FROM "tildeling.kvinner_serieresultater" WHERE til_og_med IS NULL
+        ) AS serieresultat
+            JOIN "uttrekk.resultater" AS resultat ON (serieresultat.resultat_id = resultat.resultat_id)
+            JOIN "uttrekk.serier" AS serie ON (serie.fra_og_med <= resultat.dato AND resultat.dato <= serie.til_og_med)
+            JOIN "uttrekk.utøvere" AS utøver ON (resultat.utøver_id = utøver.utøver_id)
+        WHERE serie.serieår = {placeholder}
+            AND serieresultat.klubb_id IS NOT NULL
+        GROUP BY utøver.utøver_id, navn, fødselsår, serieresultat.klubb_id
+        HAVING SUM(poeng) > 0
+        ORDER BY SUM(poeng) DESC
+        LIMIT 100
+        ;
+    ''', (serieår,))
+
+def db_hent_rangering_mest_avgjørende_utøver(peker, serieår):
+    return execute(peker, '''
+            SELECT FLOOR(poeng), navn, fødselsår, seriepoeng, CASE WHEN lagnummer = 1 THEN klubbnavn ELSE CONCAT(klubbnavn, ' ', lagnummer, '. lag') END 
+            FROM
+            (
+                (WITH
+                utøver_klubblag AS (
+                    SELECT DISTINCT klubb_id, lagnummer, utøver_id 
+                    FROM "serie.menn_lagresultater" AS lagresultat
+                        JOIN "uttrekk.resultater" AS resultat ON (lagresultat.resultat_id = resultat.resultat_id)
+                    WHERE serieår = {placeholder} AND til_og_med IS NULL
+                ),
+                merverdi_lagfraksjon AS (
+                    SELECT merverdi.klubb_id, CAST(laginfo.poeng AS float)/SUM(merverdi.poeng) AS poeng, lag.lagnummer
+                    FROM "serie.menn_utøver_merverdi" AS merverdi
+                        JOIN utøver_klubblag AS lag ON (lag.klubb_id = merverdi.klubb_id and lag.utøver_id = merverdi.utøver_id)
+                        JOIN "serie.menn_laginfo" AS laginfo ON (laginfo.klubb_id = lag.klubb_id AND laginfo.lagnummer = lag.lagnummer)
+                    WHERE merverdi.serieår = {placeholder}
+                        AND merverdi.til_og_med IS NULL
+                        AND laginfo.serieår = {placeholder}
+                        AND laginfo.til_og_med IS NULL
+                    GROUP BY merverdi.klubb_id, lag.lagnummer, laginfo.poeng
+                ),
+                utøver_seriepoeng AS (
+                    SELECT sum(poeng) AS poeng, resultat.utøver_id, lagresultat.klubb_id
+                    FROM "serie.menn_lagresultater" AS lagresultat
+                        JOIN "uttrekk.resultater" AS resultat ON (lagresultat.resultat_id = resultat.resultat_id)
+                        JOIN "tildeling.menn_serieresultater" AS serieresultat ON (resultat.resultat_id = serieresultat.resultat_id)
+                    WHERE lagresultat.serieår = {placeholder}
+                        AND lagresultat.til_og_med IS null
+                        AND serieresultat.til_og_med is null
+                    GROUP BY resultat.utøver_id, lagresultat.klubb_id
+                )
+            SELECT merverdi.poeng*fraksjon.poeng AS poeng, navn, fødselsår, seriep.poeng AS seriepoeng, klubbnavn, lag.lagnummer
+            FROM "serie.menn_utøver_merverdi" AS merverdi
+                JOIN utøver_klubblag AS lag ON (merverdi.utøver_id = lag.utøver_id AND merverdi.klubb_id = lag.klubb_id)
+                JOIN merverdi_lagfraksjon AS fraksjon ON (lag.klubb_id = fraksjon.klubb_id AND lag.lagnummer = fraksjon.lagnummer)
+                JOIN "uttrekk.utøvere" AS utøver ON (merverdi.utøver_id = utøver.utøver_id)
+                JOIN "uttrekk.klubber" AS klubb ON (klubb.klubb_id = lag.klubb_id)
+                JOIN utøver_seriepoeng AS seriep ON (seriep.utøver_id = utøver.utøver_id AND seriep.klubb_id = merverdi.klubb_id)
+            WHERE serieår = {placeholder}
+                AND til_og_med IS NULL
+            GROUP BY utøver.utøver_id, navn, fødselsår, merverdi.poeng, fraksjon.poeng, seriep.poeng, merverdi.klubb_id, lag.lagnummer, klubbnavn
+            )
+            UNION
+            (WITH
+                utøver_klubblag AS (
+                    SELECT DISTINCT klubb_id, lagnummer, utøver_id 
+                    FROM "serie.kvinner_lagresultater" AS lagresultat
+                        JOIN "uttrekk.resultater" AS resultat ON (lagresultat.resultat_id = resultat.resultat_id)
+                    WHERE serieår = {placeholder} AND til_og_med IS NULL
+                ),
+                merverdi_lagfraksjon AS (
+                    SELECT merverdi.klubb_id, CAST(laginfo.poeng AS float)/SUM(merverdi.poeng) AS poeng, lag.lagnummer
+                    FROM "serie.kvinner_utøver_merverdi" AS merverdi
+                        JOIN utøver_klubblag AS lag ON (lag.klubb_id = merverdi.klubb_id and lag.utøver_id = merverdi.utøver_id)
+                        JOIN "serie.kvinner_laginfo" AS laginfo ON (laginfo.klubb_id = lag.klubb_id AND laginfo.lagnummer = lag.lagnummer)
+                    WHERE merverdi.serieår = {placeholder}
+                        AND merverdi.til_og_med IS NULL
+                        AND laginfo.serieår = {placeholder}
+                        AND laginfo.til_og_med IS NULL
+                    GROUP BY merverdi.klubb_id, lag.lagnummer, laginfo.poeng
+                ),
+                utøver_seriepoeng AS (
+                    SELECT sum(poeng) AS poeng, resultat.utøver_id, lagresultat.klubb_id
+                    FROM "serie.kvinner_lagresultater" AS lagresultat
+                        JOIN "uttrekk.resultater" AS resultat ON (lagresultat.resultat_id = resultat.resultat_id)
+                        JOIN "tildeling.kvinner_serieresultater" AS serieresultat ON (resultat.resultat_id = serieresultat.resultat_id)
+                    WHERE lagresultat.serieår = {placeholder}
+                        AND lagresultat.til_og_med IS null
+                        AND serieresultat.til_og_med is null
+                    GROUP BY resultat.utøver_id, lagresultat.klubb_id
+                )
+            SELECT merverdi.poeng*fraksjon.poeng AS poeng, navn, fødselsår, seriep.poeng AS seriepoeng, klubbnavn, lag.lagnummer
+            FROM "serie.kvinner_utøver_merverdi" AS merverdi
+                JOIN utøver_klubblag AS lag ON (merverdi.utøver_id = lag.utøver_id AND merverdi.klubb_id = lag.klubb_id)
+                JOIN merverdi_lagfraksjon AS fraksjon ON (lag.klubb_id = fraksjon.klubb_id AND lag.lagnummer = fraksjon.lagnummer)
+                JOIN "uttrekk.utøvere" AS utøver ON (merverdi.utøver_id = utøver.utøver_id)
+                JOIN "uttrekk.klubber" AS klubb ON (klubb.klubb_id = lag.klubb_id)
+                JOIN utøver_seriepoeng AS seriep ON (seriep.utøver_id = utøver.utøver_id AND seriep.klubb_id = merverdi.klubb_id)
+            WHERE serieår = {placeholder}
+                AND til_og_med IS NULL
+            GROUP BY utøver.utøver_id, navn, fødselsår, merverdi.poeng, fraksjon.poeng, seriep.poeng, merverdi.klubb_id, lag.lagnummer, klubbnavn
+            )
+        ) a
+        ORDER BY poeng DESC
+        LIMIT 100                   
+    ;
+    ''', (serieår,serieår,serieår,serieår,serieår,serieår,serieår,serieår,serieår,serieår,))
+
+def db_hent_rangering_klubb_med_størst_bredde(peker, serieår):
+    return execute(peker, '''
+        WITH menn_klubbpoeng AS (
+                SELECT SUM(poeng) AS poeng, laginfo.klubb_id, count(*) AS antall
+                 FROM "serie.menn_laginfo" AS laginfo
+                   JOIN "serie.menn_lagplasseringer" AS lagpl ON (laginfo.klubb_id = lagpl.klubb_id AND laginfo.lagnummer = lagpl.lagnummer)
+                WHERE laginfo.serieår = {placeholder}
+                   AND lagpl.serieår = {placeholder}
+                   AND laginfo.til_og_med IS NULL
+                   AND lagpl.til_og_med IS NULL
+                   AND (divisjon < 3 OR poeng >= 5000)
+                GROUP BY laginfo.klubb_id
+            ),
+            kvinner_klubbpoeng AS (
+                SELECT SUM(poeng) AS poeng, laginfo.klubb_id, count(*) AS antall
+                FROM "serie.kvinner_laginfo" AS laginfo
+                   JOIN "serie.kvinner_lagplasseringer" AS lagpl ON (laginfo.klubb_id = lagpl.klubb_id AND laginfo.lagnummer = lagpl.lagnummer)
+                WHERE laginfo.serieår = {placeholder}
+                   AND lagpl.serieår = {placeholder}
+                   AND laginfo.til_og_med IS NULL
+                   AND lagpl.til_og_med IS NULL
+                   AND (divisjon < 3 OR poeng >= 5000)
+                GROUP BY laginfo.klubb_id
+            )
+        SELECT m.poeng+k.poeng, klubbnavn, m.antall + k.antall
+        FROM menn_klubbpoeng AS m
+            JOIN kvinner_klubbpoeng AS k ON (m.klubb_id = k.klubb_id)
+            JOIN "uttrekk.klubber" AS klubb ON (m.klubb_id = klubb.klubb_id)
+        ORDER BY m.poeng+k.poeng DESC
+        LIMIT 100
+        ;
+    ''', (serieår,serieår,serieår,serieår))
+
+def db_hent_rangering_klubb_med_største_forbedring(peker, serieår):
+    return execute(peker, '''
+        SELECT * FROM
+        (
+            (SELECT i_fjor.plassering-i_år.plassering AS økning, CONCAT(klubbnavn, ' (menn)'), i_år.plassering, i_fjor.plassering
+            from "serie.menn_lagplasseringer" i_år
+                JOIN "rapport.arkiv_menn_sluttplasseringer" i_fjor ON (i_år.klubb_id = i_fjor.klubb_id and i_år.lagnummer = i_fjor.lagnummer)
+                JOIN "uttrekk.klubber" AS klubb ON (i_år.klubb_id = klubb.klubb_id)
+            WHERE i_år.serieår = {placeholder}
+                AND i_fjor.serieår = {placeholder}
+                AND i_år.lagnummer = 1
+                AND i_år.til_og_med IS NULL)
+            UNION
+            (SELECT i_fjor.plassering-i_år.plassering AS økning, CONCAT(klubbnavn, ' (kvinner)'), i_fjor.plassering, i_år.plassering
+            from "serie.kvinner_lagplasseringer" i_år
+                JOIN "rapport.arkiv_kvinner_sluttplasseringer" i_fjor ON (i_år.klubb_id = i_fjor.klubb_id and i_år.lagnummer = i_fjor.lagnummer)
+                JOIN "uttrekk.klubber" AS klubb ON (i_år.klubb_id = klubb.klubb_id)
+            WHERE i_år.serieår = {placeholder}
+                AND i_fjor.serieår = {placeholder}
+                AND i_år.lagnummer = 1
+                AND i_år.til_og_med IS NULL)
+        ) a
+        ORDER BY økning DESC
+        LIMIT 100
+        ;
+    ''', (serieår, serieår-1,serieår, serieår-1,))
+
+def db_hent_rangering_mest_populære_øvelse(peker, serieår):
+    return execute(peker, '''
+        SELECT sum(poeng), øvelsesnavn, count(*)
+        FROM (
+            SELECT * FROM "tildeling.menn_serieresultater"
+            UNION
+            SELECT * FROM "tildeling.kvinner_serieresultater"
+        ) AS serieresultat
+            JOIN "uttrekk.resultater" AS resultat ON (serieresultat.resultat_id = resultat.resultat_id)
+            JOIN "uttrekk.serier" AS serie ON (serie.fra_og_med <= resultat.dato AND resultat.dato <= serie.til_og_med)
+            JOIN "uttrekk.øvelser" AS øvelse ON (øvelse.øvelseskode = resultat.øvelseskode)
+        WHERE serie.serieår = {placeholder}
+            AND serieresultat.til_og_med IS NULL
+        GROUP BY øvelse.øvelseskode, øvelsesnavn
+        ORDER BY sum(poeng) DESC
+        ;
+    ''', (serieår,))
+
 def db_hent_maksimalt_antall_noteringer(peker, serieår, divisjon):
+
     return execute(peker, '''
         SELECT antall_valgfri+antall_obligatoriske
         FROM "serie.oppstillingskrav"
