@@ -61,21 +61,16 @@ url = "http://www.minfriidrettsstatistikk.info/php/SeriePoengPrKlubb.php"
 class Statistikkhenting:
 
     @staticmethod
-    def innsett_statistikk(serieår, seriedata, klubbkretser, menn_resultatforløp, kvinner_resultatforløp):
-        klubb_ider = Statistikkhenting.__lastInnKlubbID()
-        stevner = set(e.stevne_id for e in seriedata.hent(Stevne).all())
+    def innles_statistikk(serieår, seriedata, klubbkretser, menn_resultatforløp, kvinner_resultatforløp):
         resultathash = Statistikkhenting.__finn_resultathash(seriedata)
         kjernenavn_overflødigheter = Statistikkhenting.__finn_kjernenavn_overflødigheter()
         seriedata.lukk()
 
-        data = Statistikkhenting.last_inn_statistikk(serieår, klubb_ider)
-        innsettdata = Statistikkhenting.klargjør_data(data, menn_resultatforløp, kvinner_resultatforløp, klubbkretser, stevner, resultathash, kjernenavn_overflødigheter)
+        data = Statistikkhenting.last_inn_statistikk(serieår)
+        innsettdata = Statistikkhenting.klargjør_data(data, menn_resultatforløp, kvinner_resultatforløp, klubbkretser, resultathash, kjernenavn_overflødigheter)
 
         seriedata.åpne()
-        seriedata.bulkinnsett_erstatt(list(innsettdata[Klubb]))
-        seriedata.bulkinnsett_erstatt(list(innsettdata[Utøver]))
-        seriedata.bulkinnsett_erstatt(list(innsettdata[Stevne]))
-        seriedata.bulkinnsett_muteres(list(innsettdata[Resultat]))
+        return list(innsettdata[Klubb]), list(innsettdata[Utøver]), list(innsettdata[Resultat])
     
     @staticmethod
     def __finn_resultathash(seriedata):
@@ -95,7 +90,9 @@ class Statistikkhenting:
         return [int(el["value"]) for el in list(klubber)[1:]]
     
     @staticmethod
-    def last_inn_statistikk(serieår, klubb_ider):
+    def last_inn_statistikk(serieår):
+        klubb_ider = Statistikkhenting.__lastInnKlubbID()
+        
         data = (defaultdict(dict), defaultdict(dict))
 
         for i,klubb_id in enumerate(klubb_ider, start=1):
@@ -142,10 +139,10 @@ class Statistikkhenting:
         return krets, klubbnavn, resultatdata 
 
     @staticmethod
-    def klargjør_data(data, menn_resultatforløp, kvinner_resultatforløp, klubbkretser, stevner, resultathash, kjernenavn_overflødigheter):
+    def klargjør_data(data, menn_resultatforløp, kvinner_resultatforløp, klubbkretser, resultathash, kjernenavn_overflødigheter):
         datoformater = lambda x: date.fromisoformat('-'.join(x.split(".")[::-1]))
         
-        innsettdata = {Klubb: set(), Utøver: set(), Stevne: set(), Resultat: set()}
+        innsettdata = {Klubb: set(), Utøver: set(), Resultat: set()}
         for kjønn_data, resultatforløp in zip(data, (menn_resultatforløp, kvinner_resultatforløp)):
             for krets, klubbdata in kjønn_data.items():
                 for (klubbnavn, klubb_id), resultatdata in klubbdata.items():
@@ -154,26 +151,8 @@ class Statistikkhenting:
                     klubbkretser[klubb_id] = krets.removesuffix(" Friidrettskrets")
 
                     for _, øvelse_id, navn, f_år, utøver_id, prestasjon, statistikk_resultat_id, _, sted, stevne_id, dato in resultatdata[1:]:
-                        if int(stevne_id) not in stevner:
-                            print(f"Stevne med stevne-id {stevne_id} fantes ikke. Oppretter stevnet på {sted}.")
-                            innsettdata[Stevne].add(
-                                Stevne(
-                                    stevne_id=int(stevne_id),
-                                    stevnedato=datoformater(dato),
-                                    stevnetittel=sted,
-                                    arena=sted,
-                                    sted=sted,
-                                    er_nasjonalt=True,
-                                    rapportert=date.today()
-                                )
-                            )
-                        try:
-                            resultat = Statistikkhenting.__innsett_resultat_og_relatert(innsettdata, øvelse_id, navn, f_år, int(utøver_id), prestasjon, int(stevne_id), datoformater(dato), int(statistikk_resultat_id), resultathash)
-                            resultatforløp[resultat] = klubb
-                        except AssertionError as feilmelding:
-                            feilbeskrivelse = f"øvelse_id={øvelse_id}, navn={navn}, f_år={f_år}, prestasjon={prestasjon}, stevne_id={stevne_id}, konkurransedato={dato}"
-                            feilbeskrivelse += f"Feilmelding: {feilmelding}"
-                            Varsel.loggfør("innlesing_batch", feilbeskrivelse)
+                        resultat = Statistikkhenting.__innsett_resultat_og_relatert(innsettdata, øvelse_id, navn, f_år, int(utøver_id), prestasjon, int(stevne_id), datoformater(dato), int(statistikk_resultat_id), resultathash)
+                        resultatforløp[resultat] = klubb
 
         return innsettdata
 

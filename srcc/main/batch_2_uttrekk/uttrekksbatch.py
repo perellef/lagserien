@@ -18,22 +18,26 @@ class Uttrekksbatch:
         assert uttrekksdato == date.today(), f"Uttrekksdato for uttrekksbatch må være dagens dato ({date.today()}), men var: {uttrekksdato}"
 
         stevner = Stevneuthenter.registrer_stevner(serieår, seriedata, uttrekksdato)
-        seriedata.bulkinnsett_erstatt(stevner)
 
         stevneinvitasjoner = list(seriedata.hent(Stevneinvitasjon).filter(Stevneinvitasjon.stevnedato < date.today()).all())
         Terminlisteuthenter.finn_stevneinvitasjoner(serieår, stevneinvitasjoner)
 
         tilordnede_stevneinvitasjoner = Stevneforbinder.forbind_stevneinvitasjon_med_stevne(seriedata, serieår, stevneinvitasjoner)
+        
+        menn_resultatforløp = {}
+        kvinner_resultatforløp = {}
+        klubbkretser = {}
 
+        klubber, utøvere, resultater = Statistikkhenting.innles_statistikk(serieår, seriedata, klubbkretser, menn_resultatforløp, kvinner_resultatforløp)
+        
+        seriedata.bulkinnsett_erstatt(stevner)
         seriedata.slett_alle(Stevneinvitasjon)
         seriedata.bulkinnsett(tilordnede_stevneinvitasjoner)
 
-        menn_resultatforløp = {}
-        kvinner_resultatforløp = {}
+        seriedata.bulkinnsett_erstatt(klubber)
+        seriedata.bulkinnsett_erstatt(utøvere)
+        seriedata.bulkinnsett_muteres(resultater)
 
-        klubbkretser = {}
-
-        Statistikkhenting.innsett_statistikk(serieår, seriedata, klubbkretser, menn_resultatforløp, kvinner_resultatforløp)
         Uttrekksperiodiserer.periodiser_uttrekksresultater(seriedata, serieår, uttrekksdato, menn_resultatforløp, kvinner_resultatforløp)
         Uttrekksperiodiserer.periodiser_klubbkretser(seriedata, uttrekksdato, klubbkretser)
         
