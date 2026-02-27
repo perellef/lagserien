@@ -1,0 +1,53 @@
+{% extends "base_admin.html" %}
+
+{% block innhold %}
+
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{{ url_for('adminside') }}">Adminside</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Omplasser resultater</li>
+  </ol>
+</nav>
+
+<h3>Omplasser resultater</h3>
+
+<h5>Eksisterende resultatbytter</h5>
+<div style="overflow-y: auto; max-height: 150px; overflow-x: auto">
+  <table class="table table-sm" style="width: 100%; table-layout: auto !important; font-size: 14px; margin: 0">
+    <thead class="table-light" style="position: sticky; top: 0;">
+      <tr>
+        <th style="white-space: nowrap; padding-right: 20px">Statistikk resultat id</th>
+        <th style="white-space: nowrap; padding-right: 20px">Klubb id</th>
+        <th style="white-space: nowrap; padding-right: 20px">Registrert</th>
+        <th style="white-space: nowrap; padding-right: 20px">Notat</th>
+      </tr>
+    </thead>
+    <tbody id="eksisterende-resultatbytter"></tbody>
+  </table>
+</div>
+<br>
+<br>
+
+<h5>Nytt resultatbytte</h5>
+<div style="border: 1px solid black; padding: 10px">
+    <span style="padding: 0 10px">Resultat som skal omplasseres</span>
+    <input type="text" placeholder="statistikk resultat id">
+    <br>
+    
+    <span style="padding: 0 10px">Til klubb</span>
+    <input type="text" placeholder="klubb id / null">
+    <br>
+
+    <div style="display: flex">
+      <span style="padding: 0 10px">Notat</span>
+      <textarea class="form-control my-2" rows="1"></textarea>
+    </div>
+</div>
+
+<script>
+    var resultatbytter = {{ resultatbytter | tojson }};
+</script>
+<script src="{{ url_for('static', filename='omplasser_resultat.js') }}"></script>
+<button id="spørring-knapp" style="background-color:  rgb(205, 156, 50);">Legg til resultatbytte</button>
+
+{% endblock %}

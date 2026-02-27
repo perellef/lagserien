@@ -1,35 +1,43 @@
-{% extends "base.html" %}
+{% extends "base_admin.html" %}
 
 {% block innhold %}
+
+
 <h3>ADMINSIDE</h3>
 
+
 <div>
-  <canvas id="myChart"></canvas>
+  <div style="background-color: lightgreen; display: flex; width: 300px; padding: 5px; margin: 5px;">
+      <div style="width: 100px">Varsler</div>  
+      <div>
+        <a href="{{ url_for('administrer_varsler') }}">Administrer varsler</a><br>
+      </div>
+  </div>
+
+  <div style="background-color: rgb(144, 177, 238); display: flex; width: 300px; padding: 5px; margin: 5px;">
+    <div style="width: 100px">Analyse</div>  
+    <div>
+      <a href="{{ url_for('analyser_data') }}">Analyser data</a><br>
+      <a href="{{ url_for('se_oversikter') }}">Se oversikter</a><br>
+    </div>
+  </div>
+
+  <div style="background-color: rgb(238, 180, 144); display: flex; width: 300px; padding: 5px; margin: 5px;">
+    <div style="width: 100px">Korreksjon</div>  
+    <div>
+      <a href="{{ url_for('omplasser_resultat') }}">Omplasser resultat</a><br>
+      <a href="{{ url_for('strukturer_stevner') }}">Strukturer stevner</a><br>
+    </div>
+  </div>
+
+  <div style="background-color: rgb(238, 144, 225); display: flex; width: 300px; padding: 5px; margin: 5px;">
+    <div style="width: 100px">Bestill</div>  
+    <div style="display: inline-block;">
+      <a href="{{ url_for('bestill_kjøring') }}">Bestill kjøring</a><br>
+      <a href="{{ url_for('produser_exceloppsett') }}">Produser exceloppsett</a><br>
+    </div>
+  </div>
+
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0/dist/chart.umd.min.js"></script>
-<script>
-  const ctx = document.getElementById('myChart');
-
-  const besøkstall_per_dag = {{ besøkstall|tojson }}
-
-  new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels: besøkstall_per_dag.map(par => par[0]),
-      datasets: [{
-        label: 'Besøkstall per dag',
-        data: besøkstall_per_dag.map(par => par[1]),
-        borderWidth: 1
-      }]
-    },
-    options: {
-      scales: {
-        y: {
-          beginAtZero: true
-        }
-      }
-    }
-  });
-</script>
 {% endblock %}

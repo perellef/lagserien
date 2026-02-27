@@ -1,0 +1,44 @@
+{% extends "base_admin.html" %}
+
+{% block innhold %}
+
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{{ url_for('adminside') }}">Adminside</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Se oversikter</li>
+  </ol>
+</nav>
+
+<h3>Se oversikter</h3>
+
+<div>
+  <canvas id="myChart"></canvas>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0/dist/chart.umd.min.js"></script>
+<script>
+  const ctx = document.getElementById('myChart');
+
+  const besøkstall_per_dag = {{ besøkstall|tojson }}
+
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: besøkstall_per_dag.map(par => par[0]),
+      datasets: [{
+        label: 'Besøkstall per dag',
+        data: besøkstall_per_dag.map(par => par[1]),
+        borderWidth: 1
+      }]
+    },
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+    }
+  });
+</script>
+
+{% endblock %}

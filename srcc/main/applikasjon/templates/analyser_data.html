@@ -1,0 +1,43 @@
+{% extends "base_admin.html" %}
+
+{% block innhold %}
+
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{{ url_for('adminside') }}">Adminside</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Analyser data</li>
+  </ol>
+</nav>
+
+
+<h3>Analyser data</h3>
+
+<div style="background: lightblue; display: flex; justify-content: center; padding: 10px">
+  <div style="width: 700px">
+    <div style="display: flex; justify-content: center;">
+      <div style="width: 400px;">
+        <textarea id="spørring" name="spørring" class="form-control my-2" rows="3" placeholder="select * from &quot;uttrekk.resultater&quot;"></textarea>
+        <div style="display: flex; justify-content: right;">
+          <button id="spørring-knapp" style="background-color:  limegreen;">UTFØR</button>
+        </div>
+      </div>
+    </div>
+    
+    <h6>Resultater</h6>
+    <div id="spørring-resultater" style="border: 1px black solid; background-color: white; overflow-y: auto; max-height: 150px;">
+    </div>
+  </div>
+</div>
+
+<div style="display: flex; padding: 20px 0 0 0">
+  <span style="padding: 0 20px">Datastruktur</span>
+  <span style="padding: 0 20px">Kom i gang</span>
+  <span style="padding: 0 20px">Maler</span>
+</div>
+
+<script>
+  const UTFØR = "{{ url_for('analyser_data_utfør') }}";
+</script>
+
+<script src="{{ url_for('static', filename='analyser_data.js') }}"></script>
+{% endblock %}

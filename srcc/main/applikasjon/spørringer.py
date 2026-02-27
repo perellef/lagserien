@@ -11,6 +11,17 @@ def execute(peker, spørring, args):
 
     return [list(e) for e in resultat]    
         
+def custom_spørring(peker, spørring):
+    spørring = spørring.split(';', 1)[0].strip()
+
+    ulovlige_ord = ['truncate', 'rename', 'insert', 'update', 'delete', 'drop', 'alter', 'create', 'rollback', 'commit', 'cascade', 'set', 'grant', 'revoke']
+    if any(ord.lower() in ulovlige_ord for ord in re.split(r'\s+', spørring)):
+        return []
+    
+    resultat = peker.execute(text(spørring), {})
+
+    return [list(e) for e in resultat.fetchmany(100)]   
+
 def db_hent_serier(peker):  
     resultat = execute(peker, '''
         WITH siste_kjøring AS (
@@ -34,6 +45,22 @@ def db_hent_serier(peker):
     for serieår, avsluttet, siste_dato in resultat:
         serier[str(serieår)] = {"avsluttet": avsluttet, "siste_dato": siste_dato}
     return serier
+
+def db_hent_batchkjøringer(peker):
+    return execute(peker, '''
+        SELECT *
+        FROM "metadata.batchkjøringer"
+        ORDER BY slutt DESC
+        LIMIT 100
+    ''', ())
+
+def db_hent_resultatbytter(peker):
+    return execute(peker, '''
+        SELECT *
+        FROM "uttrekk.resultatbytter"
+        ORDER BY registrert DESC
+        LIMIT 100
+    ''', ())
 
 def db_hent_sist_kjørt(peker, serieår):
     resultat = execute(peker, '''

@@ -1,0 +1,45 @@
+{% extends "base_admin.html" %}
+
+{% block innhold %}
+
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{{ url_for('adminside') }}">Adminside</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Bestill kjøring</li>
+  </ol>
+</nav>
+
+
+<h3>Bestill kjøring</h3>
+
+<h5>Status kjøringer</h5>
+<div style="overflow-y: auto; max-height: 150px; display: inline-block">
+  <table class="table table-sm" style="width: auto !important; table-layout: auto !important; font-size: 14px; margin: 0">
+    <thead class="table-light" style="position: sticky; top: 0;">
+      <tr>
+        <th>Batch</th>
+        <th>Serieår</th>
+        <th>Uttrekksdato</th>
+        <th>Start</th>
+        <th>Slutt</th>
+      </tr>
+    </thead>
+    <tbody id="batchkjøringer"></tbody>
+  </table>
+</div>
+<br>
+<br>
+
+<h5>Ny dagskjøring (batch 2-4)</h5>
+<div style="border: 1px solid black; padding: 10px">
+    <span style="padding: 0 10px">Serieår</span>
+    <input>
+</div>
+
+<script>
+    var batchkjøringer = {{ batchkjøringer | tojson }};
+</script>
+<script src="{{ url_for('static', filename='bestill_kjøring.js') }}"></script>
+<button id="spørring-knapp" style="background-color:  rgb(205, 156, 50);">Bestill</button>
+
+{% endblock %}

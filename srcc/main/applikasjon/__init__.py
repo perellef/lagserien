@@ -4,6 +4,14 @@ from srcc.main.applikasjon.fellesinfo import cache
 from srcc.main.applikasjon.databaselogger import queue, lytt_og_loggfør_i_db
 
 from srcc.main.applikasjon.routes.adminside import adminside
+from srcc.main.applikasjon.routes.administrer_varsler import administrer_varsler
+from srcc.main.applikasjon.routes.analyser_data import analyser_data
+from srcc.main.applikasjon.routes.analyser_data_utfør import analyser_data_utfør
+from srcc.main.applikasjon.routes.se_oversikter import se_oversikter
+from srcc.main.applikasjon.routes.omplasser_resultat import omplasser_resultat
+from srcc.main.applikasjon.routes.strukturer_stevner import strukturer_stevner
+from srcc.main.applikasjon.routes.bestill_kjøring import bestill_kjøring
+from srcc.main.applikasjon.routes.produser_exceloppsett import produser_exceloppsett
 from srcc.main.applikasjon.routes.forside import forside
 from srcc.main.applikasjon.routes.nyhetsarkiv import nyheter
 from srcc.main.applikasjon.routes.om_serien import om_serien
@@ -54,11 +62,19 @@ def create_app():
     app.route("/verktøy/lagforbedrer") (lagforbedrer)
     app.route("/om_serien") (om_serien)
     app.route(f"/adminside/{ADMIN_NØKKEL}") (adminside)
+    app.route(f"/adminside/{ADMIN_NØKKEL}/administrer_varsler") (administrer_varsler)
+    app.route(f"/adminside/{ADMIN_NØKKEL}/analyser_data") (analyser_data)
+    app.route(f"/adminside/{ADMIN_NØKKEL}/se_oversikter") (se_oversikter)
+    app.route(f"/adminside/{ADMIN_NØKKEL}/omplasser_resultat") (omplasser_resultat)
+    app.route(f"/adminside/{ADMIN_NØKKEL}/strukturer_stevner") (strukturer_stevner)
+    app.route(f"/adminside/{ADMIN_NØKKEL}/bestill_kjoring") (bestill_kjøring)
+    app.route(f"/adminside/{ADMIN_NØKKEL}/produser_exceloppsett") (produser_exceloppsett)
 
     app.route('/verktøy/lagoppstiller/hent_resultater', methods=['POST']) (lagoppstiller_hent_resultater)
     app.route("/verktøy/lagoppstiller/beregn", methods=['POST']) (lagoppstiller_oppstill_lag)
     app.route("/verktøy/lagsammenlikner/sammenlikn", methods=['POST']) (lagsammenlikner_sammenlikn)
     app.route("/verktøy/lagforbedrer/analyser", methods=['POST']) (lagforbedrer_analyser)
+    app.route(f"/adminside/{ADMIN_NØKKEL}/analyser_data/utfor", methods=['POST']) (analyser_data_utfør)
 
     threading.Thread(target=cache.lytt_etter_og_oppdater_cache, daemon=True).start()
     threading.Thread(target=lytt_og_loggfør_i_db, daemon=True).start()
