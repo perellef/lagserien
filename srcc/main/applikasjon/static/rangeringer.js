@@ -36,24 +36,24 @@ function vis_data(data, tbody_id) {
             tr.appendChild(celle);
         });
     
-        console.log(tr);
-
         tbody.appendChild(tr);
     });
 }
 
 alle_utmerkelser = [
-    ["utøvere", "sterkeste-enkeltresultat"],
     ["utøvere", "mest-aktive-utøver"],
     ["utøvere", "mest-avgjørende-utøver"],
-    ["klubber", "klubb-med-størst-bredde"],
+    ["lag", "mest-gjennomførte-lag"],
+    ["lag", "lag-med-størst-potensial"],
+    ["lag", "lag-med-flest-juniorpoeng"],
     ["klubber", "klubb-med-størst-forbedring"],
-    ["øvelser", "mest-populære-øvelse"],
+    ["klubber", "klubb-med-størst-bredde"],
+    ["annet", "mest-populære-øvelse"],
+    ["annet", "største-krets"]
 ]
 
 alle_utmerkelser.forEach(function(verdi) {
     const [kategori, tittel] = verdi;
-    console.log(kategori + "  .  " + tittel)
     vis_data(cached_data.rangeringer[kategori][tittel], tittel);
 
     document.getElementById(tittel + "-knapp").addEventListener('click', function() {
