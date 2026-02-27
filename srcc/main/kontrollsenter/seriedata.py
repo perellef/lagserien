@@ -87,16 +87,20 @@ class Seriedata:
         keys = set(eksisterende_objekter)
         gjenværende_objekter = [obj for obj in objekter if obj.primærverdi() not in keys]
         
-        update_data = []
-        for obj in objekter:
-            if obj.primærverdi() not in eksisterende_objekter:
-                continue
-            nøkler = dict(zip(cls.primærnøkkel(), obj.primærverdi()))
-            
-            update_values = {column.name: getattr(obj, column.name) for column in cls.__table__.columns if column.name not in cls.primærnøkkel()}
-            update_data.append({**nøkler, **update_values})
+        for i in range(0,len(objekter), BULKSIZE):
+            update_data = []
+            for obj in objekter[i:i+BULKSIZE] :
+                if obj.primærverdi() not in eksisterende_objekter:
+                    continue
+                if obj == eksisterende_objekter[obj.primærverdi()]:
+                    continue
+                
+                nøkler = dict(zip(cls.primærnøkkel(), obj.primærverdi()))
+                
+                update_values = {column.name: getattr(obj, column.name) for column in cls.__table__.columns if column.name not in cls.primærnøkkel()}
+                update_data.append({**nøkler, **update_values})
 
-        self.__session.bulk_update_mappings(cls, update_data)
+            self.__session.bulk_update_mappings(cls, update_data)
 
         self.bulkinnsett(gjenværende_objekter)
 

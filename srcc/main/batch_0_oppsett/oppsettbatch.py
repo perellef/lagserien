@@ -81,13 +81,16 @@ class Oppsettbatch():
 
     @staticmethod
     def innsett_serier(seriedata):
-        serier = []
-        serier.append(Serie(serieår=2021, fra_og_med=date.fromisoformat(f'2020-11-01'), til_og_med=date.fromisoformat(f'2021-12-31'), avsluttet=None))
-        serier.append(Serie(serieår=2022, fra_og_med=date.fromisoformat(f'2022-01-01'), til_og_med=date.fromisoformat(f'2022-12-31'), avsluttet=None))
-        serier.append(Serie(serieår=2023, fra_og_med=date.fromisoformat(f'2023-01-01'), til_og_med=date.fromisoformat(f'2023-12-31'), avsluttet=None))
-        serier.append(Serie(serieår=2024, fra_og_med=date.fromisoformat(f'2024-01-01'), til_og_med=date.fromisoformat(f'2024-12-31'), avsluttet=None))
-        serier.append(Serie(serieår=2025, fra_og_med=date.fromisoformat(f'2025-01-01'), til_og_med=date.fromisoformat(f'2025-12-31'), avsluttet=None))
-        serier.append(Serie(serieår=2026, fra_og_med=date.fromisoformat(f'2026-01-01'), til_og_med=date.fromisoformat(f'2026-12-31'), avsluttet=None))
+        serier = [
+            Serie(serieår=2020, fra_og_med=date.fromisoformat(f'2019-11-01'), til_og_med=date.fromisoformat(f'2020-10-31'), avsluttet=None),
+            Serie(serieår=2021, fra_og_med=date.fromisoformat(f'2020-11-01'), til_og_med=date.fromisoformat(f'2021-12-31'), avsluttet=None),
+            Serie(serieår=2022, fra_og_med=date.fromisoformat(f'2022-01-01'), til_og_med=date.fromisoformat(f'2022-12-31'), avsluttet=None),
+            Serie(serieår=2023, fra_og_med=date.fromisoformat(f'2023-01-01'), til_og_med=date.fromisoformat(f'2023-12-31'), avsluttet=None),
+            Serie(serieår=2024, fra_og_med=date.fromisoformat(f'2024-01-01'), til_og_med=date.fromisoformat(f'2024-12-31'), avsluttet=None),
+            Serie(serieår=2025, fra_og_med=date.fromisoformat(f'2025-01-01'), til_og_med=date.fromisoformat(f'2025-12-31'), avsluttet=None),
+            Serie(serieår=2026, fra_og_med=date.fromisoformat(f'2026-01-01'), til_og_med=date.fromisoformat(f'2026-12-31'), avsluttet=None),
+        ]
+        
         seriedata.bulkinnsett_ignorer(serier)
 
     @staticmethod
