@@ -22,14 +22,14 @@ Scenario: Regel 1. Et serieresultat frafaller hvis det ikke overlapper uttrekksd
 
     | Serieår | Øvelse | Er obligatorisk | Er teknisk | Prioritet |
     | ------- | ------ | --------------- | ---------- | --------- |
-    | 2100    | 100m   | Ja              | Nei        | 1         |
+    | 2100    | 100    | Ja              | Nei        | 1         |
     | ------- | ------ | --------------- | ---------- | --------- |   
 
     Og følgende resultater:
     
     | Resultat id | Øvelse | Utøver | Stevne           | Prestasjon | Dato       |
     | ----------- | ------ | ------ | ---------------- | ---------- | ---------- |
-    | 1           | 100m   | Per    | Ås åpningsstevne | 11.00      | 2100.05.01 |
+    | 1           | 100    | Per    | Ås åpningsstevne | 11.00      | 2100.05.01 |
     | ----------- | ------ | ------ | ---------------- | ---------- | ---------- |
 
     Og følgende serieresultater:
@@ -62,14 +62,14 @@ Scenario: Regel 2. Et serieresultat frafaller hvis resultatets dato ikke overlap
 
     | Serieår | Øvelse | Er obligatorisk | Er teknisk | Prioritet |
     | ------- | ------ | --------------- | ---------- | --------- |
-    | 2100    | 100m   | Ja              | Nei        | 1         |
+    | 2100    | 100    | Ja              | Nei        | 1         |
     | ------- | ------ | --------------- | ---------- | --------- |
 
     Og følgende resultater:
     
     | Resultat id | Øvelse | Utøver | Stevne           | Prestasjon | Dato       |
     | ----------- | ------ | ------ | ---------------- | ---------- | ---------- |
-    | 1           | 100m   | Per    | Ås åpningsstevne | 11.00      | <Dato>     |
+    | 1           | 100    | Per    | Ås åpningsstevne | 11.00      | <Dato>     |
     | ----------- | ------ | ------ | ---------------- | ---------- | ---------- |
 
     Og følgende serieresultater:
@@ -104,14 +104,14 @@ Scenario: Regel 3. Et serieresultat frafaller hvis det ikke tilhører noen klubb
 
     | Serieår | Øvelse | Er obligatorisk | Er teknisk | Prioritet |
     | ------- | ------ | --------------- | ---------- | --------- |
-    | 2100    | 100m   | Ja              | Nei        | 1         |
+    | 2100    | 100    | Ja              | Nei        | 1         |
     | ------- | ------ | --------------- | ---------- | --------- |
 
     Og følgende resultater:
     
     | Resultat id | Øvelse | Utøver | Stevne           | Prestasjon | Dato       |
     | ----------- | ------ | ------ | ---------------- | ---------- | ---------- |
-    | 1           | 100m   | Per    | Ås åpningsstevne | 11.00      | 2100.05.01 |
+    | 1           | 100    | Per    | Ås åpningsstevne | 11.00      | 2100.05.01 |
     | ----------- | ------ | ------ | ---------------- | ---------- | ---------- |
 
     Og følgende serieresultater:
@@ -140,7 +140,7 @@ Scenario: Regel 4. Et serieresultat frafaller hvis øvelsen ikke benyttes i seri
     
     | Resultat id | Øvelse | Utøver | Stevne           | Prestasjon | Dato       |
     | ----------- | ------ | ------ | ---------------- | ---------- | ---------- |
-    | 1           | 100m   | Per    | Ås åpningsstevne | 11.00      | 2100.05.01 |
+    | 1           | 100    | Per    | Ås åpningsstevne | 11.00      | 2100.05.01 |
     | ----------- | ------ | ------ | ---------------- | ---------- | ---------- |
 
     Og følgende serieresultater:
@@ -167,14 +167,14 @@ Scenario: Regel 5. Et serieresultat frafaller hvis poengene er ukjent.
 
     | Serieår | Øvelse | Er obligatorisk | Er teknisk | Prioritet |
     | ------- | ------ | --------------- | ---------- | --------- |
-    | 2100    | 100m   | Ja              | Nei        | 1         |
+    | 2100    | 100    | Ja              | Nei        | 1         |
     | ------- | ------ | --------------- | ---------- | --------- | 
 
     Og følgende resultater:
     
     | Resultat id | Øvelse | Utøver | Stevne           | Prestasjon | Dato       |
     | ----------- | ------ | ------ | ---------------- | ---------- | ---------- |
-    | 1           | 100m   | Per    | Ås åpningsstevne | 11.00      | 2100.05.01 |
+    | 1           | 100    | Per    | Ås åpningsstevne | 11.00      | 2100.05.01 |
     | ----------- | ------ | ------ | ---------------- | ---------- | ---------- |
 
     Og følgende serieresultater:
@@ -201,14 +201,14 @@ Scenario: Et serieresultat frafaller ikke hvis det unnviker regel 1-5.
 
     | Serieår | Øvelse | Er obligatorisk | Er teknisk | Prioritet |
     | ------- | ------ | --------------- | ---------- | --------- |
-    | 2100    | 100m   | Ja              | Nei        | 1         |
+    | 2100    | 100    | Ja              | Nei        | 1         |
     | ------- | ------ | --------------- | ---------- | --------- |  
 
     Og følgende resultater:
     
     | Resultat id | Øvelse | Utøver | Stevne           | Prestasjon | Dato       |
     | ----------- | ------ | ------ | ---------------- | ---------- | ---------- |
-    | 1           | 100m   | Per    | Ås åpningsstevne | 11.00      | 2100.05.01 |
+    | 1           | 100    | Per    | Ås åpningsstevne | 11.00      | 2100.05.01 |
     | ----------- | ------ | ------ | ---------------- | ---------- | ---------- |
 
     Og følgende serieresultater:

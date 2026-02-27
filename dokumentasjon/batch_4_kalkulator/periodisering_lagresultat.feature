@@ -20,7 +20,7 @@ Bakgrunn:
     
     | Resultat id | Øvelse | Utøver | Stevne           | Prestasjon | Dato       |
     | ----------- | ------ | ------ | ---------------- | ---------- | ---------- |
-    | 1           | 100m   | Per    | Ås åpningsstevne | 11.00      | 2100.05.01 |
+    | 1           | 100    | Per    | Ås åpningsstevne | 11.00      | 2100.05.01 |
     | ----------- | ------ | ------ | ---------------- | ---------- | ---------- |
 
     Og følgende serieresultater:
@@ -36,7 +36,7 @@ Scenario: Regel 1. Et lagresultat starter ny periode hvis lagresultatet ikke fin
 
     | Serieår | Øvelse | Er obligatorisk | Er teknisk | Prioritet |
     | ------- | ------ | --------------- | ---------- | --------- |
-    | 2100    | 100m   | Ja              | Nei        | 1         |
+    | 2100    | 100    | Ja              | Nei        | 1         |
     | ------- | ------ | --------------- | ---------- | --------- |
     
     Og ingen lagresultater
@@ -56,7 +56,7 @@ Scenario: Regel 2. Et lagresultat beholder periode hvis lagresultatet finnes.
 
     | Serieår | Øvelse | Er obligatorisk | Er teknisk | Prioritet |
     | ------- | ------ | --------------- | ---------- | --------- |
-    | 2100    | 100m   | Ja              | Nei        | 1         |
+    | 2100    | 100    | Ja              | Nei        | 1         |
     | ------- | ------ | --------------- | ---------- | --------- |
     
     Og følgende lag:
@@ -88,7 +88,7 @@ Scenario: Regel 3. Et lagresultat avslutter gammel og starter ny periode hvis op
 
     | Serieår | Øvelse | Er obligatorisk   | Er teknisk | Prioritet |
     | ------- | ------ | ----------------- | ---------- | --------- |
-    | 2100    | 100m   | <Er obligatorisk> | Nei        | 1         |
+    | 2100    | 100    | <Er obligatorisk> | Nei        | 1         |
     | ------- | ------ | ----------------- | ---------- | --------- |
     
     Og følgende lag:

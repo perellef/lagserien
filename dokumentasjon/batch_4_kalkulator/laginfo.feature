@@ -20,13 +20,13 @@ Bakgrunn:
 
     | Serieår | Øvelse | Er obligatorisk | Er teknisk | Prioritet |
     | ------- | ------ | --------------- | ---------- | --------- |
-    | 2100    | 100m   | Ja              | Nei        | 1         |
-    | 2100    | 200m   | Ja              | Nei        | 2         |
-    | 2100    | 400m   | Ja              | Nei        | 3         |
-    | 2100    | 800m   | Ja              | Nei        | 4         |
-    | 2100    | Kule   | Ja              | Ja         | 5         |
-    | 2100    | Stav   | Ja              | Ja         | 6         |
-    | 2100    | Spyd   | Ja              | Ja         | 7         |
+    | 2100    | 100    | Ja              | Nei        | 1         |
+    | 2100    | 200    | Ja              | Nei        | 2         |
+    | 2100    | 400    | Ja              | Nei        | 3         |
+    | 2100    | 800    | Ja              | Nei        | 4         |
+    | 2100    | kule   | Ja              | Ja         | 5         |
+    | 2100    | stav   | Ja              | Ja         | 6         |
+    | 2100    | spyd   | Ja              | Ja         | 7         |
     | ------- | ------ | --------------- | ---------- | --------- |
 
 Scenario: En oppstilling skal ha en tilhørende laginfo med totalpoeng, obligatoriske og valgfri poeng, antall noteringer og antall deltakere.
@@ -35,12 +35,12 @@ Scenario: En oppstilling skal ha en tilhørende laginfo med totalpoeng, obligato
     
     | Resultat id | Poeng | Øvelse | Utøver | Stevne          | Prestasjon | Dato       |
     | ----------- | ----- | ------ | ------ | --------------- | ---------- | ---------- |
-    | 1           | 800   | 100m   | Per    | Ås kretsstevne  | 11.00      | 2100.10.08 |
-    | 2           | 700   | 400m   | Ole    | Tjalvelekene    | 51.00      | 2100.06.03 |
-    | 3           | 600   | Kule   | Ole    | Nittedalslekene | 13.00      | 2100.06.20 |
-    | 4           | 500   | Stav   | Jan    | NM              | 3.00       | 2100.05.01 |
-    | 5           | 400   | 800m   | Tom    | Ås kretsstevne  | 2.10.00    | 2100.10.08 |
-    | 6           | 300   | Spyd   | Tom    | Ski kaststevne  | 35.00      | 2100.08.16 |
+    | 1           | 800   | 100    | Per    | Ås kretsstevne  | 11.00      | 2100.10.08 |
+    | 2           | 700   | 400    | Ole    | Tjalvelekene    | 51.00      | 2100.06.03 |
+    | 3           | 600   | kule   | Ole    | Nittedalslekene | 13.00      | 2100.06.20 |
+    | 4           | 500   | stav   | Jan    | NM              | 3.00       | 2100.05.01 |
+    | 5           | 400   | 800    | Tom    | Ås kretsstevne  | 2.10.00    | 2100.10.08 |
+    | 6           | 300   | spyd   | Tom    | Ski kaststevne  | 35.00      | 2100.08.16 |
     | ----------- | ----- | ------ | ------ | --------------- | ---------- | ---------- |
 
     Når kalkulatorbatch kjøres med serieår 2100 og uttrekksdato 2100.12.31

@@ -12,6 +12,7 @@ class Oppstillingsgenerator:
 
     def __init__(self, krav, resultater):
         self.__krav = krav
+        self.__resultater = resultater
 
         # regel
         self.ANTALL_OBL = krav.antall_obligatoriske
@@ -76,7 +77,7 @@ class Oppstillingsgenerator:
         Oppstillingsvalidator.valider_oppstilling(oppstilling, self.__krav)
 
     def unike_oppstillinger(self, oppstillinger):
-        assert len(oppstillinger) > 0, f"Oppstillingsgenerator genererte ingen oppstilling."
+        assert len(oppstillinger) > 0, f"Oppstillingsgenerator genererte ingen oppstilling.\n\nRESULTATER:\n" + '\n'.join(map(str, self.__resultater))
 
         return (Liste(oppstillinger)
             .sort(reverse=True)

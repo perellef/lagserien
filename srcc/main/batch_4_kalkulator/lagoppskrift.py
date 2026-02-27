@@ -31,9 +31,9 @@ class Lagoppskrift:
     
     def sjekksum(self):
         return (
-            self.__sjekksum[0].__hash__(),
-            self.__sjekksum[1].__hash__(),
-            self.__sjekksum[2].__hash__(),
+            self.__sjekksum[0],
+            self.__sjekksum[1],
+            self.__sjekksum[2],
         )
 
     def lag(self):

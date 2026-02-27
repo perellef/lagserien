@@ -85,9 +85,6 @@ class Reserveresultater:
     
     def sjekksum(self):
         return self.__oppstilling.sjekksum()
-
-    def __hash__(self):
-        return self.__oppstilling.__hash__()
     
     def __len__(self):
         return self.__oppstilling.__len__()

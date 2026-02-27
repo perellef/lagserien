@@ -19,5 +19,5 @@ class Sjekksum:
     def __eq__(self, andre):
         return self.__sum == andre.__sum
     
-    def __hash__(self):
+    def __int__(self):
         return self.__sum

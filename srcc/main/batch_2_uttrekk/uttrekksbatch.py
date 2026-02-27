@@ -5,7 +5,6 @@ from srcc.main.batch_2_uttrekk.statistikkhenting import Statistikkhenting
 from srcc.main.batch_2_uttrekk.uttrekksperiodiserer import Uttrekksperiodiserer
 
 from srcc.main.utils.orm._stevneinvitasjon import Stevneinvitasjon
-from srcc.main.utils.orm._serie import Serie
 
 from datetime import date
 

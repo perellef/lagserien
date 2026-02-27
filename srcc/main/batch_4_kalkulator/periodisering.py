@@ -90,7 +90,7 @@ class Periodisering:
 
         finnes_allerede = set()
         for info in løpende_laginfo:
-            assert uttrekksdato > info.fra_og_med, "Lagresultat kan ikke ha startet i dag eller senere"
+            assert uttrekksdato > info.fra_og_med, "Laginfo kan ikke ha startet i dag eller senere"
 
             if (
                 info.lag in laginfo
@@ -202,6 +202,7 @@ class Periodisering:
         seriedata.bulkslett(utløpte_lagplasseringer)
         seriedata.bulkinnsett(nye_lagplasseringer)
 
+    @staticmethod
     def periodiser_utøver_merverdier(seriedata, serieår, uttrekksdato, merverdier, serieklasser):
         nye_utøver_merverdier = []
         utløpte_utøver_merverdier = []
@@ -250,3 +251,54 @@ class Periodisering:
         seriedata.bulkslett(utløpte_utøver_merverdier)
         seriedata.bulkinnsett(nye_utøver_merverdier)
 
+    @staticmethod
+    def periodiser_lagpotensialer(seriedata, serieår, uttrekksdato, lagpotensialer, serieklasser):
+        
+        nye_potensialer = []
+        utløpte_potensialer = []
+
+        løpende_potensialer = (seriedata.hent(serieklasser.lagpotensial)
+            .options(joinedload(serieklasser.lagpotensial.lag))
+            .filter_by(serieår=serieår)
+            .filter_by(til_og_med=None))
+
+        finnes_allerede = set()
+        for potensial in løpende_potensialer:
+            assert uttrekksdato > potensial.fra_og_med, "Lagpotensialet kan ikke ha startet i dag eller senere"
+
+            if (
+                potensial.lag in lagpotensialer
+                and lagpotensialer[potensial.lag] == (potensial.poeng)
+            ):
+                finnes_allerede.add(potensial.lag)
+                continue
+
+            lukket_potensial = serieklasser.lagpotensial(
+                serieår=potensial.serieår,
+                klubb_id=potensial.klubb_id,
+                lagnummer=potensial.lagnummer,
+                fra_og_med=potensial.fra_og_med,
+                til_og_med=uttrekksdato - timedelta(days=1),
+                poeng=potensial.poeng
+            )
+
+            utløpte_potensialer.append(potensial)
+            nye_potensialer.append(lukket_potensial)
+
+        for lag,poeng in lagpotensialer.items(): 
+            if lag in finnes_allerede:
+                continue
+
+            lagpotensial = serieklasser.lagpotensial(
+                serieår=lag.serieår,
+                klubb_id=lag.klubb_id,
+                lagnummer=lag.lagnummer,
+                fra_og_med=uttrekksdato,
+                til_og_med=None,
+                poeng=poeng,
+            )
+
+            nye_potensialer.append(lagpotensial)
+
+        seriedata.bulkslett(utløpte_potensialer)
+        seriedata.bulkinnsett(nye_potensialer)

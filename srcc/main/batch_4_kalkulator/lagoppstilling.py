@@ -180,7 +180,7 @@ class Lagoppstilling:
 
     def fjern_obligatorisk_løpsøvelse(self):
         obl_svakeste_løpsresultat = self.__obl.svakeste_resultat(kun_løp=True)
-    
+
         self.__obl.simuler_uten(obl_svakeste_løpsresultat)
         self.__lagoppstilling_der_obligatorisk_berikes(kun_tek=True)
 
@@ -234,7 +234,7 @@ class Lagoppstilling:
 
         self.__lagoppstilling_der_valgfri_berikes(kun_tek=True)
         self.__reserver.simuler_med(val_svakeste_løpsresultat)
-    
+
     def permuter_for_ulike_haleresultater(self):        
         svakeste_val_løp = self.__val.svakeste_resultat(kun_løp=True)
         svakeste_val_tek = self.__val.svakeste_resultat(kun_tek=True)
@@ -316,16 +316,13 @@ class Lagoppstilling:
             return 0
         return min(svakeste_obl.poeng, svakeste_val.poeng)
 
-    def __hash__(self):
-        return hash((hash(self.__obl), hash(self.__val), hash(self.__reserver)))
-    
     def __gt__(self, andre):
         return self.poeng() > andre.poeng()
     
     def __eq__(self, andre):
         if self.poeng() != andre.poeng():
             return False
-        return self.__hash__() == andre.__hash__()
+        return self.sjekksum() == andre.sjekksum()
 
     def __str__(self):
         return f"[ ----------------------- ]\n{self.__obl}\n{self.__val}\n{self.__reserver}\n[ ----------------------- ]"

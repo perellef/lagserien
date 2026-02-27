@@ -13,9 +13,7 @@ nulløvelse = Øvelse(øvelseskode="null", øvelsesnavn="ignorer meg")
 
 class Resultattype:
 
-    def __init__(self, serieresultat, serieøvelse):
-        resultat = serieresultat.resultat
-
+    def __init__(self, resultat, poeng, serieøvelse):
         assert resultat.øvelse != None, "Progammeringsfeil. Øvelse er 'None'."
         assert resultat.utøver != None, "Progammeringsfeil. Utøver er 'None'."
 
@@ -23,7 +21,7 @@ class Resultattype:
         self.er_obligatorisk = serieøvelse.er_obligatorisk
         self.øvelse = resultat.øvelse
         self.øvelseskode = resultat.øvelseskode
-        self.poeng = serieresultat.poeng
+        self.poeng = poeng
         self.utøver_id = resultat.utøver_id
         self.utøver = resultat.utøver
         self.resultat_id = resultat.resultat_id
@@ -92,8 +90,24 @@ class Resultattype:
         resultat.øvelse = øvelse
         resultat.utøver = nullutøver
 
-        return Resultattype(serieresultat, serieøvelse)
+        return Resultattype(serieresultat.resultat, serieresultat.poeng, serieøvelse)
 
+    @staticmethod
+    def imiter(poeng, serieøvelse, utøver):
+        resultat = Resultat(
+            resultat_id=0,
+            stevne_id=0,
+            utøver_id=nullutøver.utøver_id,
+            øvelseskode=serieøvelse.øvelseskode,
+            prestasjon="abc",
+            statistikk_resultat_id=0
+        )
+        serieøvelse.øvelse = serieøvelse.øvelse
+
+        resultat.øvelse = serieøvelse.øvelse
+        resultat.utøver = utøver
+        
+        return Resultattype(resultat, poeng, serieøvelse)
 
 class Serieoppstilling:
 

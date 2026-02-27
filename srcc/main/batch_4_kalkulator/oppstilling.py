@@ -114,10 +114,7 @@ class Oppstilling:
         self.__sjekksum.simuler_med(resultat.resultatindeks)
     
     def sjekksum(self):
-        return self.__sjekksum._Sjekksum__sum
-
-    def __hash__(self):
-        return self.__sjekksum.__hash__()
+        return int(self.__sjekksum)
     
     def __len__(self):
         return sum([len(el) for el in self.__resultatpekere_løp.values()]) + sum([len(el) for el in self.__resultatpekere_tek.values()])

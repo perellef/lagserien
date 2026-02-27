@@ -44,7 +44,7 @@ class Kalkuleringsbesparelse:
         return max(tidligere_kjøringer)     
     
     @staticmethod
-    def legg_inn_uforandret_data(seriedata, serieår, uforandrede_klubber, oppstillinger, laginfo, merverdier, serieklasser, uttrekksdato):
+    def legg_inn_uforandret_data(seriedata, serieår, uforandrede_klubber, oppstillinger, laginfo, merverdier, lagpotensialer, serieklasser, uttrekksdato):
         Serieresultat = serieklasser.serieresultat
 
         serieresultater = (seriedata
@@ -75,6 +75,12 @@ class Kalkuleringsbesparelse:
                 .hent(serieklasser.utøver_merverdi)
                 .filter(serieklasser.utøver_merverdi.fra_og_med <= uttrekksdato)
                 .filter((serieklasser.utøver_merverdi.til_og_med == None) | (serieklasser.utøver_merverdi.til_og_med >= uttrekksdato))
+                .all())
+
+        lagpotensialene = (seriedata
+                .hent(serieklasser.lagpotensial)
+                .filter(serieklasser.lagpotensial.fra_og_med <= uttrekksdato)
+                .filter((serieklasser.lagpotensial.til_og_med == None) | (serieklasser.lagpotensial.til_og_med >= uttrekksdato))
                 .all())
 
         # lagresultat
@@ -122,3 +128,14 @@ class Kalkuleringsbesparelse:
                 continue
             
             merverdier[(merverdi.klubb_id, merverdi.utøver_id)] = merverdi.poeng
+            
+        # utøver merverdier
+        for lagpotensial in lagpotensialene:
+            if lagpotensial.serieår != serieår:
+                continue
+            if lagpotensial.klubb_id not in uforandrede_klubber:
+                continue
+            if lagpotensial.til_og_med != None:
+                continue
+            
+            lagpotensialer[lagpotensial.lag] = lagpotensial.poeng

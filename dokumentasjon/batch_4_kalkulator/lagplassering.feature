@@ -22,10 +22,10 @@ Bakgrunn:
 
     | Serieår | Øvelse | Er obligatorisk | Er teknisk | Prioritet |
     | ------- | ------ | --------------- | ---------- | --------- |
-    | 2100    | 100m   | Ja              | Nei        | 1         |
-    | 2100    | 200m   | Ja              | Nei        | 2         |
-    | 2100    | Kule   | Ja              | Ja         | 3         |
-    | 2100    | Spyd   | Ja              | Ja         | 4         |
+    | 2100    | 100    | Ja              | Nei        | 1         |
+    | 2100    | 200    | Ja              | Nei        | 2         |
+    | 2100    | kule   | Ja              | Ja         | 3         |
+    | 2100    | spyd   | Ja              | Ja         | 4         |
     | ------- | ------ | --------------- | ---------- | --------- |
 
     Og følgende klubber:
@@ -50,14 +50,14 @@ Scenario: Regel 1. Topplag plasseres i sin respektive divisjon.
     
     | Resultat id | Poeng | Øvelse | Utøver | Stevne         | Prestasjon | Dato       |
     | ----------- | ----- | ------ | ------ | -------------- | ---------- | ---------- |
-    | 1           | 500   | 100m   | Per    | Ås kretsstevne | 11.00      | 2100.06.20 |
+    | 1           | 500   | 100    | Per    | Ås kretsstevne | 11.00      | 2100.06.20 |
     | ----------- | ----- | ------ | ------ | -------------- | ---------- | ---------- |
 
     Og klubben Ski IL med følgende serieresultater fra 2100.12.31:
     
     | Resultat id | Poeng | Øvelse | Utøver | Stevne         | Prestasjon | Dato       |
     | ----------- | ----- | ------ | ------ | -------------- | ---------- | ---------- |
-    | 2           | 500   | Kule   | Ole    | Ski kaststevne | 11.00      | 2100.08.11 |
+    | 2           | 500   | kule   | Ole    | Ski kaststevne | 11.00      | 2100.08.11 |
     | ----------- | ----- | ------ | ------ | -------------- | ---------- | ---------- |
 
     Når kalkulatorbatch kjøres med serieår 2100 og uttrekksdato 2100.12.31
@@ -78,7 +78,7 @@ Scenario: Regel 1.2. Øvrige lag plasseres i 3. divisjon.
     
     | Resultat id | Poeng | Øvelse | Utøver | Stevne         | Prestasjon | Dato       |
     | ----------- | ----- | ------ | ------ | -------------- | ---------- | ---------- |
-    | 1           | 500   | 100m   | Bob    | Ås kretsstevne | 12.00      | 2100.06.20 |
+    | 1           | 500   | 100    | Bob    | Ås kretsstevne | 12.00      | 2100.06.20 |
     | ----------- | ----- | ------ | ------ | -------------- | ---------- | ---------- |
 
     Når kalkulatorbatch kjøres med serieår 2100 og uttrekksdato 2100.12.31
@@ -96,16 +96,16 @@ Scenario: Regel 2. Lag plasseres i divisjonens tabell etter seriepoeng
     
     | Resultat id | Poeng | Øvelse | Utøver | Stevne         | Prestasjon | Dato       |
     | ----------- | ----- | ------ | ------ | -------------- | ---------- | ---------- |
-    | 1           | 500   | 100m   | Bob    | Ås kretsstevne | 12.00      | 2100.06.20 |
-    | 2           | 400   | 200m   | Tom    | Ås kretsstevne | 25.00      | 2100.06.20 |
+    | 1           | 500   | 100    | Bob    | Ås kretsstevne | 12.00      | 2100.06.20 |
+    | 2           | 400   | 200    | Tom    | Ås kretsstevne | 25.00      | 2100.06.20 |
     | ----------- | ----- | ------ | ------ | -------------- | ---------- | ---------- |
 
     Og klubben Ski IL med følgende serieresultater fra 2100.12.31:
     
     | Resultat id | Poeng | Øvelse | Utøver | Stevne         | Prestasjon | Dato       |
     | ----------- | ----- | ------ | ------ | -------------- | ---------- | ---------- |
-    | 3           | 200   | Kule   | Per    | Ski kaststevne | 5.00       | 2100.08.11 |
-    | 4           | 100   | Spyd   | Ole    | Ski kaststevne | 20.00      | 2100.08.11 |
+    | 3           | 200   | kule   | Per    | Ski kaststevne | 5.00       | 2100.08.11 |
+    | 4           | 100   | spyd   | Ole    | Ski kaststevne | 20.00      | 2100.08.11 |
     | ----------- | ----- | ------ | ------ | -------------- | ---------- | ---------- |
 
     Når kalkulatorbatch kjøres med serieår 2100 og uttrekksdato 2100.12.31
@@ -124,16 +124,16 @@ Scenario: Regel 2.1. Ved lik seriepoeng plasseres lag etter beste enkeltpoenger.
     
     | Resultat id | Poeng | Øvelse | Utøver | Stevne         | Prestasjon | Dato       |
     | ----------- | ----- | ------ | ------ | -------------- | ---------- | ---------- |
-    | 1           | 500   | 100m   | Bob    | Ås kretsstevne | 12.00      | 2100.06.20 |
-    | 2           | 300   | 200m   | Tom    | Ås kretsstevne | 26.00      | 2100.06.20 |
+    | 1           | 500   | 100    | Bob    | Ås kretsstevne | 12.00      | 2100.06.20 |
+    | 2           | 300   | 200    | Tom    | Ås kretsstevne | 26.00      | 2100.06.20 |
     | ----------- | ----- | ------ | ------ | -------------- | ---------- | ---------- |
 
     Og klubben Ski IL med følgende serieresultater fra 2100.12.31:
     
     | Resultat id | Poeng | Øvelse | Utøver | Stevne         | Prestasjon | Dato       |
     | ----------- | ----- | ------ | ------ | -------------- | ---------- | ---------- |
-    | 3           | 400   | Kule   | Per    | Ski kaststevne | 10.00      | 2100.08.11 |
-    | 4           | 400   | Spyd   | Ole    | Ski kaststevne | 40.00      | 2100.08.11 |
+    | 3           | 400   | kule   | Per    | Ski kaststevne | 10.00      | 2100.08.11 |
+    | 4           | 400   | spyd   | Ole    | Ski kaststevne | 40.00      | 2100.08.11 |
     | ----------- | ----- | ------ | ------ | -------------- | ---------- | ---------- |
 
     Når kalkulatorbatch kjøres med serieår 2100 og uttrekksdato 2100.12.31

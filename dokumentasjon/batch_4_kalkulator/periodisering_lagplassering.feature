@@ -20,14 +20,14 @@ Bakgrunn:
 
     | Serieår | Øvelse | Er obligatorisk | Er teknisk | Prioritet |
     | ------- | ------ | --------------- | ---------- | --------- |
-    | 2100    | 100m   | Ja              | Nei        | 1         |
+    | 2100    | 100    | Ja              | Nei        | 1         |
     | ------- | ------ | --------------- | ---------- | --------- |
 
     Og følgende resultater:
     
     | Resultat id | Øvelse | Utøver | Stevne           | Prestasjon | Dato       |
     | ----------- | ------ | ------ | ---------------- | ---------- | ---------- |
-    | 1           | 100m   | Per    | Ås åpningsstevne | 11.00      | 2100.05.01 |
+    | 1           | 100    | Per    | Ås åpningsstevne | 11.00      | 2100.05.01 |
     | ----------- | ------ | ------ | ---------------- | ---------- | ---------- |
 
     Og følgende serieresultater:

@@ -22,20 +22,20 @@ Scenario: Regel 1. Lagresultater med obligatorisk oppstillingstype plasseres ett
 
     | Serieår | Øvelse | Er obligatorisk | Er teknisk | Prioritet |
     | ------- | ------ | --------------- | ---------- | --------- |
-    | 2100    | 100m   | Ja              | Nei        | 1         |
-    | 2100    | 200m   | Ja              | Nei        | 2         |
-    | 2100    | Stav   | Ja              | Ja         | 3         |
-    | 2100    | Kule   | Ja              | Ja         | 4         |
+    | 2100    | 100    | Ja              | Nei        | 1         |
+    | 2100    | 200    | Ja              | Nei        | 2         |
+    | 2100    | stav   | Ja              | Ja         | 3         |
+    | 2100    | kule   | Ja              | Ja         | 4         |
     | ------- | ------ | --------------- | ---------- | --------- |
     
     Og klubben Ås IL med følgende serieresultater fra 2100.12.31:
     
     | Resultat id | Poeng | Øvelse | Utøver | Stevne         | Prestasjon | Dato       |
     | ----------- | ----- | ------ | ------ | -------------- | ---------- | ---------- |
-    | 1           | 800   | 200m   | Per    | Kaststevne     | 23.00      | 2100.06.20 |
-    | 2           | 700   | Kule   | Per    | Kaststevne     | 12.00      | 2100.06.20 |
-    | 3           | 600   | 100m   | Tom    | Kaststevne     | 12.00      | 2100.06.20 |
-    | 4           | 500   | Stav   | Tom    | Kaststevne     | 3.00       | 2100.06.20 |
+    | 1           | 800   | 200    | Per    | Kaststevne     | 23.00      | 2100.06.20 |
+    | 2           | 700   | kule   | Per    | Kaststevne     | 12.00      | 2100.06.20 |
+    | 3           | 600   | 100    | Tom    | Kaststevne     | 12.00      | 2100.06.20 |
+    | 4           | 500   | stav   | Tom    | Kaststevne     | 3.00       | 2100.06.20 |
     | ----------- | ----- | ------ | ------ | -------------- | ---------- | ---------- |
     
     Når kalkulatorbatch kjøres med serieår 2100 og uttrekksdato 2100.12.31
@@ -56,20 +56,20 @@ Scenario: Regel 2. Lagresultater med valgfri oppstillingstype plasseres etter av
 
     | Serieår | Øvelse | Er obligatorisk | Er teknisk | Prioritet |
     | ------- | ------ | --------------- | ---------- | --------- |
-    | 2100    | 3000m  | Nei             | Ja         | 1         |
-    | 2100    | 200mh  | Nei             | Ja         | 2         |
-    | 2100    | Hut    | Nei             | Ja         | 3         |
-    | 2100    | Lut    | Nei             | Ja         | 4         |
+    | 2100    | 3000   | Nei             | Ja         | 1         |
+    | 2100    | 200h   | Nei             | Ja         | 2         |
+    | 2100    | hut    | Nei             | Ja         | 3         |
+    | 2100    | lut    | Nei             | Ja         | 4         |
     | ------- | ------ | --------------- | ---------- | --------- |
     
     Og klubben Ås IL med følgende serieresultater fra 2100.12.31:
     
     | Resultat id | Poeng | Øvelse | Utøver | Stevne         | Prestasjon | Dato       |
     | ----------- | ----- | ------ | ------ | -------------- | ---------- | ---------- |
-    | 1           | 800   | 200mh  | Per    | Løpsstevne     | 28.00      | 2100.06.20 |
-    | 2           | 700   | Hut    | Per    | Hoppstevne     | 1.30       | 2100.06.20 |
-    | 3           | 600   | 3000m  | Tom    | Løpsstevne     | 9.00.00    | 2100.06.20 |
-    | 4           | 500   | Lut    | Tom    | Hoppstevne     | 3.00       | 2100.06.20 |
+    | 1           | 800   | 200h   | Per    | Løpsstevne     | 28.00      | 2100.06.20 |
+    | 2           | 700   | hut    | Per    | Hoppstevne     | 1.30       | 2100.06.20 |
+    | 3           | 600   | 3000   | Tom    | Løpsstevne     | 9.00.00    | 2100.06.20 |
+    | 4           | 500   | lut    | Tom    | Hoppstevne     | 3.00       | 2100.06.20 |
     | ----------- | ----- | ------ | ------ | -------------- | ---------- | ---------- |
     
     Når kalkulatorbatch kjøres med serieår 2100 og uttrekksdato 2100.12.31
