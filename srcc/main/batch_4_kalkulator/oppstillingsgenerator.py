@@ -1,6 +1,5 @@
 from srcc.main.batch_4_kalkulator.lagoppstilling import Lagoppstilling
 from srcc.main.batch_4_kalkulator.lagoppskrift import Lagoppskrift
-from srcc.main.batch_4_kalkulator.diverse import øvelse
 from srcc.main.batch_4_kalkulator.optimal_lagoppstilling import OptimalLagoppstilling
 from srcc.main.batch_4_kalkulator.oppstillingsvalidator import Oppstillingsvalidator
 
@@ -33,7 +32,7 @@ class Oppstillingsgenerator:
     def __sett_initiell_oppstilling(self, resultater):
         obligatoriske = (resultater
                 .filter(lambda x: x.er_obligatorisk)
-                .group_by(øvelse)
+                .group_by(lambda x: x.øvelse)
                 .values()
                 .map(lambda x: x.first())
                 .first(self.ANTALL_OBL))

@@ -13,6 +13,7 @@ from srcc.main.utils.orm._mann_serieresultat import MannSerieresultat
 from srcc.main.utils.orm._mann_serieøvelse import MannSerieøvelse
 from srcc.main.utils.orm._mann_utøver_merverdi import MannUtøverMerverdi
 from srcc.main.utils.orm._mann_lagpotensial import MannLagpotensial
+from srcc.main.utils.orm._mann_lagpotensial_felt import MannLagpotensialFelt
 from srcc.main.utils.orm._kvinne_topplag import KvinneTopplag
 from srcc.main.utils.orm._kvinne_lag import KvinneLag
 from srcc.main.utils.orm._kvinne_laginfo import KvinneLaginfo
@@ -22,6 +23,7 @@ from srcc.main.utils.orm._kvinne_serieresultat import KvinneSerieresultat
 from srcc.main.utils.orm._kvinne_serieøvelse import KvinneSerieøvelse
 from srcc.main.utils.orm._kvinne_utøver_merverdi import KvinneUtøverMerverdi
 from srcc.main.utils.orm._kvinne_lagpotensial import KvinneLagpotensial
+from srcc.main.utils.orm._kvinne_lagpotensial_felt import KvinneLagpotensialFelt
 
 from sqlalchemy.orm import joinedload
 
@@ -39,6 +41,7 @@ class Kalkulatorbatch:
         serieøvelse = MannSerieøvelse
         utøver_merverdi = MannUtøverMerverdi
         lagpotensial = MannLagpotensial
+        lagpotensial_felt = MannLagpotensialFelt
     
     class KvinnerSerieklasser:
         serieresultat = KvinneSerieresultat
@@ -50,6 +53,7 @@ class Kalkulatorbatch:
         serieøvelse = KvinneSerieøvelse
         utøver_merverdi = KvinneUtøverMerverdi
         lagpotensial = KvinneLagpotensial
+        lagpotensial_felt = KvinneLagpotensialFelt
 
     @staticmethod
     def kjør(seriedata, serieår, uttrekksdato):
@@ -65,6 +69,7 @@ class Kalkulatorbatch:
         laginfo = {}
         merverdier = {}
         lagpotensialer = {}
+        lagpotensialer_felter = {}
 
         lagresultater = (seriedata
             .hent(serieklasser.lagresultat)
@@ -76,7 +81,7 @@ class Kalkulatorbatch:
         uforandrede_klubber = Kalkuleringsbesparelse.finn_uforandrede_klubber(seriedata, serieår, klubbresultater, lagresultater)                
         klubbresultater = {klubb: resultater.values() for klubb,resultater in klubbresultater.items() if klubb not in uforandrede_klubber}
 
-        Kalkuleringsbesparelse.legg_inn_uforandret_data(seriedata, serieår, uforandrede_klubber, oppstillinger, laginfo, merverdier, lagpotensialer, serieklasser, uttrekksdato)     
+        Kalkuleringsbesparelse.legg_inn_uforandret_data(seriedata, serieår, uforandrede_klubber, oppstillinger, laginfo, merverdier, lagpotensialer, lagpotensialer_felter, serieklasser, uttrekksdato)     
         
         topplag = {(topplag.klubb_id, topplag.lagnummer): topplag.divisjon for topplag in seriedata.hent(serieklasser.topplag).all() if topplag.serieår == serieår}
         
@@ -86,7 +91,7 @@ class Kalkulatorbatch:
         nye_lag = []
         for klubb,resultatdata in klubbresultater.items():
             resultater = map(lambda x: x[1], resultatdata)
-            Kalkulator.LagKalk(serieår, seriedata, klubb, resultater, laginfo, oppstillinger, merverdier, lagpotensialer, serieøvelser, serieresultater, topplag, serieklasser, nye_lag)
+            Kalkulator.LagKalk(serieår, seriedata, klubb, resultater, laginfo, oppstillinger, merverdier, lagpotensialer, lagpotensialer_felter, serieøvelser, serieresultater, topplag, serieklasser, nye_lag)
         
         seriedata.bulkinnsett(nye_lag)
         tabeller = Tabellarbeid.sett_opp_tabell(laginfo, oppstillinger, topplag)
@@ -96,3 +101,4 @@ class Kalkulatorbatch:
         Periodisering.periodiser_laginfo(seriedata, serieår, uttrekksdato, laginfo, serieklasser)
         Periodisering.periodiser_utøver_merverdier(seriedata, serieår, uttrekksdato, merverdier, serieklasser)
         Periodisering.periodiser_lagpotensialer(seriedata, serieår, uttrekksdato, lagpotensialer, serieklasser)
+        Periodisering.periodiser_lagpotensial_felter(seriedata, serieår, uttrekksdato, lagpotensialer_felter, serieklasser)

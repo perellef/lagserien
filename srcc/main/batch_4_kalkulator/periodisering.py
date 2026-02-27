@@ -302,3 +302,68 @@ class Periodisering:
 
         seriedata.bulkslett(utløpte_potensialer)
         seriedata.bulkinnsett(nye_potensialer)
+
+    def periodiser_lagpotensial_felter(seriedata, serieår, uttrekksdato, lagpotensial_felter, serieklasser):
+        
+        nye_potensialfelter = []
+        utløpte_potensialfelter = []
+
+        løpende_potensialfelter = (seriedata.hent(serieklasser.lagpotensial_felt)
+            .options(
+                joinedload(serieklasser.lagpotensial_felt.lag),
+            )
+            .filter_by(serieår=serieår)
+            .filter_by(til_og_med=None)
+            .all())
+        
+        finnes_allerede = set()
+        for felt in løpende_potensialfelter:
+            assert uttrekksdato > felt.fra_og_med, "Lagpotensialfelt kan ikke ha startet i dag eller senere"
+
+            verdier = (felt.øvelseskode, felt.utøver_id, felt.poeng, felt.resultat_id)
+            if (
+                felt.lag in lagpotensial_felter
+                and lagpotensial_felter[felt.lag][felt.oppstillingstype] == verdier
+            ):
+                finnes_allerede.add((felt.lag, verdier))
+                continue
+
+            lukket_felt = serieklasser.lagpotensial_felt(
+                serieår=felt.serieår,
+                klubb_id=felt.klubb_id,
+                lagnummer=felt.lagnummer,
+                fra_og_med=felt.fra_og_med,
+                til_og_med=uttrekksdato - timedelta(days=1),
+                øvelseskode=felt.øvelseskode,
+                utøver_id=felt.utøver_id,
+                poeng=felt.poeng,
+                oppstillingstype=felt.oppstillingstype,
+                resultat_id=felt.resultat_id
+            )
+
+            utløpte_potensialfelter.append(felt)
+            nye_potensialfelter.append(lukket_felt)
+
+        for lag,oppstilling in lagpotensial_felter.items():
+            for oppstillingstype in ("OBLIGATORISK", "VALGFRI"):
+                for (øvelseskode, utøver_id, poeng, resultat_id) in oppstilling[oppstillingstype]:
+                    if (lag, (øvelseskode, utøver_id, poeng, resultat_id)) in finnes_allerede:
+                        continue
+                    
+                    potensialfelt = serieklasser.lagpotensial_felt(
+                        serieår=lag.serieår,
+                        klubb_id=lag.klubb_id,
+                        lagnummer=lag.lagnummer,
+                        oppstillingstype=oppstillingstype,
+                        fra_og_med=uttrekksdato,
+                        til_og_med=None,
+                        øvelseskode=øvelseskode,
+                        utøver_id=utøver_id,
+                        poeng=poeng,
+                        resultat_id=resultat_id
+                    )
+                    
+                    nye_potensialfelter.append(potensialfelt)
+
+        seriedata.bulkslett(utløpte_potensialfelter)
+        seriedata.bulkinnsett(nye_potensialfelter)

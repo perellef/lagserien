@@ -29,8 +29,6 @@ from srcc.main.utils.orm._mann_utøver_merverdi import MannUtøverMerverdi
 from srcc.main.utils.orm._mann_uttrekksresultat import MannUttrekksresultat
 from srcc.main.utils.orm._kvinne_uttrekksresultat import KvinneUttrekksresultat
 
-from srcc.main.batch_4_kalkulator.diverse import nullutøver, nulløvelse
-
 from datetime import date, datetime
 import hashlib
 
@@ -163,9 +161,9 @@ def et_resultatbytte(øvelse="60m", utøver="A", fødselsår=2000, sted="Ås", d
 
 def et_resultat(øvelse="60m", utøver="A", fødselsår=2000, sted="Ås", dato=date(2100,1,1), prestasjon=""):
     
-    _utøver_ = utøver if utøver == nullutøver else en_utøver(navn=utøver, fødselsår=fødselsår)
+    _utøver_ = en_utøver(navn=utøver, fødselsår=fødselsår)
     _stevne_ = et_stevne(sted=sted)
-    _øvelse_ = øvelse if øvelse == nulløvelse else en_øvelse(øvelse=øvelse)
+    _øvelse_ = en_øvelse(øvelse=øvelse)
     
     resultat_id = AliasID.til_id(str(_utøver_.utøver_id)+_øvelse_.øvelseskode+str(_stevne_.stevne_id)+prestasjon)
     

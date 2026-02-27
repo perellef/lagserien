@@ -1,6 +1,6 @@
 from srcc.main.utils.beholdere.liste import Liste 
 
-from srcc.main.batch_4_kalkulator.diverse import Resultattype, nullutøver, poeng, øvelse, utøver, er_løp, er_teknisk, er_obligatorisk
+from srcc.main.batch_4_kalkulator.diverse import Resultattype
 from srcc.main.batch_4_kalkulator.oppstillingsgenerator import Oppstillingsgenerator
 from srcc.main.batch_4_kalkulator.dugnadsmatrise import dugnadsmatrise
 
@@ -13,7 +13,7 @@ from functools import cache
 class Kalkulator:
     
     @staticmethod
-    def LagKalk(serieår, seriedata, klubb, resultater, laginfo, oppstillinger, merverdier, forbedringspotensialer, serieøvelser, serieresultater, topplag, serieklasser, nye_lag):
+    def LagKalk(serieår, seriedata, klubb, resultater, laginfo, oppstillinger, merverdier, lagpotensialer, lagpotensial_felter, serieøvelser, serieresultater, topplag, serieklasser, nye_lag):
         resultattyper = Liste([Resultattype(res, serieresultater[res.resultat_id].poeng, serieøvelser[res.øvelseskode]) for res in resultater])           
         starttid = time.time()
 
@@ -25,7 +25,7 @@ class Kalkulator:
         if tid_brukt > 1:
             print(f"{klubb.klubbnavn}: {tid_brukt:.2f}s")
 
-        for lag_nr, (lagoppstilling, merverdiene, forbedringspotensial) in enumerate(alle_lag, start=1):
+        for lag_nr, (lagoppstilling, merverdiene, lagpotensial) in enumerate(alle_lag, start=1):
             lag = Kalkulator.hent_lag_ellers_opprett(seriedata, serieklasser, serieår, klubb, lag_nr, nye_lag)
 
             deltakere = set()
@@ -57,7 +57,12 @@ class Kalkulator:
             for utøver_id, poeng in merverdiene.items():
                 merverdier[(klubb.klubb_id, utøver_id)] = poeng
 
-            forbedringspotensialer[lag] = forbedringspotensial
+            lagpotensialer[lag] = (lagpotensial[0])
+            lagpotensial_felter[lag] = {"OBLIGATORISK": [], "VALGFRI": []}
+            for el in lagpotensial[1].obl():
+                lagpotensial_felter[lag]["OBLIGATORISK"].append((el.øvelseskode, el.utøver_id, el.poeng, None if el.resultat_id == 0 else el.resultat_id))
+            for el in lagpotensial[1].val():
+                lagpotensial_felter[lag]["VALGFRI"].append((el.øvelseskode, el.utøver_id, el.poeng, None if el.resultat_id == 0 else el.resultat_id))
 
     @classmethod
     def hent_lag_ellers_opprett(cls, seriedata, serieklasser, serieår, klubb, lagnummer, nye_lag):
@@ -112,7 +117,7 @@ class Kalkulator:
 
                 merverdier[utøver.utøver_id] = lagoppstilling.poeng() - like_lag.first().poeng()
                 Kalkulator.beregn_like_lagoppstillinger.cache_clear()
-            forbedringspotensial = 0#cls.beregn_forbedringsmuligheter(gjenværende_resultater, krav, serieøvelser, lagoppstilling.poeng())
+            forbedringspotensial = cls.beregn_forbedringsmuligheter(gjenværende_resultater, krav, serieøvelser, lagoppstilling.poeng())
             
             alle_lag.append((lagoppstilling, merverdier, forbedringspotensial))
 
@@ -148,7 +153,7 @@ class Kalkulator:
         like_lag = cls.beregn_like_lagoppstillinger(Liste(beste_resultater), krav)
 
         Kalkulator.beregn_like_lagoppstillinger.cache_clear()
-        return like_lag.first().poeng()-lagpoeng
+        return (like_lag.first().poeng()-lagpoeng, like_lag.first())
     
     
     @classmethod

@@ -44,7 +44,7 @@ class Kalkuleringsbesparelse:
         return max(tidligere_kjøringer)     
     
     @staticmethod
-    def legg_inn_uforandret_data(seriedata, serieår, uforandrede_klubber, oppstillinger, laginfo, merverdier, lagpotensialer, serieklasser, uttrekksdato):
+    def legg_inn_uforandret_data(seriedata, serieår, uforandrede_klubber, oppstillinger, laginfo, merverdier, lagpotensialer, lagpotensialer_felter, serieklasser, uttrekksdato):
         Serieresultat = serieklasser.serieresultat
 
         serieresultater = (seriedata
@@ -81,6 +81,12 @@ class Kalkuleringsbesparelse:
                 .hent(serieklasser.lagpotensial)
                 .filter(serieklasser.lagpotensial.fra_og_med <= uttrekksdato)
                 .filter((serieklasser.lagpotensial.til_og_med == None) | (serieklasser.lagpotensial.til_og_med >= uttrekksdato))
+                .all())
+
+        lagpotensial_feltene = (seriedata
+                .hent(serieklasser.lagpotensial_felt)
+                .filter(serieklasser.lagpotensial_felt.fra_og_med <= uttrekksdato)
+                .filter((serieklasser.lagpotensial_felt.til_og_med == None) | (serieklasser.lagpotensial_felt.til_og_med >= uttrekksdato))
                 .all())
 
         # lagresultat
@@ -139,3 +145,21 @@ class Kalkuleringsbesparelse:
                 continue
             
             lagpotensialer[lagpotensial.lag] = lagpotensial.poeng
+
+        # lagresultat
+        for felt in lagpotensial_feltene:
+            if felt.serieår != serieår:
+                continue
+            if felt.klubb_id not in uforandrede_klubber:
+                continue
+            if felt.til_og_med != None:
+                continue
+
+            lag = felt.lag
+            oppstillingstype = felt.oppstillingstype
+            resultat = felt.resultat
+
+            if lag not in oppstillinger:
+                lagpotensialer_felter[lag] = {"OBLIGATORISK": [], "VALGFRI": []}
+
+            lagpotensialer_felter[lag][oppstillingstype].append((felt.øvelseskode, felt.utøver_id, felt.poeng, felt.resultat_id))

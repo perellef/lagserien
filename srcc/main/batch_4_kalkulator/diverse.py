@@ -6,10 +6,6 @@ from srcc.main.utils.orm._mann_serieresultat import MannSerieresultat
 from srcc.main.utils.orm._mann_serieøvelse import MannSerieøvelse
 
 from srcc.main.utils.beholdere.liste import Liste
-from datetime import date
-
-nullutøver = Utøver(utøver_id=1111111, navn="null", fødselsår=None)
-nulløvelse = Øvelse(øvelseskode="null", øvelsesnavn="ignorer meg")
 
 class Resultattype:
 
@@ -56,48 +52,11 @@ class Resultattype:
         return self.poeng == andre.poeng
     
     @staticmethod
-    def null(serieøvelse=None):
-        øvelse = nulløvelse if serieøvelse == None else serieøvelse.øvelse
-        er_obligatorisk = True if serieøvelse == None else serieøvelse.er_obligatorisk
-        er_teknisk = True if  serieøvelse == None else serieøvelse.er_teknisk
-
-        resultat = Resultat(
-            resultat_id=0,
-            stevne_id=0,
-            utøver_id=nullutøver.utøver_id,
-            øvelseskode=øvelse.øvelseskode,
-            prestasjon="abc",
-            statistikk_resultat_id=0
-        )
-        serieresultat = MannSerieresultat( # kjønn uvesentlig
-            resultat_id=0,
-            fra_og_med=date.fromisoformat('2100-01-01'),
-            til_og_med=date.fromisoformat('2100-01-01'),
-            poeng=0,
-            klubb_id=None,
-            forløp="abc"
-        )
-        serieresultat.resultat = resultat
-        serieøvelse = MannSerieøvelse( # kjønn uvesentlig
-            serieår=2021,
-            øvelseskode=øvelse.øvelseskode,
-            er_obligatorisk=er_obligatorisk,
-            er_teknisk=er_teknisk,
-            prioritet=Peker.prioritet()
-        )
-        serieøvelse.øvelse = øvelse
-
-        resultat.øvelse = øvelse
-        resultat.utøver = nullutøver
-
-        return Resultattype(serieresultat.resultat, serieresultat.poeng, serieøvelse)
-
-    @staticmethod
     def imiter(poeng, serieøvelse, utøver):
         resultat = Resultat(
             resultat_id=0,
             stevne_id=0,
-            utøver_id=nullutøver.utøver_id,
+            utøver_id=utøver.utøver_id,
             øvelseskode=serieøvelse.øvelseskode,
             prestasjon="abc",
             statistikk_resultat_id=0
@@ -108,69 +67,3 @@ class Resultattype:
         resultat.utøver = utøver
         
         return Resultattype(resultat, poeng, serieøvelse)
-
-class Serieoppstilling:
-
-    def __init__(self, obl, val):
-        self.__obl = list(sorted(obl, key=lambda x: x.prioritet))
-        self.__val = list(sorted(val, reverse=True))
-
-        self.__enkeltpoenger = Liste.concat(self.__obl, self.__val).map(poeng).sort(reverse=True)
-        self.__seriepoeng = self.__enkeltpoenger.sum()
-        self.__seriepoeng_obl = Liste(self.__obl).map(poeng).sum()
-    
-    def obl(self):
-        return self.__obl
-
-    def val(self):
-        return self.__val
-    
-    def nullrensk(self):
-        ny_obl = [res for res in self.__obl if res.poeng > 0]
-        ny_val = [res for res in self.__val if res.poeng > 0]
-        
-        return Serieoppstilling(ny_obl, ny_val)
-    
-    def utøvere(self):
-        return set(Liste.concat(self.__obl, self.__val).map(utøver))   
-    
-    def __gt__(self, andre):
-        styrkeegenskaper = (
-            lambda x: x.__seriepoeng,
-            lambda x: x.__enkeltpoenger,
-            lambda x: x.__seriepoeng_obl,
-        )
-
-        for egenskap in styrkeegenskaper:
-            if egenskap(self) > egenskap(andre):
-                return True
-            if egenskap(self) < egenskap(andre):
-                return False
-            
-        return False
-    
-    def __str__(self):
-        output = "[ OBL ]"
-        for el in self.__obl:
-            output += f"\n {el}"
-        output += "\n"
-        
-        output += "[ VAL ]"
-        for el in self.__val:
-            output += f" \n{el}"
-        return output
-
-
-class Peker:
-    i = 0
-    @staticmethod
-    def prioritet():
-        Peker.i += 1
-        return Peker.i
-
-poeng = lambda x: x.poeng
-øvelse = lambda x: x.øvelse
-utøver = lambda x: x.utøver
-er_teknisk = lambda x: x.er_teknisk
-er_løp = lambda x: not x.er_teknisk
-er_obligatorisk = lambda x: x.er_obligatorisk

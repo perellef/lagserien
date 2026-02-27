@@ -2,7 +2,6 @@ import sys
 sys.path.append('./')
 
 from srcc.main.batch_4_kalkulator.kalkulator import Kalkulator
-from srcc.main.batch_4_kalkulator.diverse import nullutøver
 from srcc.main.utils.testverktøy._testobjekter import en_øvelse, en_utøver, en_resultattype, et_oppstillingskrav
 
 from srcc.main.utils.beholdere.liste import Liste

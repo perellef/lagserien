@@ -1,5 +1,8 @@
 from srcc.main.utils.beholdere.liste import Liste
-from srcc.main.batch_4_kalkulator.diverse import utøver, øvelse, nullutøver, nulløvelse, er_løp
+
+øvelse = lambda x: x.øvelse
+utøver = lambda x: x.utøver
+er_løp = lambda x: not x.er_teknisk
 
 class OppstillingException(Exception):
     pass
@@ -8,18 +11,12 @@ class Oppstillingsvalidator:
 
     @staticmethod
     def valider_oppstilling(oppstilling, krav):
-        Oppstillingsvalidator.valider_ingen_nullresultater(oppstilling)
         Oppstillingsvalidator.valider_ikke_overstigende_resultater_i_obl(oppstilling, krav.antall_obligatoriske)
         Oppstillingsvalidator.valider_ikke_overstigende_resultater_i_val(oppstilling, krav.antall_valgfri)
         Oppstillingsvalidator.valider_ikke_overstigende_løpsresultater_i_obl(oppstilling, krav.maks_obligatoriske_løp)
         Oppstillingsvalidator.valider_ikke_overstigende_løpsresultater_i_val(oppstilling, krav.maks_valgfri_løp)
         Oppstillingsvalidator.valider_ingen_overbelastede_utøvere(oppstilling, krav.maks_resultater_per_utøver)
         Oppstillingsvalidator.valider_ingen_gjenbrukte_obl_øvelser(oppstilling)
-    
-    @staticmethod
-    def valider_ingen_nullresultater(oppstilling):
-        nullresultater = Oppstillingsvalidator.__finn_nullresultater(oppstilling)
-        if len(nullresultater) > 0: raise OppstillingException(f"Lagoppstillingen:\n\n{oppstilling}\n\nskulle ikke hatt nullresultater, men hadde: {', '.join(map(str, nullresultater))}.")
 
     @staticmethod
     def valider_ikke_overstigende_resultater_i_obl(oppstilling, antall_obligatoriske):
@@ -48,16 +45,6 @@ class Oppstillingsvalidator:
     def valider_ingen_gjenbrukte_obl_øvelser(oppstilling):
         gjenbrukte_obl_øvelser = Oppstillingsvalidator.__finn_gjenbrukte_obl_øvelser(oppstilling)
         if len(gjenbrukte_obl_øvelser) > 0: raise OppstillingException(f"Lagoppstillingen:\n\n{oppstilling}\n\nskulle ikke hatt obligatoriske øvelser som ble gjenbrukt, men hadde: {', '.join(map(str, gjenbrukte_obl_øvelser))}")
-
-    @staticmethod
-    def __finn_nullresultater(oppstilling):
-        return (Liste.concat(oppstilling.obl(), oppstilling.val())
-            .filter(lambda res: any((
-                res.øvelse == nulløvelse,
-                res.utøver == nullutøver,
-                res.poeng == 0))
-            )
-        )
 
     @staticmethod
     def __finn_overbelastede_utøvere(oppstilling, maks_resultater_per_utøver):
