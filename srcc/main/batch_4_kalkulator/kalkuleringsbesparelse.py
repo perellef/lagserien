@@ -146,7 +146,7 @@ class Kalkuleringsbesparelse:
             
             lagpotensialer[lagpotensial.lag] = lagpotensial.poeng
 
-        # lagresultat
+        # lagpotensial felt
         for felt in lagpotensial_feltene:
             if felt.serieår != serieår:
                 continue
@@ -159,7 +159,7 @@ class Kalkuleringsbesparelse:
             oppstillingstype = felt.oppstillingstype
             resultat = felt.resultat
 
-            if lag not in oppstillinger:
+            if lag not in lagpotensialer_felter:
                 lagpotensialer_felter[lag] = {"OBLIGATORISK": [], "VALGFRI": []}
 
             lagpotensialer_felter[lag][oppstillingstype].append((felt.øvelseskode, felt.utøver_id, felt.poeng, felt.resultat_id))
