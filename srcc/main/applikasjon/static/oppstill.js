@@ -563,7 +563,7 @@ document.getElementById('oppstiller-knapp').addEventListener('click', function()
             knapp.style.border = "1px lightgray solid";
             knapp.style.paddingLeft = "12px";
             var chevron = document.createElement('img');
-            chevron.src = chevron_down;
+            chevron.src = `${window.location.origin}/static/assets/ikoner/chevron-compact-down.svg`;
             chevron.style.width = "20px"; 
             knapp.appendChild(chevron);
 

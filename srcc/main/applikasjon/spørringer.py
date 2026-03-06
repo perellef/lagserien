@@ -54,6 +54,14 @@ def db_hent_batchkjøringer(peker):
         LIMIT 100
     ''', ())
 
+def db_hent_varsler(peker):
+    return execute(peker, '''
+        SELECT tittel, spørring
+        FROM "nettside.varsler"
+        WHERE NOT er_slettet
+        ORDER BY tidspunkt
+    ''', ())
+
 def db_hent_resultatbytter(peker):
     return execute(peker, '''
         SELECT *

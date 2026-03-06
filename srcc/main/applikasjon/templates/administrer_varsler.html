@@ -11,4 +11,22 @@
 
 <h3>Administrer varsler</h3>
 
+<div id="varseldiv">
+  <!-- Varsler kommer her -->
+</div>
+
+<div style="display: flex">
+  <button style="margin-right: 10px">Legg til nytt varsel</button>
+  <button>Rediger varsler</button>
+</div>
+
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+    var varsler = {{ varsler | tojson | safe}};
+    var resultater = {{ resultater | tojson }};
+</script>
+<script src="{{ url_for('static', filename='administrer_varsler.js') }}"></script>
 {% endblock %}

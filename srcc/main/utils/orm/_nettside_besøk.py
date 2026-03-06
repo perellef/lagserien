@@ -1,7 +1,6 @@
 from .deklarativ_base import DeklarativBase
 
 from sqlalchemy import Column, String, TIMESTAMP
-from sqlalchemy.orm import relationship
 
 class NettsideBesøk(DeklarativBase):
 

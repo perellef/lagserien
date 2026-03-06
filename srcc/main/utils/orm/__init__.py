@@ -33,6 +33,7 @@ from ._rullestolutøver import Rullestolutøver
 from ._serie import Serie
 from ._stevne import Stevne
 from ._stevneinvitasjon import Stevneinvitasjon
+from ._varsel import Varsel
 from ._utøver_unntatt_overbygning import UtøverUnntattOverbygning
 from ._utøver import Utøver
     
