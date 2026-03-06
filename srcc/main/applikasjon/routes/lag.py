@@ -11,7 +11,7 @@ def lag(kjonn, lagnavn):
     
     klubbnavn, lagnummer = utled_klubb_og_lagnummer(lagnavn)
 
-    if klubbnavn not in cache.data["klubber"]:
+    if klubbnavn not in [e[0] for e in cache.data["klubber"]]:
         abort(404)
 
     with seriedata.connect() as peker:

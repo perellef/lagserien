@@ -1,7 +1,7 @@
 import time
 from datetime import datetime, timezone
 
-from srcc.main.applikasjon.spørringer import db_hent_serier, db_hent_sist_kjørt, db_hent_seriens_øvelser, db_hent_klubber, db_hent_lagplasseringer, db_hent_rangering_mest_aktive_utøver, db_hent_rangering_mest_avgjørende_utøver, db_hent_rangering_mest_gjennomførte_lag, db_hent_rangering_lag_med_størst_potensial, db_hent_rangering_lag_med_flest_juniorpoeng, db_hent_rangering_klubb_med_størst_bredde, db_hent_rangering_klubb_med_største_forbedring, db_hent_rangering_største_krets, db_hent_rangering_mest_populære_øvelse, db_hent_maksimalt_antall_noteringer, db_hent_oppstillingskrav, db_hent_9_nyeste_artikler, db_hent_forsinkede_stevner, db_hent_andel_gjennomførte_stevner, db_hent_andel_rapporterte_stevner, db_hent_stevnekalender, db_hent_kretser
+from srcc.main.applikasjon.spørringer import db_hent_serier, db_hent_sist_kjørt, db_hent_seriens_øvelser, db_hent_klubber, db_hent_utøvere, db_hent_lagplasseringer, db_hent_rangering_mest_aktive_utøver, db_hent_rangering_mest_avgjørende_utøver, db_hent_rangering_mest_gjennomførte_lag, db_hent_rangering_lag_med_størst_potensial, db_hent_rangering_lag_med_flest_juniorpoeng, db_hent_rangering_klubb_med_størst_bredde, db_hent_rangering_klubb_med_største_forbedring, db_hent_rangering_største_krets, db_hent_rangering_mest_populære_øvelse, db_hent_maksimalt_antall_noteringer, db_hent_oppstillingskrav, db_hent_9_nyeste_artikler, db_hent_forsinkede_stevner, db_hent_andel_gjennomførte_stevner, db_hent_andel_rapporterte_stevner, db_hent_stevnekalender, db_hent_kretser
 from sqlalchemy.exc import OperationalError
 from functools import cache
 
@@ -55,6 +55,7 @@ class Cache:
                 "serieår": self.__serieår,
                 "øvelser": db_hent_seriens_øvelser(peker, self.__serieår),
                 "klubber": db_hent_klubber(peker),
+                "utøvere": db_hent_utøvere(peker),
                 "serier": db_hent_serier(peker),
                 "livetabell": {
                     "menn": {

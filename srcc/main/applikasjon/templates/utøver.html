@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block innhold %}
+<style>
+  #serieår-knapper:hover {
+      overflow-x: auto !important;
+  }
+</style>
+<div class="tekst" style="margin: 50px 0 30px 0;">
+  <h3 style="text-align: center; padding-top: 20px; font-weight: 700; color: #444444">{{ navn }}
+    {% if fødselsår is not none %}
+       ({{ fødselsår }})
+    {% endif %}
+  </h3>
+</div>
+
+<div style="display: flex; justify-content: center; height: 50px">
+    <div id="serieår-knapper" style="display: flex; flex-wrap: nowrap; max-width: 700px; overflow-x: hidden; transition: overflow 0.3s">
+
+    </div>
+</div>
+
+<div id="utøver-lagresultater">
+
+
+</div>
+
+<table class="table table-sm" style="table-layout: fixed;">
+    <thead class="table-light">
+        <tr style="font-size: 0.9rem">
+            <th style="padding: 0">Poeng</th>
+            <th style="padding: 0">Øvelse</th>
+            <th style="padding: 0">Prestasjon</th>
+            <th style="padding: 0">Sted</th>
+            <th style="padding: 0">Dato</th>
+            <th style="padding: 0">Klubb</th>
+        </tr>
+    </thead>
+    <tbody id="utøverresultater">
+    </tbody>
+</table>
+
+<script>
+  var serieår = {{ serieår }};
+  var utøverresultater = {{ resultater | tojson }};
+  var lagresultater = {{ lagresultater | tojson}};
+</script>
+<script src="{{ url_for('static', filename='utøver.js') }}"></script>
+{% endblock %}

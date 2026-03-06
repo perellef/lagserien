@@ -166,4 +166,4 @@ function vis_kalenderstevner(month) {
 generateMonthButtons();
 updateDisplay();
 
-window.onload = vis_forsinkelser;
+window.addEventListener("load", vis_forsinkelser);

@@ -18,6 +18,7 @@ from srcc.main.applikasjon.routes.om_serien import om_serien
 from srcc.main.applikasjon.routes.livetabell import livetabell
 from srcc.main.applikasjon.routes.rangeringer import rangeringer
 from srcc.main.applikasjon.routes.tidligere_år import tidligere_år
+from srcc.main.applikasjon.routes.utøver import utøver
 from srcc.main.applikasjon.routes.verktøy import verktøy
 from srcc.main.applikasjon.routes.artikkel import artikkel
 from srcc.main.applikasjon.routes.klubb import klubb
@@ -52,6 +53,7 @@ def create_app():
     app.route("/stevnestatus") (stevnestatus)
     app.route("/livetabell") (livetabell)
     app.route("/rangeringer") (rangeringer)
+    app.route("/utovere/<path:utover_id>") (utøver)
     app.route("/livetabell/<path:klubbnavn>") (klubb)
     app.route("/livetabell/<path:lagnavn> (<kjonn>)") (lag)
     app.route("/tidligere_år") (tidligere_år)

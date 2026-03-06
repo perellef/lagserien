@@ -18,20 +18,21 @@ function autocomplete(input, options) {
         listContainer.style.top = (input.offsetHeight + 5) + "px";
         listContainer.style.left = "0";
         listContainer.style.width = input.offsetWidth + "px";
-    
+
         this.parentNode.appendChild(listContainer);
     
         options.forEach(function(option) {
-            index = option.toUpperCase().indexOf(val.toUpperCase())
+            index = option[0].toUpperCase().indexOf(val.toUpperCase())
+            console.log(option[0]);
             if (index == 0) {
-                listContainer.appendChild(createItem(option, val, index));
+                listContainer.appendChild(createItem(option[0], val, index));
             }
         });
     
         options.forEach(function(option) {
-            index = option.toUpperCase().indexOf(val.toUpperCase())
+            index = option[0].toUpperCase().indexOf(val.toUpperCase())
             if (index > 0) {
-                listContainer.appendChild(createItem(option, val, index));
+                listContainer.appendChild(createItem(option[0], val, index));
             }
         });
     

@@ -56,7 +56,7 @@ function vis_tverrsnitt_lagplasseringer(hovedlagets_plassering) {
         if (lagplassering[4] > 0) {celler[5].textContent = "+" + lagplassering[4]}
         if (lagplassering[4] < 0) {celler[5].textContent = lagplassering[4]}
 
-        if (cached_data["klubblogoer"].includes(lagplassering[8])) {
+        if (cached_data.klubblogoer.includes(lagplassering[8])) {
             logo = `${window.location.origin}/static/assets/klubblogo/${lagplassering[8]}.png`;
             var img = document.createElement('img');
             img.src = logo;

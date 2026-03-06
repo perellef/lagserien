@@ -172,5 +172,5 @@ const colNoteringer = document.getElementById('col-noteringer');
 // Cache initial widths
 const initialColWidth = colNoteringer ? getComputedStyle(colNoteringer).width : '100px';
 
-window.onload = vis_lagplasseringer();
+vis_lagplasseringer();
 sett_inn_kretsalternativer()

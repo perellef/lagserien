@@ -28,16 +28,38 @@
                 <img src="{{ url_for('static', filename='assets/logoer/norsk friidrett.svg') }}" alt="NFIF logo" style="width:70px;">
             </a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
+                <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-            <div class="navbar-nav">
-                <a class="nav-item nav-link mx-2 nav-textstr" href="{{ url_for('forside') }}">Hjem</a>
-                <a class="nav-item nav-link mx-2 nav-textstr" href="{{ url_for('livetabell') }}">Livetabell</a>
-                <!-- <a class="nav-item nav-link mx-2 nav-textstr" href="{{ url_for('tidligere_år') }}">Tidligere år</a> -->
-                <a class="nav-item nav-link mx-2 nav-textstr" href="{{ url_for('verktøy') }}">Verktøy</a>
-                <a class="nav-item nav-link mx-2 nav-textstr" href="{{ url_for('stevnestatus') }}">Stevnestatus</a>
-                <a class="nav-item nav-link mx-2 nav-textstr" href="{{ url_for('om_serien') }}">Om serien</a>
+            
+            <div class="collapse navbar-collapse justify-content-between" id="navbarNavAltMarkup">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item active">
+                        <a class="nav-item nav-link mx-2 nav-textstr" href="{{ url_for('forside') }}">Hjem</a>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-item nav-link mx-2 nav-textstr" href="{{ url_for('livetabell') }}">Livetabell</a>
+                    </li>
+                        <!-- <a class="nav-item nav-link mx-2 nav-textstr" href="{{ url_for('tidligere_år') }}">Tidligere år</a> -->
+                    <li class="nav-item active">
+                        <a class="nav-item nav-link mx-2 nav-textstr" href="{{ url_for('verktøy') }}">Verktøy</a>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-item nav-link mx-2 nav-textstr" href="{{ url_for('stevnestatus') }}">Stevnestatus</a>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-item nav-link mx-2 nav-textstr" style="white-space: nowrap;" href="{{ url_for('om_serien') }}">Om serien</a>
+                    </li>
+                </ul>
+                <!-- 
+                <form class="form-inline d-flex align-items-center w-100" style="max-width: 350px;">
+                    <div class="w-100">
+                        <input id="søkefelt" class="form-control w-100 mr-sm-2" type="search" placeholder="Søk etter klubb eller utøver" aria-label="Search" >
+                    </div>
+                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit" style="margin: 0 10px 0 10px;">
+                        <i class="bi bi-search"></i>
+                    </button>
+                </form>
+                -->
             </div>
         </nav>
 

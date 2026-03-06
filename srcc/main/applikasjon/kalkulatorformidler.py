@@ -534,3 +534,6 @@ class Kalkulatorformidler:
         berikede_neste["VALGFRI"] = list(sorted(berikede_neste["VALGFRI"], key=lambda x: (0 if x[2] == '' else -x[2], x[3], x[5])))
 
         return berikede_neste
+
+    def beregn_resultatpoeng(kjønn, øvelse, resultat):
+        return Poengberegner.beregn(kjønn, øvelse, resultat)

@@ -128,6 +128,6 @@ function fyll_inn_nyheter() {
     }
 }
 
-window.onload = vis_topp_5("menn");
-window.onload = vis_topp_5("kvinner");
-window.onload = fyll_inn_nyheter();
+vis_topp_5("kvinner");
+vis_topp_5("menn");
+fyll_inn_nyheter();

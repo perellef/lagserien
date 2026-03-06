@@ -76,7 +76,7 @@ def db_hent_sist_kjørt(peker, serieår):
     return resultat[0][0]
 
 def db_hent_seriens_øvelser(peker, serieår):
-    resultat = execute(peker, '''
+    return execute(peker, '''
         SELECT øvelse.øvelsesnavn
         FROM "uttrekk.øvelser" AS øvelse
             LEFT JOIN "serie.menn_serieøvelser" AS mann_serieøvelse ON (øvelse.øvelseskode = mann_serieøvelse.øvelseskode)
@@ -87,7 +87,6 @@ def db_hent_seriens_øvelser(peker, serieår):
         ORDER BY coalesce(mann_serieøvelse.prioritet, kvinne_serieøvelse.prioritet)
         ;
     ''', (serieår, serieår))
-    return [x[0] for x in resultat]
 
 def db_hent_øvelsene(peker):
     resultat = execute(peker, '''
@@ -106,12 +105,18 @@ def db_hent_serieøvelser(peker, kjønn, serieår):
     ''', (serieår,))
     
 def db_hent_klubber(peker):
-    resultat = execute(peker, '''
-        SELECT klubbnavn
+    return execute(peker, '''
+        SELECT klubbnavn, klubb_id
         FROM "uttrekk.klubber"
         ORDER BY klubbnavn;
     ''', ())
-    return [x[0] for x in resultat]
+
+def db_hent_utøvere(peker):
+    return execute(peker, '''
+        SELECT navn, fødselsår, utøver_id
+        FROM "uttrekk.utøvere"
+        ORDER BY navn, fødselsår;
+    ''', ())
 
 def db_hent_klubb_id(peker, klubbnavn):
     resultat = execute(peker, '''
@@ -1071,6 +1076,103 @@ def db_hent_klubbresultater(peker, kjønn, klubbnavn, serieår, uttrekksdato):
             AND {{placeholder}} BETWEEN serieresultat.fra_og_med AND COALESCE(serieresultat.til_og_med, '9999-01-01')
         ;
         ''', (serieår, klubbnavn, uttrekksdato))
+
+def db_hent_utøverinfo(peker, utøver_id):
+    resultat = execute(peker, '''
+        SELECT navn, fødselsår
+        FROM "uttrekk.utøvere"
+        WHERE utøver_id = {placeholder}
+    ''', (utøver_id,))
+    
+    return None if len(resultat) == 0 else resultat[0]
+
+def db_hent_utøverresultater(peker, utøver_id):
+    resultater = execute(peker, '''
+        WITH
+            serieøvelse AS (
+                SELECT * FROM "serie.menn_serieøvelser"
+                UNION
+                SELECT * FROM "serie.kvinner_serieøvelser"
+            ),
+            uttrekksresultat AS (
+                SELECT 'menn' AS kjønn,* FROM "uttrekk.menn_uttrekksresultater"
+                UNION
+                SELECT 'kvinner',* FROM "uttrekk.kvinner_uttrekksresultater"
+            )
+        SELECT øvelsesnavn, prestasjon, sted, dato, klubbnavn, prioritet, resultat.øvelseskode, kjønn
+        FROM "uttrekk.resultater" AS resultat
+            JOIN uttrekksresultat ON (resultat.resultat_id = uttrekksresultat.resultat_id)
+            JOIN "uttrekk.klubber" AS klubb ON (uttrekksresultat.klubb_id = klubb.klubb_id)
+            JOIN "uttrekk.øvelser" AS øvelse ON (resultat.øvelseskode = øvelse.øvelseskode)
+            JOIN "uttrekk.stevner" AS stevne ON (resultat.stevne_id = stevne.stevne_id)
+            JOIN serieøvelse ON (resultat.øvelseskode = serieøvelse.øvelseskode AND serieøvelse.serieår = EXTRACT(YEAR FROM resultat.dato))
+        WHERE uttrekksresultat.til_og_med IS NULL
+            AND resultat.utøver_id = {placeholder}
+        ORDER BY EXTRACT(YEAR FROM resultat.dato)
+    ''', (utøver_id,))
+
+    per_år = {}
+    for resultat in resultater:
+        if (år := resultat[3].year) not in per_år:
+            per_år[år] = []
+        per_år[år].append(resultat)
+    return per_år
+
+def db_hent_utøverens_lagresultater(peker, utøver_id):
+    resultater = execute(peker, '''
+        WITH 
+            uttrekksresultat AS (
+                SELECT * FROM "uttrekk.menn_uttrekksresultater"
+                UNION
+                SELECT * FROM "uttrekk.kvinner_uttrekksresultater"
+            ),
+            serieresultat AS (
+                SELECT * FROM "tildeling.menn_serieresultater"
+                UNION
+                SELECT * FROM "tildeling.kvinner_serieresultater"
+            ),
+            lagresultat AS (
+                SELECT * FROM "serie.menn_lagresultater"
+                UNION
+                SELECT * FROM "serie.kvinner_lagresultater"
+            ),
+            serieøvelse AS (
+                SELECT * FROM "serie.menn_serieøvelser"
+                UNION
+                SELECT * FROM "serie.kvinner_serieøvelser"
+            )
+        SELECT serieresultat.poeng,
+            øvelsesnavn,
+            prestasjon,
+            sted,
+            dato,
+            CASE
+                WHEN lagresultat.lagnummer = 1 THEN klubbnavn 
+                ELSE CONCAT(klubbnavn, ' ', lagresultat.lagnummer, '. lag')
+            END
+        FROM "uttrekk.resultater" AS resultat
+            JOIN lagresultat ON (resultat.resultat_id = lagresultat.resultat_id)
+            JOIN serieresultat ON (resultat.resultat_id = serieresultat.resultat_id)
+            JOIN serieøvelse ON (resultat.øvelseskode = serieøvelse.øvelseskode AND serieøvelse.serieår = EXTRACT(YEAR FROM resultat.dato))
+            JOIN "uttrekk.klubber" AS klubb ON (lagresultat.klubb_id = klubb.klubb_id)
+            JOIN "uttrekk.øvelser" AS øvelse ON (resultat.øvelseskode = øvelse.øvelseskode)
+            JOIN "uttrekk.stevner" AS stevne ON (resultat.stevne_id = stevne.stevne_id)
+        WHERE resultat.utøver_id = {placeholder}
+            AND serieresultat.til_og_med IS NULL
+            AND lagresultat.til_og_med IS NULL
+        ORDER BY EXTRACT(YEAR FROM resultat.dato), prioritet    
+    ''', (utøver_id,))
+    
+    per_år_klubb = {}
+    for resultat in resultater:
+        år = resultat[4].year
+        klubb = resultat[5]
+        if år not in per_år_klubb:
+            per_år_klubb[år] = {}
+        if klubb not in per_år_klubb[år]:
+            per_år_klubb[år][klubb] = []
+        per_år_klubb[år][klubb].append(resultat[:-1])
+    return per_år_klubb
 
 def db_hent_klubbresultater_med_overgangsinfo(peker, klubbnavn, serieår, uttrekksdato):
     return execute(peker, f'''

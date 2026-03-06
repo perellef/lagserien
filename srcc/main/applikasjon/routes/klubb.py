@@ -6,7 +6,7 @@ from datetime import datetime, timezone
 
 def klubb(klubbnavn):
 
-    if klubbnavn not in cache.data["klubber"]:
+    if klubbnavn not in [e[0] for e in cache.data["klubber"]]:
         abort(404)
 
     i_dag = datetime.now(timezone.utc) 

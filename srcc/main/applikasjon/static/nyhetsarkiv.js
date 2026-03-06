@@ -47,4 +47,4 @@ function fyll_inn_nyheter() {
     }
 }
 
-window.onload = fyll_inn_nyheter();
+fyll_inn_nyheter();
