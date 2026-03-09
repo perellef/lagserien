@@ -41,4 +41,21 @@
   });
 </script>
 
+
+<div class="table-container forsinkelser" style="max-height: 300px; overflow-y: auto;">
+  <table class="table table-sm" style="table-layout: fixed">   
+    <thead class="table-light">
+      <tr>
+        <th scope="col" style="width: 13%; white-space: nowrap; overflow:hidden; text-overflow: ellipsis">Forsinkelse</th>
+        <th scope="col" style="width: 50%">Stevne</th>
+        <th scope="col" style="width: 24%">Arena</th>
+        <th scope="col" style="width: 15%">Dato</th>
+      </tr>
+    </thead>
+    <tbody id="forsinkelser">
+    </tbody>
+  </table>
+</div>
+<script src="{{ url_for('static', filename='se_oversikter.js') }}"></script>
+
 {% endblock %}
