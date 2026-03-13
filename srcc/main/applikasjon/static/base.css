@@ -19,6 +19,71 @@ body {
     }
 }
 
+@media (max-width: 700px) {
+    .allroundere col:nth-child(8),
+    .allroundere th:nth-child(6),
+    .allroundere td:nth-child(8) {
+      display: none;
+    }
+}
+
+@media (max-width: 670px) {
+    .nykommere col:nth-child(8),
+    .nykommere th:nth-child(7),
+    .nykommere td:nth-child(8) {
+      display: none;
+    }
+}
+
+@media (max-width: 720px) {
+    .ideallag col:nth-child(8),
+    .ideallag th:nth-child(6),
+    .ideallag td:nth-child(8) {
+      display: none;
+    }
+}
+
+@media (max-width: 720px) {
+    .kommersterke col:nth-child(8),
+    .kommersterke th:nth-child(6),
+    .kommersterke td:nth-child(8) {
+      display: none;
+    }
+}
+
+@media (max-width: 750px) {
+    .juniorlag col:nth-child(7),
+    .juniorlag th:nth-child(5),
+    .juniorlag td:nth-child(7) {
+      display: none;
+    }
+}
+
+@media (max-width: 650px) {
+    .vekstklubber col:nth-child(7),
+    .vekstklubber th:nth-child(6),
+    .vekstklubber td:nth-child(7) {
+      display: none;
+    }
+}
+
+@media (max-width: 600px) {
+    .storklubber col:nth-child(7),
+    .storklubber th:nth-child(5),
+    .storklubber td:nth-child(7) {
+      display: none;
+    }
+}
+
+@media (max-width: 600px) {
+    .største-krets col:nth-child(5),
+    .største-krets th:nth-child(4),
+    .største-krets td:nth-child(5) {
+      display: none;
+    }
+}
+
+
 @media (max-width: 800px) {
     .lagoppstilling col:nth-child(9),
     .lagoppstilling th:nth-child(9),

@@ -1,73 +1,485 @@
 {% extends "base.html" %}
 
 {% block innhold %}
-<div class="text-start">
-  <br>
-  <br>
-  
-  <h3 style="padding-top: 20px;">Livetabell {{ serieår }}</h3>
-
-  <p>
-  Her ser du Lagserien beregnet med foreløpige resultater. Oversikten viser endringer <span style="text-decoration: underline;">siste 7 dager</span>. Du kan også laste ned serien på <a href="{{ url_for('static', filename='assets/excelfiler/' ~ zipfil ) }}" download="{{ zipfil }}">excelformat</a>.
-  </p>
-
-  <span class="text-muted mt-1" style="font-size: 0.75rem;">Sist oppdatert {{ sist_oppdatert }}</span>
+<div style="display: flex; margin-top: 20px;">
+  <div id="oversikt-knapp" class="enkeltknapp" style="width: 25%; text-align: center; background-color: white; border: 1px solid #cccccc; cursor: pointer;">Oversikt</div>
+  <div id="tabell-knapp" class="enkeltknapp" style="width: 25%; text-align: center; background-color: #e4f2ff; border: 1px solid #afbfff; cursor: pointer;">Tabell</div>
+  <div id="rangeringer-knapp" class="enkeltknapp" style="width: 25%; text-align: center; background-color: white; border: 1px solid #cccccc; cursor: pointer;">Rangeringer</div>
+  <div id="kalender-knapp" class="enkeltknapp" style="width: 25%; text-align: center; background-color: white; border: 1px solid #cccccc; cursor: pointer;">Kalender</div>
 </div>
-<div class="card rounded-0" style="background-color: rgb(199, 219, 207);">
 
-  <div style="display: flex; flex-wrap: wrap; margin: 0 auto; column-gap: 60px; padding: 15px 10px 15px 10px;">
-      <div class="col-md-6 justerbart-verdifelt" style="width: 25%; min-width: 150px;">
-          <div class="verdifelt-angiver" style="font-size: 0.9rem">Kjønn:</div>
-          <div class="verdifelt">
-              <div class="sideknapp" id="kjønn-venstre"><</div>
-              <div class="verdi" id="livetabell-kjønn">menn</div>
-              <div class="sideknapp" id="kjønn-høyre">></div>
-          </div>
-      </div>
 
-      <div class="col-md-6 justerbart-verdifelt" style="width: 25%; min-width: 150px;">
-          <div class="verdifelt-angiver" style="font-size: 0.9rem">Divisjon:</div>
-          <div class="verdifelt">
-              <div class="sideknapp" id="divisjon-venstre"><</div>
-              <div class="verdi" id="livetabell-divisjon">1</div>
-              <div class="sideknapp" id="divisjon-høyre">></div>
-          </div>
-      </div>
+<div id="oversikt" style="display: none;">
+  <h3>Oversikt</h3>
 
-      <div class="col-md-6 justerbart-verdifelt" style="max-width: 186px;">
-        <label class="verdifelt-angiver" for="kretsalternativer"  style="font-size: 0.9rem">Krets:</label>
-        <select id="kretsalternativer" name="kretsalternativer" style="font-size: 0.8rem; line-height: 1.5; border: 1px solid #ccc; background-color: #fff; padding-left: 10px">
-          <option id="kretsalternativ-alle" value="alle">alle</option>
-        </select>
-      </div>
+  Denne siden er under utvikling.<br>
+  <br>
+</div>
+
+<div id="tabell" style="display: block;">
+  <div class="text-start">
+    <br>
+    <h3 style="padding-top: 20px;">Livetabell {{ serieår }}</h3>
+    <p>
+    Her ser du Lagserien beregnet med foreløpige resultater. Oversikten viser endringer <span style="text-decoration: underline;">siste 7 dager</span>. Du kan også laste ned serien på <a href="{{ url_for('static', filename='assets/excelfiler/' ~ zipfil ) }}" download="{{ zipfil }}">excelformat</a>.
+    </p>
   </div>
 
-  <table class="table table-sm divisjonstabell" style="table-layout: fixed;">   
-    <thead class="table-light">
-      <colgroup>
-        <col style="width: 5%; white-space: no-wrap;">
-        <col style="width: 7%; white-space: no-wrap;">
-        <col style="width: 5%; white-space: no-wrap;">
-        <col style="width: 20%; white-space: no-wrap;">
-        <col style="width: 8%; white-space: no-wrap;">
-        <col style="width: 12%; white-space: no-wrap;">
-        <col style="width: 12%; white-space: no-wrap;">
-        <col style="width: 21%; white-space: no-wrap;">
-      </colgroup>
-      <tr>
-        <th scope="col"></th>
-        <th scope="col"></th>
-        <th scope="col"></th>
-        <th scope="col">Lag</th>
-        <th scope="col" colspan="2">Poeng</th>
-        <th scope="col">Noteringer</th>
-        <th scope="col" style="padding-left: 20px;">Krets</th>
-      </tr>
-    </thead>
-    <tbody id="lagplasseringer">
-    </tbody>
-  </table>
-  <button id="eventuell-se-alle-knapp" style="display: none; border-width: 1.5px">Last inn alle lag</button>
-  <script src="{{ url_for('static', filename='livetabell.js') }}"></script>
+  <div style="display: block">
+    <span class="text-muted mt-1" style="font-size: 0.75rem;">Sist oppdatert {{ sist_oppdatert }}</span>
+    <div class="card rounded-0" style="background-color: rgb(199, 219, 207);">
+
+      <div style="display: flex; flex-wrap: wrap; margin: 0 auto; column-gap: 60px; padding: 15px 10px 15px 10px;">
+          <div class="col-md-6 justerbart-verdifelt" style="width: 25%; min-width: 150px;">
+              <div class="verdifelt-angiver" style="font-size: 0.9rem">Kjønn:</div>
+              <div class="verdifelt">
+                  <div class="sideknapp" id="kjønn-venstre"><</div>
+                  <div class="verdi" id="livetabell-kjønn">menn</div>
+                  <div class="sideknapp" id="kjønn-høyre">></div>
+              </div>
+          </div>
+
+          <div class="col-md-6 justerbart-verdifelt" style="width: 25%; min-width: 150px;">
+              <div class="verdifelt-angiver" style="font-size: 0.9rem">Divisjon:</div>
+              <div class="verdifelt">
+                  <div class="sideknapp" id="divisjon-venstre"><</div>
+                  <div class="verdi" id="livetabell-divisjon">1</div>
+                  <div class="sideknapp" id="divisjon-høyre">></div>
+              </div>
+          </div>
+
+          <div class="col-md-6 justerbart-verdifelt" style="max-width: 186px;">
+            <label class="verdifelt-angiver" for="kretsalternativer"  style="font-size: 0.9rem">Krets:</label>
+            <select id="kretsalternativer" name="kretsalternativer" style="font-size: 0.8rem; line-height: 1.5; border: 1px solid #ccc; background-color: #fff; padding-left: 10px">
+              <option id="kretsalternativ-alle" value="alle">alle</option>
+            </select>
+          </div>
+      </div>
+
+      <table class="table table-sm divisjonstabell" style="table-layout: fixed;">   
+        <thead class="table-light">
+          <colgroup>
+            <col style="width: 5%; white-space: no-wrap;">
+            <col style="width: 7%; white-space: no-wrap;">
+            <col style="width: 5%; white-space: no-wrap;">
+            <col style="width: 20%; white-space: no-wrap;">
+            <col style="width: 8%; white-space: no-wrap;">
+            <col style="width: 12%; white-space: no-wrap;">
+            <col style="width: 12%; white-space: no-wrap;">
+            <col style="width: 21%; white-space: no-wrap;">
+          </colgroup>
+          <tr>
+            <th scope="col"></th>
+            <th scope="col"></th>
+            <th scope="col"></th>
+            <th scope="col">Lag</th>
+            <th scope="col" colspan="2">Poeng</th>
+            <th scope="col">Noteringer</th>
+            <th scope="col" style="padding-left: 20px;">Krets</th>
+          </tr>
+        </thead>
+        <tbody id="lagplasseringer">
+        </tbody>
+      </table>
+      <button id="eventuell-se-alle-knapp" class="enkeltknapp" style="display: none; border-width: 1.5px">Last inn alle lag</button>
+    </div>
+  </div>
 </div>
+
+<div id="rangeringer" style="display: none">
+    <h3>Rangeringer {{ serieår }}</h3>
+    <style>
+        #rangeringer-knapper:hover {
+            overflow-x: auto !important;
+        }
+        .selected {
+            background-color: white;
+        }
+    </style>
+    <div id="rangeringer-knapper" style="display: flex; flex-wrap: nowrap; font-size: 15px; margin-bottom: 20px; max-width: 700px; overflow-x: hidden; transition: overflow 0.3s; height: 135px;">
+        <div style="display: inline-block; flex-shrink: 0">
+            <span style="color: gray; font-size: 13px">Utøvere</span><br>
+            <button id="allroundere-knapp" class="enkeltknapp selected" style="white-space: nowrap; text-align: left; margin: 3px 15px 3px 0; padding: 0 15px 0 5px; border: solid #aaaaaa 1.5px;">
+                <img src="{{ url_for('static', filename='assets/trophy.png') }}" alt="trofé" style="width: 14px; height: auto;">
+                Allroundere
+            </button><br>
+            <button id="nøkkelutøvere-knapp" class="enkeltknapp" style="white-space: nowrap; text-align: left; margin: 3px 15px 3px 0; padding: 0 15px 0 5px; border: solid #aaaaaa 1.5px;">
+                <img src="{{ url_for('static', filename='assets/trophy.png') }}" alt="trofé" style="width: 14px; height: auto;">
+                Nøkkelutøvere
+            </button><br>
+            <button id="nykommere-knapp" class="enkeltknapp" style="white-space: nowrap; text-align: left; margin: 3px 15px 3px 0; padding: 0 15px 0 5px; border: solid #aaaaaa 1.5px;">
+                <img src="{{ url_for('static', filename='assets/trophy.png') }}" alt="trofé" style="width: 14px; height: auto;">
+                Nykommere
+            </button><br>
+        </div> 
+        <div style="display: inline-block; flex-shrink: 0">
+            <span style="color: gray; font-size: 13px">Lag</span><br>
+            <button id="ideallag-knapp" class="enkeltknapp" style="white-space: nowrap; text-align: left; margin: 3px 15px 3px 0; padding: 0 15px 0 5px; border: solid #aaaaaa 1.5px;">
+                <img src="{{ url_for('static', filename='assets/trophy.png') }}" alt="trofé" style="width: 14px; height: auto;">
+                Ideallag
+            </button><br>
+            <button id="kommersterke-knapp" class="enkeltknapp" style="white-space: nowrap; text-align: left; margin: 3px 15px 3px 0; padding: 0 15px 0 5px; border: solid #aaaaaa 1.5px;">
+                <img src="{{ url_for('static', filename='assets/trophy.png') }}" alt="trofé" style="width: 14px; height: auto;">
+                Kommersterke
+            </button><br>
+            <button id="juniorlag-knapp" class="enkeltknapp" style="white-space: nowrap; text-align: left; margin: 3px 15px 3px 0; padding: 0 15px 0 5px; border: solid #aaaaaa 1.5px;">
+                <img src="{{ url_for('static', filename='assets/trophy.png') }}" alt="trofé" style="width: 14px; height: auto;">
+                Juniorlag
+            </button><br>
+        </div>
+        <div style="display: inline-block; flex-shrink: 0">
+            <span style="color: gray; font-size: 13px">Klubber</span><br>
+            <button id="vekstklubber-knapp" class="enkeltknapp" style="white-space: nowrap; text-align: left; margin: 3px 15px 3px 0; padding: 0 15px 0 5px; border: solid #aaaaaa 1.5px;">
+                <img src="{{ url_for('static', filename='assets/trophy.png') }}" alt="trofé" style="width: 14px; height: auto;">
+                Vekstklubber
+            </button><br>
+            <button id="storklubber-knapp" class="enkeltknapp" style="white-space: nowrap; text-align: left; margin: 3px 15px 3px 0; padding: 0 15px 0 5px; border: solid #aaaaaa 1.5px;">
+                <img src="{{ url_for('static', filename='assets/trophy.png') }}" alt="trofé" style="width: 14px; height: auto;">
+                Storklubber
+            </button><br>
+        </div>
+        <div style="display: inline-block; flex-shrink: 0">
+            <span style="color: gray; font-size: 13px">Kretser</span><br>
+            <button id="største-krets-knapp" class="enkeltknapp" style="white-space: nowrap; text-align: left; margin: 3px 15px 3px 0; padding: 0 15px 0 5px; border: solid #aaaaaa 1.5px;">
+                <img src="{{ url_for('static', filename='assets/trophy.png') }}" alt="trofé" style="width: 14px; height: auto;">
+                Største krets
+            </button>
+        </div>
+    </div>
+    <div id="allroundere-visning" style="display: block">
+        <h5>Allroundere</h5>
+        <div>
+            Rangeres etter utøvernes totale seriepoeng fra beste resultat i hver øvelse.
+        </div>
+        <div style="border: solid 3px rgb(204, 204, 204);">
+            <div style="overflow-y: auto; max-height: 420px;">
+                <table class="table table-sm allroundere" style="table-layout: fixed; margin: 0;">   
+                    <colgroup>
+                        <col style="width: 5%; padding-top: 2px; padding-bottom: 2px;">
+                        <col style="width: 7%; padding-top: 2px; padding-bottom: 2px;">
+                        <col style="width: 10%; padding-top: 2px; padding-bottom: 2px;">
+                        <col style="width: 40%; padding-top: 2px; padding-bottom: 2px;">
+                        <col style="width: 10%; padding-top: 2px; padding-bottom: 2px;">
+                        <col style="width: 6%; padding-top: 2px; padding-bottom: 2px;">
+                        <col style="width: 4%; padding-top: 2px; padding-bottom: 2px;">
+                        <col style="width: 20%; padding-top: 2px; padding-bottom: 2px;">
+                    </colgroup>
+                    <thead class="table-light" style="position: sticky; top: 0; ">
+                        <tr style="font-size: 14px;">
+                            <th scope="col"></th>
+                            <th scope="col" colspan="2">Poeng</th>
+                            <th scope="col">Navn</th>
+                            <th scope="col">F.år</th>
+                            <th scope="col" colspan="2">Øvelser</th>
+                            <th scope="col"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="allroundere" style="font-size: 14px;"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <div id="nøkkelutøvere-visning"  style="display: none">
+        <h5>Nøkkelutøvere</h5>
+        <div>
+            Rangeres etter utøverscore, som er lagets poeng fordelt etter utøvernes merverdier.
+        </div>
+
+        <div style="border: solid 3px rgb(204, 204, 204);">
+            <div style="overflow-y: auto; max-height: 420px;">
+                <table class="table table-sm nøkkelutøvere" style="table-layout: fixed; margin: 0;">   
+                    <colgroup>
+                        <col style="width: 6%; padding-top: 2px; padding-bottom: 2px;">
+                        <col style="width: 8%; padding-top: 2px; padding-bottom: 2px;">
+                        <col style="width: 12%; padding-top: 2px; padding-bottom: 2px;">
+                        <col style="width: 30%; padding-top: 2px; padding-bottom: 2px;">
+                        <col style="width: 12%; padding-top: 2px; padding-bottom: 2px">
+                        <col style="width: 10%; padding-top: 2px; padding-bottom: 2px;">
+                        <col style="width: 10%; padding-top: 2px; padding-bottom: 2px;">
+                        <col style="width: 30%; padding-top: 2px; padding-bottom: 2px;">
+                        <col style="width: 0%; padding-top: 2px; padding-bottom: 2px;">
+                    </colgroup>
+                    <thead class="table-light" style="position: sticky; top: 0;">
+                        <tr style="font-size: 14px;">
+                            <th scope="col"></th>
+                            <th scope="col" colspan="2">Score</th>
+                            <th scope="col">Navn</th>
+                            <th scope="col">F.år</th>
+                            <th scope="col" colspan="2">Seriepoeng</th>
+                            <th scope="col">Lag</th>
+                            <th scope="col"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="nøkkelutøvere" style="font-size: 14px;"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <div id="nykommere-visning"  style="display: none">
+        <h5>Nykommere</h5>
+        <div>
+            Rangeres etter årets forbedring av utøvernes topp-5 resultater, én per øvelse.
+        </div>
+
+        <div style="border: solid 3px rgb(204, 204, 204);">
+            <div style="overflow-y: auto; max-height: 420px;">
+                <table class="table table-sm nykommere" style="table-layout: fixed; margin: 0;">   
+                    <colgroup>
+                        <col style="width: 7%; padding-top: 2px; padding-bottom: 2px;">
+                        <col style="width: 7%; padding-top: 2px; padding-bottom: 2px;">
+                        <col style="width: 12%; padding-top: 2px; padding-bottom: 2px;">
+                        <col style="width: 30%; padding-top: 2px; padding-bottom: 2px;">
+                        <col style="width: 12%; padding-top: 2px; padding-bottom: 2px">
+                        <col style="width: 8%; padding-top: 2px; padding-bottom: 2px;">
+                        <col style="width: 8%; padding-top: 2px; padding-bottom: 2px;">
+                        <col style="width: 20%; padding-top: 2px; padding-bottom: 2px;">
+                    </colgroup>
+                    <thead class="table-light" style="position: sticky; top: 0;">
+                        <tr style="font-size: 14px;">
+                            <th scope="col"></th>
+                            <th scope="col" colspan="2">Forbedring</th>
+                            <th scope="col">Navn</th>
+                            <th scope="col">F.år</th>
+                            <th scope="col">I år</th>
+                            <th scope="col">I fjor</th>
+                            <th scope="col"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="nykommere" style="font-size: 14px;"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div id="ideallag-visning"  style="display: none">
+        <h5>Ideallag</h5>
+        <div>
+            Rangeres etter potensialet til et lag, beregnet fra estimat av alternative utøverresultater. 
+        </div>
+        <div style="border: solid 3px rgb(204, 204, 204);">
+            <div style="overflow-y: auto; max-height: 420px;">
+                <table class="table table-sm ideallag" style="table-layout: fixed; margin: 0;">   
+                    <colgroup>
+                        <col style="width: 7%; padding-top: 2px; padding-bottom: 2px;">
+                        <col style="width: 7%; padding-top: 2px; padding-bottom: 2px;">
+                        <col style="width: 11%; padding-top: 2px; padding-bottom: 2px;">
+                        <col style="width: 40%; padding-top: 2px; padding-bottom: 2px">
+                        <col style="width: 11%; padding-top: 2px; padding-bottom: 2px;">
+                        <col style="width: 7%; padding-top: 2px; padding-bottom: 2px;">
+                        <col style="width: 12%; padding-top: 2px; padding-bottom: 2px;">
+                        <col style="width: 15%; padding-top: 2px; padding-bottom: 2px;">
+                    </colgroup>
+                    <thead class="table-light" style="position: sticky; top: 0; ">
+                        <tr style="font-size: 14px;">
+                            <th scope="col"></th>
+                            <th scope="col" colspan="2">Potensial</th>
+                            <th scope="col">Lag</th>
+                            <th scope="col">Divisjon</th>
+                            <th scope="col" colspan="2">Poeng</th>
+                            <th scope="col"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="ideallag" style="font-size: 14px;"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div id="kommersterke-visning"  style="display: none">
+        <h5>Kommersterke</h5>
+        <div>
+            Rangeres etter potensialet til et lag, beregnet fra estimat av alternative utøverresultater. 
+        </div>
+        <div style="border: solid 3px rgb(204, 204, 204);">
+            <div style="overflow-y: auto; max-height: 420px;">
+                <table class="table table-sm kommersterke" style="table-layout: fixed; margin: 0;">   
+                    <colgroup>
+                        <col style="width: 7%; padding-top: 2px; padding-bottom: 2px;">
+                        <col style="width: 7%; padding-top: 2px; padding-bottom: 2px;">
+                        <col style="width: 11%; padding-top: 2px; padding-bottom: 2px;">
+                        <col style="width: 40%; padding-top: 2px; padding-bottom: 2px">
+                        <col style="width: 11%; padding-top: 2px; padding-bottom: 2px;">
+                        <col style="width: 7%; padding-top: 2px; padding-bottom: 2px;">
+                        <col style="width: 12%; padding-top: 2px; padding-bottom: 2px;">
+                        <col style="width: 15%; padding-top: 2px; padding-bottom: 2px;">
+                    </colgroup>
+                    <thead class="table-light" style="position: sticky; top: 0; ">
+                        <tr style="font-size: 14px;">
+                            <th scope="col"></th>
+                            <th scope="col" colspan="2">Potensial</th>
+                            <th scope="col">Lag</th>
+                            <th scope="col">Divisjon</th>
+                            <th scope="col" colspan="2">Poeng</th>
+                            <th scope="col"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="kommersterke" style="font-size: 14px;"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div id="juniorlag-visning"  style="display: none">
+        <h5>Juniorlag</h5>
+        <div>
+            Rangeres etter poeng til lagets resultater utført av juniorutøver (under 20 år). 
+        </div>
+        <div style="border: solid 3px rgb(204, 204, 204);">
+            <div style="overflow-y: auto; max-height: 420px;">
+                <table class="table table-sm juniorlag" style="table-layout: fixed; margin: 0;">   
+                    <colgroup>
+                        <col style="width: 7%; padding-top: 2px; padding-bottom: 2px;">
+                        <col style="width: 7%; padding-top: 2px; padding-bottom: 2px;">
+                        <col style="width: 11%; padding-top: 2px; padding-bottom: 2px;">
+                        <col style="width: 30%; padding-top: 2px; padding-bottom: 2px">
+                        <col style="width: 6%; padding-top: 2px; padding-bottom: 2px;">
+                        <col style="width: 6%; padding-top: 2px; padding-bottom: 2px;">
+                        <col style="width: 38%; padding-top: 2px; padding-bottom: 2px;">
+                    </colgroup>
+                    <thead class="table-light" style="position: sticky; top: 0; ">
+                        <tr style="font-size: 14px;">
+                            <th scope="col"></th>
+                            <th scope="col" colspan="2">Poeng</th>
+                            <th scope="col">Lag</th>
+                            <th scope="col" colspan="2">Utøvere</th>
+                            <th scope="col"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="juniorlag" style="font-size: 14px;"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div id="vekstklubber-visning"  style="display: none">
+        <h5>Vekstklubber</h5>
+        <div>
+            Rangeres etter årets forbedring av førstelagets fjorårsplassering.
+        </div>
+        <div style="border: solid 3px rgb(204, 204, 204);">
+            <div style="overflow-y: auto; max-height: 420px;">
+                <table class="table table-sm vekstklubber" style="table-layout: fixed; margin: 0;">   
+                    <colgroup>
+                        <col style="width: 7%; padding-top: 2px; padding-bottom: 2px;">
+                        <col style="width: 5%; padding-top: 2px; padding-bottom: 2px;">
+                        <col style="width: 9%; padding-top: 2px; padding-bottom: 2px;">
+                        <col style="width: 35%; padding-top: 2px; padding-bottom: 2px">
+                        <col style="width: 9%; padding-top: 2px; padding-bottom: 2px;">
+                        <col style="width: 9%; padding-top: 2px; padding-bottom: 2px;">
+                        <col style="width: 25%; padding-top: 2px; padding-bottom: 2px;">
+                    </colgroup>
+                    <thead class="table-light" style="position: sticky; top: 0;">
+                        <tr style="font-size: 14px;">
+                            <th scope="col"></th>
+                            <th scope="col" colspan="2">Forbedring</th>
+                            <th scope="col">Klubb</th>
+                            <th scope="col">I år</th>
+                            <th scope="col">I fjor</th>
+                            <th scope="col"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="vekstklubber" style="font-size: 14px;"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div id="storklubber-visning"  style="display: none">
+        <h5>Storklubber</h5>
+        <div>
+            Rangeres etter total mengde seriepoeng til resultater av utøvere i klubben.
+        </div>
+        <div style="border: solid 3px rgb(204, 204, 204);">
+            <div style="overflow-y: auto; max-height: 420px;">
+                <table class="table table-sm storklubber" style="table-layout: fixed; margin: 0;">   
+                    <colgroup>
+                        <col style="width: 7%; padding-top: 2px; padding-bottom: 2px;">
+                        <col style="width: 8%; padding-top: 2px; padding-bottom: 2px;">
+                        <col style="width: 15%; padding-top: 2px; padding-bottom: 2px;">
+                        <col style="width: 30%; padding-top: 2px; padding-bottom: 2px">
+                        <col style="width: 6%; padding-top: 2px; padding-bottom: 2px;">
+                        <col style="width: 6%; padding-top: 2px; padding-bottom: 2px;">
+                        <col style="width: 22%; padding-top: 2px; padding-bottom: 2px;">
+                    </colgroup>
+                    <thead class="table-light" style="position: sticky; top: 0;">
+                        <tr style="font-size: 14px;">
+                            <th scope="col"></th>
+                            <th scope="col" colspan="2">Seriepoeng</th>
+                            <th scope="col">Klubb</th>
+                            <th scope="col" colspan="2">Lag</th>
+                            <th scope="col"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="storklubber" style="font-size: 14px;"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div id="største-krets-visning"  style="display: none">
+        <h5>Største krets</h5>
+        <div style="border: solid 3px rgb(204, 204, 204);">
+            <div style="overflow-y: auto; max-height: 420px;">
+                <table class="table table-sm største-krets" style="table-layout: fixed; margin: 0;">   
+                    <colgroup>
+                        <col style="width: 5%; padding-top: 2px; padding-bottom: 2px;">
+                        <col style="width: 3%; padding-top: 2px; padding-bottom: 2px;">
+                        <col style="width: 5%; padding-top: 2px; padding-bottom: 2px;">
+                        <col style="width: 18%; padding-top: 2px; padding-bottom: 2px;">
+                        <col style="width: 42%; padding-top: 2px; padding-bottom: 2px;">
+                    </colgroup>
+                    <thead class="table-light" style="position: sticky; top: 0; ">
+                        <tr style="font-size: 14px;">
+                            <th scope="col"></th>
+                            <th scope="col" colspan="2">Serielag</th>
+                            <th scope="col">Krets</th>
+                            <th scope="col"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="største-krets" style="font-size: 14px;"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="kalender" style="display: none;">
+  <h3>Kalender</h3>
+    
+  <div class="innholdsside">
+    <h6>Måned:</h6> 
+    <div id="months" class="button-container"></div>
+  </div>
+
+  <div class="card rounded-0" style="margin-bottom: 30px;">
+    <div class="card-body">
+
+      <h5 id="valgt-kalenderdato"></h2>
+      <p id="selected-date"></p>
+
+      <div class="table-container stevnekalender" style="max-height: 300px; overflow-y: auto;">
+        <table class="table table-sm" style="min-width: 400px; table-layout: fixed;">
+            <thead class="table-light">
+                <tr>
+                    <th style="width: 12%; position:sticky; top:0;"></th>
+                    <th style="width: 19%; position:sticky; top:0">Dato</th>
+                    <th style="width: 30%; position:sticky; top:0">Arena</th>
+                    <th style="width: 40%; position:sticky; top:0">Stevne</th>
+                    <th style="width: 25%; position:sticky; top:0"></th>
+                </tr>
+            </thead>
+            <tbody id="datoens-stevner">
+            </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="{{ url_for('static', filename='livetabell.js') }}"></script>
+<script src="{{ url_for('static', filename='rangeringer.js') }}"></script>
+<script src="{{ url_for('static', filename='stevnestatus.js') }}"></script>
+
 {% endblock %}

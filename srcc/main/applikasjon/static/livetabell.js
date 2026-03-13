@@ -83,8 +83,8 @@ function vis_lagplasseringer() {
         anchor.textContent = lagplassering[2];
         celler[3].appendChild(anchor)
 
-        if (lagplassering[4] > 0) {celler[5].textContent = "+" + lagplassering[4]}
-        if (lagplassering[4] < 0) {celler[5].textContent = lagplassering[4]}
+        if (lagplassering[4] > 0) {celler[5].textContent = "+" + lagplassering[4];}
+        if (lagplassering[4] < 0) {celler[5].textContent = lagplassering[4];}
 
         if (cached_data["klubblogoer"].includes(lagplassering[8])) {
             logo = `${window.location.origin}/static/assets/klubblogo/${lagplassering[8]}.png`;
@@ -94,22 +94,22 @@ function vis_lagplasseringer() {
             
             var anchor = document.createElement('a');
             anchor.href = "/livetabell/" + lagplassering[2].replace(/\s\d\. lag$/, '');
-            anchor.append(img)
+            anchor.append(img);
 
-            celler[2].appendChild(anchor)
+            celler[2].appendChild(anchor);
             celler[2].style.textAlign = "center";
         }
        
         celler.forEach((celle, indeks) => {
             if (divisjon == 3 &&  forrige >= 5000 && celler[4].textContent < 5000) {
-                celle.style.borderTop = "solid 1.5px #777777"
+                celle.style.borderTop = "solid 1.5px #777777";
             }
 
             if (celler[1].textContent == 4 && (divisjon == 2 || divisjon == 3)) {
-                celle.style.borderBottom = "solid 1px #999999"
+                celle.style.borderBottom = "solid 1px #999999";
             }
             if (celler[1].textContent == 10 && (divisjon == 1 || divisjon == 2)) {
-                celle.style.borderBottom = "solid 1px #999999"
+                celle.style.borderBottom = "solid 1px #999999";
             }
 
             celle.style.whiteSpace = "nowrap";
@@ -171,6 +171,22 @@ const colNoteringer = document.getElementById('col-noteringer');
 
 // Cache initial widths
 const initialColWidth = colNoteringer ? getComputedStyle(colNoteringer).width : '100px';
+
+visninger = ["oversikt", "tabell", "rangeringer", "kalender"];
+
+visninger.forEach(visning => {
+    document.getElementById(visning + "-knapp").addEventListener('click', function() {
+        visninger.forEach(visning2 => {
+            document.getElementById(visning2 + "-knapp").style.backgroundColor = "white";
+            document.getElementById(visning2 + "-knapp").style.borderColor = "#cccccc";
+            document.getElementById(visning2).style.display = "none";
+        });
+
+        this.style.backgroundColor = "#e4f2ff";
+        this.style.borderColor = "#afbfff";
+        document.getElementById(visning).style.display = "block";
+    });
+});
 
 vis_lagplasseringer();
 sett_inn_kretsalternativer()

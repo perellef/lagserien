@@ -30,8 +30,7 @@ function søkefelt_autocomplete() {
     søkefelt.addEventListener("input", function() {
         var listContainer, item, val = this.value;
         closeAllLists();
-        console.log("!!");
-    
+     
         if (!val) return false;
         currentFocus = -1;
     
@@ -49,34 +48,38 @@ function søkefelt_autocomplete() {
 
         this.parentNode.appendChild(listContainer);
 
-        cached_data.klubber.forEach(function(klubb) {
-            index = klubb[0].toUpperCase().indexOf(val.toUpperCase())
-            if (index == 0) {
-                listContainer.appendChild(lagKlubbItem(klubb, val, index));
-            }
-        });
-    
-        cached_data.klubber.forEach(function(klubb) {
-            index = klubb[0].toUpperCase().indexOf(val.toUpperCase())
-            if (index > 0) {
-                listContainer.appendChild(lagKlubbItem(klubb, val, index));
-            }
-        });
+        if (val.length >= 3) {
+            cached_data.klubber.forEach(function(klubb) {
+                index = klubb[0].toUpperCase().indexOf(val.toUpperCase())
+                if (index == 0) {
+                    listContainer.appendChild(lagKlubbItem(klubb, val, index));
+                }
+            });
+        
+            cached_data.klubber.forEach(function(klubb) {
+                index = klubb[0].toUpperCase().indexOf(val.toUpperCase())
+                if (index > 0) {
+                    listContainer.appendChild(lagKlubbItem(klubb, val, index));
+                }
+            });
+        }
+        
+        if (val.length >= 6) {
+            cached_data.utøvere.forEach(function(utøver) {
+                index = utøver[0].toUpperCase().indexOf(val.toUpperCase())
+                if (index == 0) {
+                    listContainer.appendChild(lagUtøverItem(utøver, val, index));
+                }
+            });
+        
+            cached_data.utøvere.forEach(function(utøver) {
+                index = utøver[0].toUpperCase().indexOf(val.toUpperCase())
+                if (index > 0) {
+                    listContainer.appendChild(lagUtøverItem(utøver, val, index));
+                }
+            });
+        }
 
-        cached_data.utøvere.forEach(function(utøver) {
-            index = utøver[0].toUpperCase().indexOf(val.toUpperCase())
-            if (index == 0) {
-                listContainer.appendChild(lagUtøverItem(utøver, val, index));
-            }
-        });
-    
-        cached_data.utøvere.forEach(function(utøver) {
-            index = utøver[0].toUpperCase().indexOf(val.toUpperCase())
-            if (index > 0) {
-                listContainer.appendChild(lagUtøverItem(utøver, val, index));
-            }
-        });
-    
         // Automatically mark the first item as active if the list isn't empty
         var items = listContainer.getElementsByTagName("div");
         if (items.length > 0) {
@@ -107,7 +110,7 @@ function søkefelt_autocomplete() {
     function lagKlubbItem(klubb, val, index) {
         const item = document.createElement("div");
         item.className = "autocomplete-item";
-        item.style.padding = "0 15px 0 0px";
+        item.style.padding = "0 0 0 0";
 
         var anchor = document.createElement('a');
         anchor.href = "/livetabell/" + klubb[0];
@@ -117,14 +120,15 @@ function søkefelt_autocomplete() {
 
         var div = document.createElement("div");
         div.style.display = "flex";
-        div.style.width = "100%";
         anchor.appendChild(div);
 
         var ramme = document.createElement("div");
         ramme.style.display = "flex";
+        ramme.style.flexShrink = "0";
         ramme.style.justifyContent = "center";
-        ramme.style.height = "40x"; 
-        ramme.style.width = "50px"; 
+        ramme.style.height = "30x"; 
+        const rammeWidth = 40;
+        ramme.style.width = rammeWidth + "px"; 
         ramme.style.padding = "7px 7px 7px 7px";
 
         if (cached_data.klubblogoer.includes(klubb[1])) {
@@ -140,14 +144,22 @@ function søkefelt_autocomplete() {
         }
         div.appendChild(ramme);
 
+        const arrow = document.createElement("span");
+        arrow.textContent = "→";
+        arrow.style.fontSize = "18px";
+        arrow.style.padding = "3px 0 0 5px";
+        arrow.style.color = "#007bff";
+        const arrow_width = 30;
+        arrow.style.width = arrow_width + "px";
+
         const span = document.createElement("span");
+        span.style.display = "inline-block";
         span.style.whiteSpace = "nowrap";
         span.style.overflow = "hidden";
         span.style.textOverflow = "ellipsis";
-        span.style.display = "inline-block";
         span.style.maxWidth = "100%";
-        span.style.fontSize = "15px"
-
+        span.style.fontSize = "14px"
+        
         const textBefore = document.createTextNode(klubb[0].substr(0, index));
         const strong = document.createElement("strong");
         strong.textContent = klubb[0].substr(index, val.length);
@@ -156,40 +168,28 @@ function søkefelt_autocomplete() {
         span.appendChild(textBefore);
         span.appendChild(strong);
         span.appendChild(textAfter);
-
+        
         const tekstområde = document.createElement("div");
-        tekstområde.appendChild(span);
-
+        tekstområde.style.display = "inline-block";
+        tekstområde.style.width = "calc(100% - " + (rammeWidth+arrow_width) + "px)";
+        tekstområde.append(span);
+        
         const klubbnotis = document.createElement("div");
         klubbnotis.style.marginTop = "-7px";
         klubbnotis.style.color = "#666666"
         klubbnotis.style.fontSize = "12px"
         klubbnotis.textContent = "Klubb";
-        tekstområde.appendChild(klubbnotis); 
+        tekstområde.appendChild(klubbnotis);
 
-        const overdiv = document.createElement("div");
-        
-        overdiv.style.display = "flex";
-        overdiv.style.justifyContent = "space-between";
-        overdiv.style.width = "100%";
-        overdiv.appendChild(tekstområde);
-
-        const arrow = document.createElement("span");
-        arrow.textContent = "→";
-        arrow.style.fontSize = "18px";
-        arrow.style.marginLeft = "5px";
-        arrow.style.color = "#007bff";
-
-        overdiv.appendChild(arrow);
-
-        div.appendChild(overdiv);
-        return item;
+        div.appendChild(tekstområde);
+        div.append(arrow);
+        return item 
     }
 
     function lagUtøverItem(utøver, val, index) {
         const item = document.createElement("div");
         item.className = "autocomplete-item";
-        item.style.padding = "0 15px 0 20px";
+        item.style.padding = "0 0 0 20px";
 
         var anchor = document.createElement('a');
         anchor.href = "/utovere/" + utøver[2];
@@ -199,17 +199,25 @@ function søkefelt_autocomplete() {
 
         var div = document.createElement("div");
         div.style.display = "flex";
-        div.style.width = "95%";
         anchor.appendChild(div);
 
+        const arrow = document.createElement("span");
+        arrow.textContent = "→";
+        arrow.style.fontSize = "18px";
+        arrow.style.padding = "3px 0 0 5px";
+        arrow.style.color = "#007bff";
+        const arrow_width = 30;
+        arrow.style.width = arrow_width + "px";
+
         const span = document.createElement("span");
+        span.style.display = "inline-block";
         span.style.whiteSpace = "nowrap";
         span.style.overflow = "hidden";
         span.style.textOverflow = "ellipsis";
         span.style.display = "inline-block";
         span.style.width = "100%";
-        span.style.fontSize = "15px"
-
+        span.style.fontSize = "14px";
+        
         const textBefore = document.createTextNode(utøver[0].substr(0, index));
         const strong = document.createElement("strong");
         strong.textContent = utøver[0].substr(index, val.length);
@@ -222,6 +230,7 @@ function søkefelt_autocomplete() {
         span.appendChild(textAfter);
 
         const tekstområde = document.createElement("div");
+        tekstområde.style.width = "calc(100% - " + arrow_width + "px)";
         tekstområde.appendChild(span);
 
         const klubbnotis = document.createElement("div");
@@ -229,27 +238,12 @@ function søkefelt_autocomplete() {
         klubbnotis.style.color = "#666666"
         klubbnotis.style.fontSize = "12px"
         klubbnotis.textContent = "Utøver";
+
         tekstområde.appendChild(klubbnotis); 
-
-        const overdiv = document.createElement("div");
-        
-        overdiv.style.display = "flex";
-        overdiv.style.justifyContent = "space-between";
-        overdiv.style.width = "100%";
-        overdiv.appendChild(tekstområde);
-
-        const arrow = document.createElement("span");
-        arrow.textContent = "→";
-        arrow.style.marginLeft = "10px";
-        arrow.style.fontSize = "18px";
-        arrow.style.color = "#007bff";
-
-        overdiv.appendChild(arrow);
-
-        div.appendChild(overdiv);
+        div.appendChild(tekstområde);
+        div.appendChild(arrow);
         return item;
     }
-
 
     // Highlight active item
     function addActive(items) {
