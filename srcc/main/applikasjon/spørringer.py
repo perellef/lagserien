@@ -154,37 +154,32 @@ def db_hent_lagplasseringer(peker, serieår, dato, kjønn, divisjon):
             FROM "serie.{kjønn}_lag" AS lag
                 JOIN "uttrekk.klubbkretser" AS klubbkrets ON (
                     klubbkrets.klubb_id = lag.klubb_id
-                    AND klubbkrets.fra_og_med <= {{placeholder}}
-                    AND coalesce(klubbkrets.til_og_med, '9999-01-01') >= {{placeholder}}
+                    AND {{placeholder}} BETWEEN klubbkrets.fra_og_med AND coalesce(klubbkrets.til_og_med, '9999-01-01')
                 )
                 JOIN "uttrekk.klubber" AS klubb ON (lag.klubb_id = klubb.klubb_id)
                 LEFT JOIN "serie.{kjønn}_lagplasseringer" AS tabell ON (
                     lag.serieår = tabell.serieår
                     AND lag.klubb_id = tabell.klubb_id
                     AND lag.lagnummer = tabell.lagnummer
-                    AND tabell.fra_og_med <= {{placeholder}}
-                    AND coalesce(tabell.til_og_med, '9999-01-01') >= {{placeholder}}
+                    AND {{placeholder}} BETWEEN tabell.fra_og_med AND coalesce(tabell.til_og_med, '9999-01-01')
                 )
                 LEFT JOIN "serie.{kjønn}_laginfo" AS laginfo ON (
                     tabell.serieår = laginfo.serieår
                     AND tabell.klubb_id = laginfo.klubb_id
                     AND tabell.lagnummer = laginfo.lagnummer
-                    AND laginfo.fra_og_med <= {{placeholder}}
-                    AND coalesce(laginfo.til_og_med, '9999-01-01') >= {{placeholder}}
+                    AND {{placeholder}} BETWEEN laginfo.fra_og_med AND coalesce(laginfo.til_og_med, '9999-01-01')
                 )
                 LEFT JOIN "serie.{kjønn}_lagplasseringer" AS tidligere_tabell ON (
                     laginfo.serieår = tidligere_tabell.serieår
                     AND laginfo.klubb_id = tidligere_tabell.klubb_id
                     AND laginfo.lagnummer = tidligere_tabell.lagnummer
-                    AND tidligere_tabell.fra_og_med <= {{placeholder}}
-                    AND coalesce(tidligere_tabell.til_og_med, '9999-01-01') >= {{placeholder}}
+                    AND {{placeholder}} BETWEEN tidligere_tabell.fra_og_med AND coalesce(tidligere_tabell.til_og_med, '9999-01-01')
                 )
                 LEFT JOIN "serie.{kjønn}_laginfo" AS tidligere_laginfo ON (
                     laginfo.serieår = tidligere_laginfo.serieår
                     AND laginfo.klubb_id = tidligere_laginfo.klubb_id
                     AND laginfo.lagnummer = tidligere_laginfo.lagnummer
-                    AND tidligere_laginfo.fra_og_med <= {{placeholder}}
-                    AND coalesce(tidligere_laginfo.til_og_med, '9999-01-01') >= {{placeholder}}
+                    AND {{placeholder}} BETWEEN tidligere_laginfo.fra_og_med AND coalesce(tidligere_laginfo.til_og_med, '9999-01-01')
                 )
             WHERE lag.serieår = {{placeholder}}
                 AND (tabell.serieår IS NOT NULL OR tidligere_tabell.serieår IS NOT NULL)
@@ -192,7 +187,7 @@ def db_hent_lagplasseringer(peker, serieår, dato, kjønn, divisjon):
             ORDER BY tabell.plassering
         )
         SELECT COALESCE(forrige_plassering, lag_totalt) - neste_plassering,
-            case when {{placeholder}} < 3 or neste_poeng >= 5000 then CAST(neste_plassering AS text) else '' end,
+            CASE WHEN {{placeholder}} < 3 OR neste_poeng >= 5000 THEN CAST(neste_plassering AS text) ELSE '' END,
             lagnavn, 
             neste_poeng,
             endring_poeng,
@@ -202,7 +197,7 @@ def db_hent_lagplasseringer(peker, serieår, dato, kjønn, divisjon):
             klubb_id
         FROM livetabell
         ;
-    ''', (dato, dato, dato, dato, dato, dato, dato-timedelta(7), dato-timedelta(7), dato-timedelta(7), dato-timedelta(7), serieår, divisjon, divisjon))
+    ''', (dato, dato, dato, dato-timedelta(7), dato-timedelta(7), serieår, divisjon, divisjon))
 
 def db_hent_kretser(peker, dato):
     resultat = execute(peker, '''
