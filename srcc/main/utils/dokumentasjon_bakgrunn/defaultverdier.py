@@ -27,6 +27,7 @@ defaultverdier = {
     (Stevne, "arena"): lambda _: "irrelevant",
     (Stevne, "er_nasjonalt"): lambda _: False,
     (Stevne, "rapportert"): lambda _: date.fromisoformat("9999-01-01"),
+    (Stevne, "er_innendørs"): lambda _: False,
     (Øvelse, "øvelseskode"): lambda x: x['øvelsesnavn'],
     (Resultat, "statistikk_resultat_id"): lambda x: x['resultat_id'],
     (Resultatbytte, "notat"): lambda _: "irrelevant",

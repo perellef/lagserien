@@ -22,6 +22,8 @@ from ._mann_serieøvelse import MannSerieøvelse
 from ._mann_uttrekksresultat import MannUttrekksresultat
 from ._mann_topplag import MannTopplag
 from ._nettside_besøk import NettsideBesøk
+from ._notis import Notis
+from ._notiselement import Notiseleent
 from ._oppstillingskrav import Oppstillingskrav
 from ._øvelse import Øvelse
 from ._øvelsesregel import Øvelsesregel

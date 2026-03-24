@@ -13,3 +13,4 @@ class Stevne(DeklarativBase):
     sted = Column(String, nullable=False)
     er_nasjonalt = Column(Boolean, nullable=True)
     rapportert = Column(DATE, nullable=False)
+    er_innendørs = Column(Boolean, nullable=True)

@@ -141,7 +141,8 @@ def et_stevne(sted="Ås"):
         arena="",
         sted=sted,
         er_nasjonalt=True,
-        rapportert=date.fromisoformat("9999-01-01")
+        rapportert=date.fromisoformat("9999-01-01"),
+        er_innendørs=False
     )
 
 def et_resultatbytte(øvelse="60m", utøver="A", fødselsår=2000, sted="Ås", dato=date(2100,1,1), prestasjon="", klubb="Ås IL", kjernenavn="Ås", registrert=datetime(2100,1,1), notat=""):

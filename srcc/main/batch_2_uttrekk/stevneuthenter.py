@@ -44,7 +44,8 @@ class Stevneuthenter:
                     arena=stevneinfo[2],
                     sted=stevneinfo[3],
                     er_nasjonalt=er_nasjonalt(stevneinfo[3]),
-                    rapportert=stevner[stevne_id].rapportert if (stevne_id in stevner) else date.today()
+                    rapportert=stevner[stevne_id].rapportert if (stevne_id in stevner) else date.today(),
+                    er_innendørs=(er_utendørs == "N")
                 )
 
         return list(stevner.values())

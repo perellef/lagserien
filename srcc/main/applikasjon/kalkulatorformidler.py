@@ -79,7 +79,7 @@ class Kalkulatorformidler:
             .med(Utøver, list(utøvere.values()))
             .med(Øvelse, list(øvelser.values()))
             .med(Klubb, [Klubb(klubb_id=1, klubbnavn="123", kjernenavn="123")])
-            .med(Stevne, [Stevne(stevne_id=1, stevnedato=date.fromisoformat("9999-01-01"), stevnetittel="", arena="", sted="", er_nasjonalt=False, rapportert=date.fromisoformat("9999-01-01")),])
+            .med(Stevne, [Stevne(stevne_id=1, stevnedato=date.fromisoformat("9999-01-01"), stevnetittel="", arena="", sted="", er_nasjonalt=False, rapportert=date.fromisoformat("9999-01-01"), er_innendørs=False)])
             .med(Resultat, resultater)
             .med(MannSerieresultat, menn_serieresultater)
             .med(MannSerieøvelse, menn_serieøvelser)
