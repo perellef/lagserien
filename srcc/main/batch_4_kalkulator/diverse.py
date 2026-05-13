@@ -41,10 +41,10 @@ class Resultattype:
         return self.utøver.utøver_id < andre.utøver_id
     
     def __hash__(self):
-        return hash((type(self), self.resultat_id))
+        return hash((Resultattype, self.poeng, self.øvelse.øvelseskode, self.utøver.utøver_id))
 
     def __eq__(self, andre):
-        return self.__hash__() == andre.__hash__()
+        return andre != None and self.resultatindeks == andre.resultatindeks
     
     def er_jevngod(self, andre):
         if andre == None:

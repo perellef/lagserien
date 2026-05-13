@@ -15,6 +15,18 @@ class Lagoppstilling:
         self.__reserver = reserver
         self.__skippede = skippede
 
+        #assert self.__resultater_maks_i_én_deloppstilling(), f"Et eller flere resultater forekommer i flere deloppstillinger: {self}"
+    
+    def __resultater_maks_i_én_deloppstilling(self):
+        """
+        return all((
+            (self.__obl.sjekksum() & self.__val.sjekksum() & self.__reserver.sjekksum()) == 0,
+            (self.__obl.sjekksum() & self.__val.sjekksum()) == 0,
+            (self.__obl.sjekksum() & self.__reserver.sjekksum()) == 0,
+            (self.__val.sjekksum() & self.__reserver.sjekksum()) == 0,
+        ))
+        """
+    
     def simuler(self, f):
         f()
 
@@ -85,10 +97,7 @@ class Lagoppstilling:
         return any((self.__reserver.har_jevngodt_resultat(haleres) for haleres in aktuelle_haleresultater))
     
     def er_jevngode(self, resultat1, resultat2):
-        if any((
-            resultat1 == None,
-            resultat2 == None
-        )):
+        if resultat1 == None or resultat2 == None:
             return False
         
         return resultat1.poeng == resultat2.poeng
@@ -283,16 +292,19 @@ class Lagoppstilling:
 
     def __finn_gyldige_permutasjoner(self, jevngode_resultater, grupper):
         permutasjoner = []
+
         def _rek_(delgrupper, resultater, delpermutasjon):
             if len(delgrupper) == 0:
                 permutasjoner.append(delpermutasjon)
                 return
 
             for neste_gruppe in it.combinations(resultater, delgrupper[0][1]):
-                _rek_(delgrupper[1:], resultater-set(neste_gruppe), delpermutasjon | {delgrupper[0][0]: neste_gruppe})
+                _rek_(delgrupper[1:], [e for e in resultater if not e in neste_gruppe], delpermutasjon | {delgrupper[0][0]: neste_gruppe})
 
-        _rek_([(k,len(v)) for k,v in grupper.items()], set(map(lambda x: x[1], jevngode_resultater)), {})
+        _rek_([(k,len(v)) for k,v in grupper.items()], list(map(lambda x: x[1], jevngode_resultater)), {})
         
+        assert permutasjoner != [], "Skal finnes permutasjoner, men var ingen"
+
         ledige_obl_øvelser = self.__obl.ledige_øvelser().union(set(res.serieøvelse for res in grupper["obl"]))
         
         gyldige_permutasjoner = []

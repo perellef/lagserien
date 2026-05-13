@@ -74,12 +74,13 @@ class Kalkulatorbatch:
         lagresultater = (seriedata
             .hent(serieklasser.lagresultat)
             .options(joinedload(serieklasser.lagresultat.lag))
+            .filter_by(serieår=serieår)
             .filter(serieklasser.lagresultat.fra_og_med <= uttrekksdato)
             .filter((serieklasser.lagresultat.til_og_med == None) | (serieklasser.lagresultat.til_og_med >= uttrekksdato))
             .all())
 
         uforandrede_klubber = Kalkuleringsbesparelse.finn_uforandrede_klubber(seriedata, serieår, klubbresultater, lagresultater)                
-        klubbresultater = {klubb: resultater.values() for klubb,resultater in klubbresultater.items() if klubb not in uforandrede_klubber}
+        klubbresultater = {klubb: resultater.values() for klubb,resultater in klubbresultater.items() if klubb.klubb_id not in uforandrede_klubber}
 
         Kalkuleringsbesparelse.legg_inn_uforandret_data(seriedata, serieår, uforandrede_klubber, oppstillinger, laginfo, merverdier, lagpotensialer, lagpotensialer_felter, serieklasser, uttrekksdato)     
         
@@ -89,10 +90,12 @@ class Kalkulatorbatch:
         serieresultater = {serieresultat.resultat_id: serieresultat for serieresultat in seriedata.hent(serieklasser.serieresultat).all()}
         
         nye_lag = []
-        for klubb,resultatdata in klubbresultater.items():
+        for i,(klubb,resultatdata) in enumerate(klubbresultater.items()):
+            print(i,len(klubbresultater), klubb, end=" ... ")
+
             resultater = map(lambda x: x[1], resultatdata)
             Kalkulator.LagKalk(serieår, seriedata, klubb, resultater, laginfo, oppstillinger, merverdier, lagpotensialer, lagpotensialer_felter, serieøvelser, serieresultater, topplag, serieklasser, nye_lag)
-        
+
         seriedata.bulkinnsett(nye_lag)
         tabeller = Tabellarbeid.sett_opp_tabell(laginfo, oppstillinger, topplag)
         

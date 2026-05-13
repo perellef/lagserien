@@ -36,6 +36,33 @@ class OptimalLagoppstilling:
 
     def poeng(self):
         return sum(res.poeng for res in self.__obl+self.__val)
+
+    def kan_isolert_forbedre_valgfri(self, resultat, krav):
+        if not resultat.er_teknisk:
+            løpsres = [e.poeng for e in self.__val if not e.er_teknisk]
+            if len(løpsres) == krav.maks_valgfri_løp:
+                return resultat.poeng >= min(løpsres)
+
+        if krav.antall_valgfri > len(self.__val):
+            return True
+        return resultat.poeng >= min(e.poeng for e in self.__val)
+    
+    def kan_isolert_forbedre_obligatoriske(self, resultat, krav):
+        if not resultat.er_obligatorisk:
+            return False
+        if not resultat.er_teknisk:
+            øvelser = {e.øvelse: e.poeng for e in self.__obl if not e.er_teknisk}
+                
+            if len(øvelser) == krav.maks_obligatoriske_løp:
+                if resultat.øvelse in øvelser:
+                    return resultat.poeng >= øvelser[resultat.øvelse]
+                
+                return resultat.poeng >= min(øvelser.values())
+
+        øvelser = {e.øvelse: e.poeng for e in self.__obl if e}
+        if resultat.øvelse in øvelser:
+            return resultat.poeng >= øvelser[resultat.øvelse]
+        return krav.antall_obligatoriske > len(self.__obl) or resultat.poeng >= min(øvelser.values())
     
     def antall_notasjoner(self):
         return len(self.__obl) + len(self.__val)

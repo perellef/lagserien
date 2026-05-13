@@ -42,7 +42,6 @@ class Oppstillingsgenerator:
                 .first(self.ANTALL_VAL))
 
         reserver = resultater.filter(lambda x: x not in obligatoriske and x not in valgfri)
-
         prioritet_belastede_utøvere = (resultater
             .group_by(lambda x: x.utøver)
             .values()
@@ -57,7 +56,7 @@ class Oppstillingsgenerator:
 
     def generer(self):
         while len(self.__oppskrifter) > 0:
-            oppskrift = heapq.heappop(self.__oppskrifter)  
+            oppskrift = heapq.heappop(self.__oppskrifter)
             if oppskrift.poeng() < self.__poengterskel:
                 break
             if oppskrift.sjekksum() in self.__sjekksummer:

@@ -23,7 +23,7 @@ class Kalkuleringsbesparelse:
                 continue
 
             # ingen (serie)resultater fjernet
-            if len(klubb_lagresultater[klubb.klubb_id].difference(set(resultater.keys()))) > 0:
+            if len(klubb_lagresultater[klubb.klubb_id].difference(set(resultater))) > 0:
                 continue
 
             uforandrede_klubber.add(klubb.klubb_id)

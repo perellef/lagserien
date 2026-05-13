@@ -9,6 +9,9 @@ from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
 
 import time
 from functools import cache
+from collections import defaultdict
+from datetime import datetime
+
 
 class Kalkulator:
     
@@ -22,8 +25,7 @@ class Kalkulator:
         alle_lag = Kalkulator.__beregn_alle_lag(resultattyper, lagdiv, oppstillingskrav, serieøvelser)
 
         tid_brukt = time.time()-starttid
-        if tid_brukt > 1:
-            print(f"{klubb.klubbnavn}: {tid_brukt:.2f}s")
+        print(f"{tid_brukt:.2f}s")
 
         for lag_nr, (lagoppstilling, merverdiene, lagpotensial) in enumerate(alle_lag, start=1):
             lag = Kalkulator.hent_lag_ellers_opprett(seriedata, serieklasser, serieår, klubb, lag_nr, nye_lag)
@@ -57,7 +59,7 @@ class Kalkulator:
             for utøver_id, poeng in merverdiene.items():
                 merverdier[(klubb.klubb_id, utøver_id)] = poeng
 
-            lagpotensialer[lag] = (lagpotensial[0])
+            lagpotensialer[lag] = (lagpotensial[0]-poeng_obligatoriske-poeng_valgfri)
             lagpotensial_felter[lag] = {"OBLIGATORISK": [], "VALGFRI": []}
             for el in lagpotensial[1].obl():
                 lagpotensial_felter[lag]["OBLIGATORISK"].append((el.øvelseskode, el.utøver_id, el.poeng, None if el.resultat_id == 0 else el.resultat_id))
@@ -117,8 +119,8 @@ class Kalkulator:
 
                 merverdier[utøver.utøver_id] = lagoppstilling.poeng() - like_lag.first().poeng()
                 Kalkulator.beregn_like_lagoppstillinger.cache_clear()
-            forbedringspotensial = cls.beregn_forbedringsmuligheter(gjenværende_resultater, krav, serieøvelser, lagoppstilling.poeng())
             
+            forbedringspotensial = cls.beregn_forbedringsmuligheter(gjenværende_resultater, krav, serieøvelser, lagoppstilling, lagoppstilling.poeng())
             alle_lag.append((lagoppstilling, merverdier, forbedringspotensial))
 
             gjenværende_resultater = gjenværende_resultater.filter(lambda x: x.utøver not in lagoppstilling.utøvere())
@@ -127,7 +129,7 @@ class Kalkulator:
         return alle_lag
     
     @classmethod
-    def beregn_forbedringsmuligheter(cls, resultater, krav, serieøvelser, lagpoeng):
+    def beregn_forbedringsmuligheter(cls, resultater, krav, serieøvelser, lagoppstilling, lagpoeng):
         nye_resultater = list(resultater)
         for res in resultater:
             for ny_øvelse, (a, b) in dugnadsmatrise[res.øvelseskode].items():
@@ -135,26 +137,81 @@ class Kalkulator:
                     continue
                 
                 poeng = int(a * res.poeng + b)
-                
                 nye_resultater.append(
                     Resultattype.imiter(poeng, serieøvelser[ny_øvelse], res.utøver)
                 )
-        
+            
+        ubrukt_obligatorisk_øvelse = lambda x: x.er_obligatorisk and x.øvelseskode not in set(e.øvelseskode for e in lagoppstilling.obl())
+
+        utøvere = {}
         besøkt = set()
-        beste_resultater = []
         for res in sorted(nye_resultater, reverse=True):
             if res.poeng <= 0:
                 continue
             if (res.utøver_id, res.øvelseskode) in besøkt:
                 continue
             besøkt.add((res.utøver_id, res.øvelseskode))
-            beste_resultater.append(res)
 
-        like_lag = cls.beregn_like_lagoppstillinger(Liste(beste_resultater), krav)
+            if any(((res.poeng, res.utøver_id, res.øvelseskode) == (e.poeng, e.utøver_id, e.øvelseskode) for e in lagoppstilling.obl())):
+                continue
+            if any(((res.poeng, res.utøver_id, res.øvelseskode) == (e.poeng, e.utøver_id, e.øvelseskode) for e in lagoppstilling.val())):
+                continue
 
-        Kalkulator.beregn_like_lagoppstillinger.cache_clear()
-        return (like_lag.first().poeng()-lagpoeng, like_lag.first())
-    
+            if not any((
+                lagoppstilling.kan_isolert_forbedre_valgfri(res, krav),
+                lagoppstilling.kan_isolert_forbedre_obligatoriske(res, krav),
+            )):
+                continue
+            
+            if res.utøver_id not in utøvere:
+                utøvere[res.utøver_id] = {
+                    "beste": None,
+                    "beste-tekniske": None,
+                    "beste-obligatoriske": None,
+                    "beste-obligatoriske-tekniske": None,
+                    "beste-ubrukte-obligatoriske": None,
+                    "beste-ubrukte-tekniske-obligatoriske": None,
+                }
+
+            if utøvere[res.utøver_id]["beste"] == None:
+                utøvere[res.utøver_id]["beste"] = res
+            if res.er_teknisk and utøvere[res.utøver_id]["beste-tekniske"] == None:
+                utøvere[res.utøver_id]["beste-tekniske"] = res
+            if res.er_obligatorisk and utøvere[res.utøver_id]["beste-obligatoriske"] == None:
+                utøvere[res.utøver_id]["beste-obligatoriske"] = res
+            if res.er_obligatorisk and res.er_teknisk and utøvere[res.utøver_id]["beste-obligatoriske-tekniske"] == None:
+                utøvere[res.utøver_id]["beste-obligatoriske-tekniske"] = res
+            if ubrukt_obligatorisk_øvelse(res) and utøvere[res.utøver_id]["beste-ubrukte-obligatoriske"] == None:
+                utøvere[res.utøver_id]["beste-ubrukte-obligatoriske"] = res
+            if res.er_teknisk and ubrukt_obligatorisk_øvelse(res) and utøvere[res.utøver_id]["beste-ubrukte-tekniske-obligatoriske"] == None:
+                utøvere[res.utøver_id]["beste-ubrukte-tekniske-obligatoriske"] = res
+
+        alle_beste = list(sorted([e["beste"] for e in utøvere.values() if e["beste"] != None], reverse=True))
+        alle_beste_tekniske = list(sorted([e["beste-tekniske"] for e in utøvere.values() if e["beste-tekniske"] != None], reverse=True))
+        alle_beste_obligatoriske = list(sorted([e["beste-obligatoriske"] for e in utøvere.values() if e["beste-obligatoriske"] != None], reverse=True))
+        alle_beste_obligatoriske_tekniske = list(sorted([e["beste-obligatoriske-tekniske"] for e in utøvere.values() if e["beste-obligatoriske-tekniske"] != None], reverse=True))
+        alle_beste_ubrukte_obligatoriske = list(sorted([e["beste-ubrukte-obligatoriske"] for e in utøvere.values() if e["beste-ubrukte-obligatoriske"] != None], reverse=True))
+        alle_beste_ubrukte_tekniske_obligatoriske = list(sorted([e["beste-ubrukte-tekniske-obligatoriske"] for e in utøvere.values() if e["beste-ubrukte-tekniske-obligatoriske"] != None], reverse=True))
+
+        alle = [alle_beste, alle_beste_tekniske, alle_beste_obligatoriske, alle_beste_obligatoriske_tekniske, alle_beste_ubrukte_obligatoriske, alle_beste_ubrukte_tekniske_obligatoriske]
+
+        def fjern_duplikater(lst):
+            result = []
+            [result.append(x) for x in lst if not any(((x.utøver_id, x.øvelseskode) == (x2.utøver_id, x2.øvelseskode) for x2 in result))]
+            return result
+
+        for n_første in (1,3,5,None):
+            beste_resultater = fjern_duplikater(lagoppstilling.obl()+lagoppstilling.val()+[e for lst in alle for e in (lst[:n_første] if n_første != None else lst)])
+
+            like_lag = cls.beregn_like_lagoppstillinger(Liste(beste_resultater), krav)
+            Kalkulator.beregn_like_lagoppstillinger.cache_clear()
+            if like_lag.first().poeng() > lagpoeng:
+                break
+        else:
+            return (lagpoeng, lagoppstilling)
+
+        nye_resultater = set(list(resultater) + like_lag.first().obl() + like_lag.first().val())
+        return Kalkulator.beregn_forbedringsmuligheter(nye_resultater, krav, serieøvelser, like_lag.first(), like_lag.first().poeng())
     
     @classmethod
     def beregn_unikt_beste_lagoppstilling(cls, resultater, krav):
