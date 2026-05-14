@@ -31,7 +31,6 @@ DIR = "srcc/main/applikasjon/static/assets/excelfiler"
 start = time.time()
 excelfiler = ExcelSerieark.produser_offisielle_serieark(seriedata, serieår)
 
-print(f"tid brukt: {round(time.time()-start,2)}s")
 for filnavn in os.listdir(DIR):
     if all((
         filnavn.startswith('serieoppsett_'),
@@ -53,3 +52,4 @@ with zipfile.ZipFile(zipfil, 'w', compression=zipfile.ZIP_DEFLATED) as zipf:
         zipf.writestr(f"{filnavn}.xlsx", bytesIO.getvalue())
 
 print("+ " + zipfil)
+print(f"Excel-filer generert ({round(time.time()-start, 1)}s)")

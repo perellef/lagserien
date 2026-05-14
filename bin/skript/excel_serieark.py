@@ -14,7 +14,7 @@ from srcc.main.utils.orm._kvinne_serieøvelse import KvinneSerieøvelse
 from srcc.main.utils.orm._mann_serieresultat import MannSerieresultat
 from srcc.main.utils.orm._kvinne_serieresultat import KvinneSerieresultat
 from srcc.main.utils.orm._resultat import Resultat
-from srcc.main.utils.orm._serie import Serie
+from srcc.main.utils.orm._batchkjøring import Batchkjøring
 from srcc.main.utils.orm._oppstillingskrav import Oppstillingskrav
 from datetime import date
 from collections import defaultdict
@@ -90,7 +90,8 @@ class ExcelSerieark:
 
     @staticmethod
     def produser_offisielle_serieark(seriedata, serieår):
-        aktuell_dato = seriedata.hent(Serie).filter_by(serieår=serieår).one().avsluttet
+        aktuell_dato = max([e.uttrekksdato for e in seriedata.hent(Batchkjøring).filter_by(serieår=serieår).filter_by(batch=4).all()])
+
         if aktuell_dato is None:
             aktuell_dato = date.today()
         
@@ -158,6 +159,8 @@ class ExcelSerieark:
                     "Detaljer": Worksheet(wb_kretsrapport.add_worksheet(f"{kj} detaljer"),  wb_formater[wb_kretsrapport])
                 }
 
+        klubbkretser = {el.klubb_id: el.krets for el in klubbkretser}
+        klubbnavn = {el.klubb_id: el.klubbnavn for el in seriedata.hent(Klubb).all()}
 
         for kj,Lagplassering,Laginfo,Lagresultat,Serieresultat,Serieøvelse,ArkivSluttplassering in zip(["menn","kvinner"], [MannLagplassering, KvinneLagplassering], [MannLaginfo, KvinneLaginfo], [MannLagresultat, KvinneLagresultat], [MannSerieresultat, KvinneSerieresultat], [MannSerieøvelse, KvinneSerieøvelse], [ArkivMannSluttplassering, ArkivKvinneSluttplassering]):
                 
@@ -170,14 +173,13 @@ class ExcelSerieark:
                         selectinload(Lagresultat.resultat).selectinload(Resultat.stevne)
                     )
                     .filter_by(serieår=serieår)
+                    .filter((Lagresultat.fra_og_med <= aktuell_dato))
                     .filter((Lagresultat.til_og_med == None) | (Lagresultat.til_og_med >= aktuell_dato))
                     .all())
+            
             arkiv_sluttplasseringer = {(el.klubb_id, el.lagnummer): (el.divisjon, el.plassering) for el in seriedata.hent(ArkivSluttplassering).filter_by(serieår=serieår-1).all()}
-            serieresultater = seriedata.hent(Serieresultat).filter((Serieresultat.til_og_med == None) | (Serieresultat.til_og_med >= aktuell_dato)).all()
+            serieresultater = seriedata.hent(Serieresultat).filter((Serieresultat.fra_og_med <= aktuell_dato)).filter((Serieresultat.til_og_med == None) | (Serieresultat.til_og_med >= aktuell_dato)).all()
             serieøvelser = seriedata.hent(Serieøvelse).filter_by(serieår=serieår).all()
-
-            klubbkretser = {el.klubb_id: el.krets for el in seriedata.hent(Klubbkrets).filter((Klubbkrets.fra_og_med <= aktuell_dato) & ((Klubbkrets.til_og_med == None) | (aktuell_dato <= Klubbkrets.til_og_med))).all()}
-            klubbnavn = {el.klubb_id: el.klubbnavn for el in seriedata.hent(Klubb).all()}
 
             øvelser_prioritet = {serieøvelse.øvelseskode: serieøvelse.prioritet for serieøvelse in serieøvelser}
             poenger = {serieresultat.resultat_id: serieresultat.poeng for serieresultat in serieresultater}
@@ -198,7 +200,7 @@ class ExcelSerieark:
                 N_obl = oppstillingskrav.antall_obligatoriske
                 N_val = oppstillingskrav.antall_valgfri
 
-                lagplasseringer = seriedata.hent(Lagplassering).filter_by(serieår=serieår).filter(Lagplassering.fra_og_med <= aktuell_dato).filter_by(divisjon=div).filter((Lagplassering.til_og_med == None) | (Lagplassering.til_og_med >= aktuell_dato)).order_by(Lagplassering.plassering).all()
+                lagplasseringer = seriedata.hent(Lagplassering).filter_by(serieår=serieår).filter_by(divisjon=div).filter(Lagplassering.fra_og_med <= aktuell_dato).filter((Lagplassering.til_og_med == None) | (Lagplassering.til_og_med >= aktuell_dato)).order_by(Lagplassering.plassering).all()
                 
                 for kretsrapport in [None, *kretser]:
                     kretsindeks_teller = {}
