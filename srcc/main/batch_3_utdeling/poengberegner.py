@@ -77,10 +77,10 @@ class Poengberegner:
     @staticmethod
     def til_lesveennlig_format(prestasjon):
         if prestasjon > 3600:
-            return f"{int(prestasjon)//3600},{(int(prestasjon)%3600)//60},{(int(prestasjon)%60)//1},{100*(prestasjon % 1):.0f}"
+            return f"{int(prestasjon)//3600},{(int(prestasjon)%3600)//60},{str((int(prestasjon)%60)//1).zfill(2)},{100*(prestasjon % 1):.0f}"
         if prestasjon > 60:
-            return f"{(int(prestasjon)%3600)//60},{(int(prestasjon)%60)//1},{100*(prestasjon % 1):.0f}"
-        return str(prestasjon).replace(".",",")
+            return f"{(int(prestasjon)%3600)//60},{str((int(prestasjon)%60)//1).zfill(2)},{100*(prestasjon % 1):.0f}"
+        return f"{int(prestasjon)},{str(prestasjon).split('.')[1].ljust(2, '0')}"
     
     @staticmethod
     def finn_nedre_grense_ved_binærsøk(grenser, flytverdi):

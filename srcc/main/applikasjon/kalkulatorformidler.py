@@ -31,9 +31,10 @@ from srcc.main.utils.orm._mann_topplag import MannTopplag
 from datetime import date
 
 # TODO: uhardkod disse
-løpsøvelser = ["60m", "100m", "200m", "400m", "800m", "1500m", "3000m", "5000m", "10000m", "3000m hinder", "60m hekk", "100m hekk", "110m hekk", "400m hekk", "3000m kapp.", "5000m kapp.", "10000m kapp."]
-tekniske_øvelser = ["Høyde", "Stav", "Lengde", "Tresteg", "Høyde u.t", "Lengde u.t", "Kule", "Diskos", "Slegge", "Spyd"] 
- 
+løpsøvelser = {"60m": "60", "100m": "100", "200m": "200", "400m": "400", "800m": "800", "1500m": "1500", "3000m": "3000", "5000m": "5000", "10000m": "10000", "3000m hinder": "3000H", "60m hekk": "60h", "100m hekk": "100h", "110m hekk": "110h", "400m hekk": "400h", "3000m kapp.": "3000K", "5000m kapp.": "5000K", "10000m kapp.": "10000K"}
+tekniske_øvelser = {"Høyde": "høyde", "Stav": "stav", "Lengde": "lengde", "Tresteg": "tresteg", "Høyde u.t": "hut", "Lengde u.t": "lut", "Kule": "kule", "Diskos": "diskos", "Slegge": "slegge", "Spyd": "spyd"} 
+øvelser = løpsøvelser | tekniske_øvelser
+
 class Kalkulatorformidler:
 
     @staticmethod
@@ -91,7 +92,7 @@ class Kalkulatorformidler:
 
         def prioritet(oppstillingstype, lagresultat):
             if oppstillingstype == "OBLIGATORISK":
-                return (løpsøvelser+tekniske_øvelser).index(lagresultat.resultat.øvelseskode)
+                return (list(løpsøvelser)+list(tekniske_øvelser)).index(lagresultat.resultat.øvelseskode)
             if oppstillingstype == "VALGFRI":
                 return lagresultat.resultat_id
             raise ValueError("Oppstillingstype må være enten OBLIGATORISK ELLER VALGFRI")
@@ -505,9 +506,9 @@ class Kalkulatorformidler:
                     e[5] = "inn-opp"
 
         return obldiff, valdiff
-
+    
     @staticmethod
-    def finn_beriket_oppstilling(noteringer, lagresultater, tidligere_lagresultater, nye_resultater, fjernede_resultater, resultatplasseringer):
+    def finn_ukas_forbedringer(noteringer, lagresultater, tidligere_lagresultater, nye_resultater, fjernede_resultater, resultatplasseringer):
         resultatdict = {(res[-1]): res for res in lagresultater["OBLIGATORISK"]+lagresultater["VALGFRI"]+tidligere_lagresultater["OBLIGATORISK"]+tidligere_lagresultater["VALGFRI"]}
         resultatdict[-1] = ['','','','','','','','']
 
@@ -529,11 +530,46 @@ class Kalkulatorformidler:
                 if e[0] != -1 and e[-3] != "ut" and e[0] in resultatplasseringer:
                     e[-1] = resultatplasseringer[e[0]]
 
-                berikede_neste[oppst].append([e[-4],e[-1]]+resultatdict[e[0]][:-1]+e[-3:-1])
+                berikede_neste[oppst].append([e[-4],e[-1]]+resultatdict[e[0]]+e[-3:-1])
 
         berikede_neste["VALGFRI"] = list(sorted(berikede_neste["VALGFRI"], key=lambda x: (0 if x[2] == '' else -x[2], x[3], x[5])))
 
         return berikede_neste
+
+    @staticmethod
+    def finn_optimale_forbedringer(kjønn, noteringer, potensielle_lagresultater, lagresultater, resultatplasseringer):
+        def med_info(x):
+            res = x[2]
+            if res == None:
+                res = Poengberegner.prestasjon_fra_poeng(kjønn, øvelser[x[1]], x[0])
+            res_id = x[-1]
+            if res_id == None:
+                res_id = hash(tuple(x[:-1]))
+            return x[:2] + [res] + x[3:-1] + [res_id]
+            
+        potensielle_lagresultater["OBLIGATORISK"] = [med_info(e) for e in potensielle_lagresultater["OBLIGATORISK"]]
+        potensielle_lagresultater["VALGFRI"] = [med_info(e) for e in potensielle_lagresultater["VALGFRI"]]
+        
+        resultatdict = {(res[-1]): res for res in potensielle_lagresultater["OBLIGATORISK"]+potensielle_lagresultater["VALGFRI"]+lagresultater["OBLIGATORISK"]+lagresultater["VALGFRI"]}
+        resultatdict[-1] = ['','','','','','','','']
+
+        obldiff, valdiff = Kalkulatorformidler.sammenlikn_endret_lag(noteringer, lagresultater, potensielle_lagresultater)
+
+        berikede = {"OBLIGATORISK": [], "VALGFRI": []}
+        for oppst, diff in zip(berikede, (obldiff, valdiff)):
+            sortert_diff = sorted(diff, key=lambda x: list(resultatdict).index(x[0][0]))
+            diff_flatten = [e for el in sortert_diff for e in el]
+
+            for e in diff_flatten:
+                if e[-3] == "inn":
+                    e[-2] = "forslag"
+                if e[0] != -1 and e[-3] != "ut" and e[0] in resultatplasseringer:
+                    e[-1] = resultatplasseringer[e[0]]
+
+                berikede[oppst].append([e[-4],e[-1]]+resultatdict[e[0]]+e[-3:-1])
+
+        berikede["VALGFRI"] = list(sorted(berikede["VALGFRI"], key=lambda x: (0 if x[2] == '' else -x[2], x[3], x[5])))
+        return berikede
 
     def beregn_resultatpoeng(kjønn, øvelse, resultat):
         return Poengberegner.beregn(kjønn, øvelse, resultat)

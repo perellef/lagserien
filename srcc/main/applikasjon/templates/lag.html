@@ -116,14 +116,14 @@
             <table class="table table-sm divisjonstabell" style="table-layout: fixed">   
                 <thead class="table-light">
                     <colgroup>
-                        <col style="width: 5%; white-space: no-wrap;">
-                        <col style="width: 7%; white-space: no-wrap;">
-                        <col style="width: 5%; white-space: no-wrap;">
-                        <col style="width: 20%; white-space: no-wrap;">
-                        <col style="width: 8%; white-space: no-wrap;">
-                        <col style="width: 12%; white-space: no-wrap;">
-                        <col style="width: 12%; white-space: no-wrap;">
-                        <col style="width: 21%; white-space: no-wrap;">
+                        <col style="width: 5%; white-space: nowrap;">
+                        <col style="width: 7%; white-space: nowrap;">
+                        <col style="width: 5%; white-space: nowrap;">
+                        <col style="width: 20%; white-space: nowrap;">
+                        <col style="width: 8%; white-space: nowrap;">
+                        <col style="width: 12%; white-space: nowrap;">
+                        <col style="width: 12%; white-space: nowrap;">
+                        <col style="width: 21%; white-space: nowrap;">
                     </colgroup>
                     <tr>
                         <th scope="col"></th>
@@ -143,14 +143,21 @@
     </div>
 
     <div id="oppstilling" style="background-color: white; display: none;">
-               
-        <label>
-            <input type="checkbox" id="endringer siste 7 dager">
-            endringer siste 7 dager
+          
+        <div style="display: flex;">
+            <div id="oppstilling-nå" class="enkeltknapp" style="width: 50%; text-align: center; background-color: white; border: 1px solid #cccccc; cursor: pointer;">Nåværende oppstilling</div>
+            <div id="oppstilling-potensial" class="enkeltknapp" style="width: 50%; text-align: center; background-color: #efefef; border: 1px solid #cccccc; cursor: pointer;">Forbedringsforslag</div>
+        </div>
+
+        <label style="margin: 12px 0 0 5px">
+            <input type="checkbox" id="vis-endringer">
+            <span style="font-size: 15px;">
+                Vis endringer siste 7 dager
+            </span>
         </label>
         <div id="lag-nå" style="display: block;">
             <div>
-                <h4 style="color: rgb(61, 61, 61); margin: 30px 0 15px 10%;">Obligatorisk oppstilling</h5>
+                <h4 style="color: rgb(61, 61, 61); margin: 20px 0 15px 10%;">Obligatorisk oppstilling</h5>
                 <table class="table table-sm lagoppstilling" style="font-size: 0.9rem; table-layout: fixed">
                     <thead class="table-light">
                     <tr>
@@ -164,7 +171,7 @@
                         <th style="width: 10%">Født</th>
                         <th style="width: 20%">Sted</th>
                         <th style="width: 12%">Dato</th>
-                        <th style="width: 10%; visibility: hidden; border:none;"></th>
+                        <th style="width: 12%; visibility: hidden; border:none;"></th>
                     </tr>
                     </thead>
                     <tbody id="obl-oppstilling-nå">
@@ -187,7 +194,7 @@
                         <th style="width: 10%">Født</th>
                         <th style="width: 20%">Sted</th>
                         <th style="width: 12%">Dato</th>
-                        <th style="width: 10%; visibility: hidden; border:none;"></th>
+                        <th style="width: 12%; visibility: hidden; border:none;"></th>
                     </tr>
                     </thead>
                     <tbody id="val-oppstilling-nå">
@@ -212,7 +219,6 @@
         const children = Array.from(container.children);
         const firstRowBottom = children[2].offsetTop;
 
-        children.forEach(child => console.log(child.offsetTop))
         const isSplit = children.some(child => child.offsetTop > firstRowBottom);
 
         if (isSplit) {
@@ -247,7 +253,7 @@
 <script>
     var kjønn = {{ kjønn | tojson }};
     var lagresultater = {{ lagresultater | tojson }};
-    var klubblag = {{ klubblag | tojson }};
+    var lagforbedringer = {{ lagforbedringer | tojson }};
     var lagnummer = {{ lagnummer }};
     var laginfo = {{ laginfo | tojson }};
     

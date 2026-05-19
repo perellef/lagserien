@@ -14,18 +14,6 @@ class Lagoppstilling:
         self.__val = val
         self.__reserver = reserver
         self.__skippede = skippede
-
-        #assert self.__resultater_maks_i_én_deloppstilling(), f"Et eller flere resultater forekommer i flere deloppstillinger: {self}"
-    
-    def __resultater_maks_i_én_deloppstilling(self):
-        """
-        return all((
-            (self.__obl.sjekksum() & self.__val.sjekksum() & self.__reserver.sjekksum()) == 0,
-            (self.__obl.sjekksum() & self.__val.sjekksum()) == 0,
-            (self.__obl.sjekksum() & self.__reserver.sjekksum()) == 0,
-            (self.__val.sjekksum() & self.__reserver.sjekksum()) == 0,
-        ))
-        """
     
     def simuler(self, f):
         f()

@@ -1,6 +1,27 @@
 from datetime import timedelta
 from sqlalchemy import text
 import re
+import time
+import functools
+
+def timeit(func):
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        start_time = time.perf_counter()
+        
+        result = func(*args, **kwargs)
+        
+        end_time = time.perf_counter()
+        elapsed_time = end_time - start_time
+        
+        if len(args) > 1:
+            print(f"Function '{func.__name__}' called with arguments (" + ', '.join(map(lambda x: '\''+str(x)+'\'', args[1:])) + f") executed in {elapsed_time:.6f} seconds")
+        else:
+            print(f"Function '{func.__name__}' executed in {elapsed_time:.6f} seconds")
+
+        return result
+    
+    return wrapper
 
 def execute(peker, spørring, args):
     counter = iter(range(1, 100))
@@ -22,6 +43,7 @@ def custom_spørring(peker, spørring):
 
     return [list(e) for e in resultat.fetchmany(100)]   
 
+@timeit
 def db_hent_serier(peker):  
     resultat = execute(peker, '''
         WITH siste_kjøring AS (
@@ -46,6 +68,7 @@ def db_hent_serier(peker):
         serier[str(serieår)] = {"avsluttet": avsluttet, "siste_dato": siste_dato}
     return serier
 
+@timeit
 def db_hent_batchkjøringer(peker):
     return execute(peker, '''
         SELECT *
@@ -54,6 +77,7 @@ def db_hent_batchkjøringer(peker):
         LIMIT 100
     ''', ())
 
+@timeit
 def db_hent_varsler(peker):
     return execute(peker, '''
         SELECT tittel, spørring
@@ -62,6 +86,7 @@ def db_hent_varsler(peker):
         ORDER BY tidspunkt
     ''', ())
 
+@timeit
 def db_hent_resultatbytter(peker):
     return execute(peker, '''
         SELECT *
@@ -70,6 +95,7 @@ def db_hent_resultatbytter(peker):
         LIMIT 100
     ''', ())
 
+@timeit
 def db_hent_sist_kjørt(peker, serieår):
     resultat = execute(peker, '''
         SELECT CAST(slutt AS text)
@@ -83,6 +109,7 @@ def db_hent_sist_kjørt(peker, serieår):
         return None
     return resultat[0][0]
 
+@timeit
 def db_hent_seriens_øvelser(peker, serieår):
     return execute(peker, '''
         SELECT øvelse.øvelsesnavn
@@ -96,6 +123,7 @@ def db_hent_seriens_øvelser(peker, serieår):
         ;
     ''', (serieår, serieår))
 
+@timeit
 def db_hent_øvelsene(peker):
     resultat = execute(peker, '''
         SELECT øvelseskode, øvelsesnavn
@@ -103,7 +131,8 @@ def db_hent_øvelsene(peker):
         ;
     ''', ())
     return {x[0]: x[1] for x in resultat}
-    
+  
+@timeit  
 def db_hent_serieøvelser(peker, kjønn, serieår):
     return execute(peker, f'''
         SELECT *
@@ -111,7 +140,8 @@ def db_hent_serieøvelser(peker, kjønn, serieår):
         WHERE serieår = {{placeholder}}
         ;
     ''', (serieår,))
-    
+   
+@timeit 
 def db_hent_klubber(peker):
     return execute(peker, '''
         SELECT klubbnavn, klubb_id
@@ -119,6 +149,7 @@ def db_hent_klubber(peker):
         ORDER BY klubbnavn;
     ''', ())
 
+@timeit
 def db_hent_utøvere(peker):
     return execute(peker, '''
         SELECT navn, fødselsår, utøver_id
@@ -126,6 +157,7 @@ def db_hent_utøvere(peker):
         ORDER BY navn, fødselsår;
     ''', ())
 
+@timeit
 def db_hent_klubb_id(peker, klubbnavn):
     resultat = execute(peker, '''
         SELECT klubb_id
@@ -135,6 +167,7 @@ def db_hent_klubb_id(peker, klubbnavn):
     ''', (klubbnavn,))
     return resultat[0][0]
 
+@timeit
 def db_hent_lagplasseringer(peker, serieår, dato, kjønn, divisjon):
     return execute(peker, f'''
         WITH livetabell AS (
@@ -199,6 +232,7 @@ def db_hent_lagplasseringer(peker, serieår, dato, kjønn, divisjon):
         ;
     ''', (dato, dato, dato, dato-timedelta(7), dato-timedelta(7), serieår, divisjon, divisjon))
 
+@timeit
 def db_hent_kretser(peker, dato):
     resultat = execute(peker, '''
         SELECT DISTINCT krets
@@ -213,6 +247,7 @@ def db_hent_kretser(peker, dato):
     
     return [el[0] for el in resultat]
 
+@timeit
 def db_hent_besøksdata(peker):
     resultat = execute(peker, f'''
         WITH relevante_brukere AS (
@@ -245,6 +280,7 @@ def db_hent_besøksdata(peker):
 
     return [(str(x), y) for x,y in resultat]
 
+@timeit
 def db_hent_noteringer_til_lag(peker, kjønn, serieår, klubbnavn, lagnummer):
     return execute(peker, f'''
         SELECT antall_obligatoriske, antall_valgfri
@@ -260,6 +296,7 @@ def db_hent_noteringer_til_lag(peker, kjønn, serieår, klubbnavn, lagnummer):
             AND coalesce(topplag.divisjon, 3) = krav.divisjon
     ''', (lagnummer, serieår, klubbnavn))[0]
 
+@timeit
 def db_hent_lagplassering(peker, kjonn, serieår, uttrekksdato, klubbnavn, lagnummer):
     result = execute(peker, f'''
         SELECT divisjon, plassering
@@ -274,6 +311,7 @@ def db_hent_lagplassering(peker, kjonn, serieår, uttrekksdato, klubbnavn, lagnu
         return (None, None)
     return result[0]
 
+@timeit
 def db_hent_rangering_allroundere(peker, serieår, dato):
     return execute(peker, '''
         WITH
@@ -313,6 +351,7 @@ def db_hent_rangering_allroundere(peker, serieår, dato):
         ;
     ''', (dato, dato, serieår, dato-timedelta(7), dato-timedelta(7), serieår))
 
+@timeit
 def db_hent_rangering_nøkkelutøvere(peker, serieår, dato):
     return execute(peker, '''
         SELECT FLOOR(poeng), dpoeng, navn, utøver_id, fødselsår, seriepoeng, dseriepoeng, klubb_id AS klubb_id, CONCAT(CASE WHEN lagnummer = 1 THEN klubbnavn ELSE CONCAT(klubbnavn, ' ', lagnummer, '. lag') END, ' (', kjønn, ')')
@@ -459,6 +498,7 @@ def db_hent_rangering_nøkkelutøvere(peker, serieår, dato):
         LIMIT 100   
     ''', (serieår, dato, serieår, dato-timedelta(7), dato, dato-timedelta(7), serieår, dato, serieår, dato-timedelta(7), serieår, dato, serieår, dato-timedelta(7), serieår, dato, serieår, dato-timedelta(7), dato, dato-timedelta(7), serieår, dato, serieår, dato-timedelta(7), serieår, dato, serieår, dato-timedelta(7)))
 
+@timeit
 def db_hent_rangering_nykommere(peker, serieår, dato):
     return execute(peker, '''
         WITH 
@@ -517,6 +557,7 @@ def db_hent_rangering_nykommere(peker, serieår, dato):
         LIMIT 100
     ''', (dato, dato, serieår-1, dato, dato, serieår, dato-timedelta(7), dato-timedelta(7), serieår))
 
+@timeit
 def db_hent_rangering_ideallag(peker, serieår, dato):
     return execute(peker, '''
         WITH
@@ -589,7 +630,7 @@ def db_hent_rangering_ideallag(peker, serieår, dato):
         LIMIT 100
     ''', (dato, dato, dato, dato, dato, dato, dato-timedelta(7), dato-timedelta(7), dato-timedelta(7), dato-timedelta(7), serieår,))
 
-
+@timeit
 def db_hent_rangering_kommersterke(peker, serieår, dato):
     return execute(peker, '''
         WITH
@@ -662,6 +703,7 @@ def db_hent_rangering_kommersterke(peker, serieår, dato):
         LIMIT 100
     ''', (dato, dato, dato, dato, dato, dato, dato-timedelta(7), dato-timedelta(7), dato-timedelta(7), dato-timedelta(7), serieår,))
 
+@timeit
 def db_hent_rangering_juniorlag(peker, serieår, dato):
     return execute(peker, '''
         WITH
@@ -713,6 +755,7 @@ def db_hent_rangering_juniorlag(peker, serieår, dato):
         ;
     ''', (dato, dato, serieår, dato, dato, serieår, dato-timedelta(7), dato-timedelta(7), serieår, dato-timedelta(7), dato-timedelta(7), serieår,))
 
+@timeit
 def db_hent_rangering_vekstklubber(peker, serieår, dato):
     return execute(peker, '''
         WITH
@@ -764,11 +807,12 @@ def db_hent_rangering_vekstklubber(peker, serieår, dato):
             JOIN fjorårsplassering AS ifjor ON (nå.kjønn = ifjor.kjønn AND nå.klubb_id = ifjor.klubb_id)
             JOIN "uttrekk.klubber" AS klubb ON (nå.klubb_id = klubb.klubb_id)
         WHERE ifjor.plassering-nå.plassering > 0
-        ORDER BY ifjor.plassering-nå.plassering DESC 
+        ORDER BY ifjor.plassering-nå.plassering DESC, nå.plassering
         LIMIT 100
         ;
     ''', (serieår, dato, dato, serieår, dato, dato, serieår, dato-timedelta(7), serieår, dato-timedelta(7), serieår-1, serieår-1,))
 
+@timeit
 def db_hent_rangering_storklubber(peker, serieår, dato):
     return execute(peker, '''
         WITH
@@ -827,6 +871,7 @@ def db_hent_rangering_storklubber(peker, serieår, dato):
         ;
     ''', (serieår, serieår, dato, dato, serieår,serieår, dato, dato, serieår, serieår, dato-timedelta(7), dato-timedelta(7), serieår, serieår, dato-timedelta(7), dato-timedelta(7)))
 
+@timeit
 def db_hent_rangering_største_krets(peker, serieår, dato):
     return execute(peker, '''
         WITH
@@ -855,6 +900,7 @@ def db_hent_rangering_største_krets(peker, serieår, dato):
         ORDER BY sum(CASE WHEN nå_lag.poeng >= 5000 THEN 1 ELSE 0 END) DESC
     ''', (serieår, dato, serieår, dato, serieår, dato-timedelta(7), serieår, dato-timedelta(7), dato))
 
+@timeit
 def db_hent_maksimalt_antall_noteringer(peker, serieår, divisjon):
 
     return execute(peker, '''
@@ -864,6 +910,7 @@ def db_hent_maksimalt_antall_noteringer(peker, serieår, divisjon):
             AND divisjon = {placeholder};
     ''', (serieår, divisjon))[0][0]
 
+@timeit
 def db_hent_oppstillingskrav(peker, serieår, divisjon):
     return execute(peker, '''
         SELECT antall_obligatoriske, antall_valgfri, maks_obligatoriske_løp, maks_valgfri_løp
@@ -872,6 +919,7 @@ def db_hent_oppstillingskrav(peker, serieår, divisjon):
             AND divisjon = {placeholder};
     ''', (serieår, divisjon))[0]
 
+@timeit
 def db_hent_oppstillingskrav_til_lag(peker, kjønn, serieår, klubbnavn, lagnummer):
     return execute(peker, f'''
         SELECT krav.*
@@ -887,6 +935,7 @@ def db_hent_oppstillingskrav_til_lag(peker, kjønn, serieår, klubbnavn, lagnumm
             AND coalesce(topplag.divisjon, 3) = krav.divisjon
     ''', (lagnummer, serieår, klubbnavn))[0]
 
+@timeit
 def db_hent_lagets_resultater(peker, kjønn, klubbnavn, lagnummer, serieår, dato):
     return execute(peker, f'''
         SELECT oppstillingstype,
@@ -907,6 +956,7 @@ def db_hent_lagets_resultater(peker, kjønn, klubbnavn, lagnummer, serieår, dat
         ;
     ''', (serieår, klubbnavn, lagnummer, dato, dato, dato, dato))
 
+@timeit
 def db_hent_lagresultater(peker, kjønn, klubbnavn, lagnummer, serieår, dato):
     resultat = execute(peker, f'''
         WITH lagresultater AS (
@@ -964,6 +1014,62 @@ def db_hent_lagresultater(peker, kjønn, klubbnavn, lagnummer, serieår, dato):
 
     return lagresultater
 
+@timeit
+def db_hent_potensielle_lagresultater(peker, kjønn, klubbnavn, lagnummer, serieår, dato):
+    resultat = execute(peker, f'''
+        WITH lagresultater AS (
+                SELECT lag.serieår,
+                    oppstillingstype,
+                    poeng,
+                    øvelsesnavn,
+                    øvelse.øvelseskode,
+                    prestasjon,
+                    navn,
+                    fødselsår,
+                    sted,
+                    CAST(dato AS text) AS dato,
+                    resultatfelt.resultat_id
+                FROM "serie.{kjønn}_lag" AS lag
+                    JOIN "uttrekk.klubber" AS klubb ON (klubb.klubb_id = lag.klubb_id)
+                    JOIN "serie.{kjønn}_lagpotensial_felter" AS resultatfelt ON (lag.serieår = resultatfelt.serieår AND lag.klubb_id = resultatfelt.klubb_id AND lag.lagnummer = resultatfelt.lagnummer)
+                    JOIN "uttrekk.utøvere" AS utøver ON (utøver.utøver_id = resultatfelt.utøver_id) 
+                    JOIN "uttrekk.øvelser" AS øvelse ON (øvelse.øvelseskode = resultatfelt.øvelseskode) 
+                    LEFT JOIN "uttrekk.resultater" AS resultat ON (resultatfelt.resultat_id = resultat.resultat_id)
+                    LEFT JOIN "uttrekk.stevner" AS stevne ON (stevne.stevne_id = resultat.stevne_id) 
+                WHERE lag.serieår = {{placeholder}}
+                    AND klubbnavn = {{placeholder}}
+                    AND lag.lagnummer = {{placeholder}}
+                    AND resultatfelt.fra_og_med <= {{placeholder}}
+                    AND coalesce(resultatfelt.til_og_med, '9999-01-01') >= {{placeholder}}
+            ),
+            obligatoriske_lagresultater AS (
+                SELECT oppstillingstype, poeng, øvelsesnavn, prestasjon, navn, fødselsår, sted, dato, resultat_id
+                FROM lagresultater AS lagresultat
+                    JOIN "serie.{kjønn}_serieøvelser" AS serieøvelse ON (
+                        lagresultat.serieår = serieøvelse.serieår
+                        AND lagresultat.øvelseskode = serieøvelse.øvelseskode
+                    )
+                WHERE oppstillingstype = 'OBLIGATORISK'
+                ORDER BY prioritet
+            ),
+            valgfrie_lagresultater AS (
+                SELECT oppstillingstype, poeng, øvelsesnavn, prestasjon, navn, fødselsår, sted, dato, resultat_id
+                FROM lagresultater AS lagresultat
+                WHERE oppstillingstype = 'VALGFRI'
+                ORDER BY poeng DESC, øvelseskode, navn
+            )
+            SELECT * FROM obligatoriske_lagresultater
+            UNION ALL
+            SELECT * FROM valgfrie_lagresultater;
+    ''', (serieår, klubbnavn, lagnummer, dato, dato))
+
+    lagresultater = {"OBLIGATORISK": [], "VALGFRI": []}
+    for el in resultat:
+        lagresultater[el[0]].append(el[1:])
+
+    return lagresultater
+
+@timeit
 def db_hent_resultatplasseringer_til_klubb(peker, kjønn, serieår, dato, klubbnavn):
     resultat = execute(peker, f'''
         WITH lagresultater AS (
@@ -1001,6 +1107,7 @@ def db_hent_resultatplasseringer_til_klubb(peker, kjønn, serieår, dato, klubbn
     ''', (serieår, serieår, dato, dato, dato, dato, klubbnavn))
     return {k: v for k,v in resultat}
 
+@timeit
 def db_hent_laginfo(peker, kjønn, klubbnavn, lagnummer, serieår, dato):
     return execute(peker, f'''
         SELECT {{placeholder}},
@@ -1037,6 +1144,7 @@ def db_hent_laginfo(peker, kjønn, klubbnavn, lagnummer, serieår, dato):
         ;
     ''', (serieår, serieår, lagnummer, dato, dato, dato, dato, klubbnavn))[0]
 
+@timeit
 def db_hent_klubblag(peker, kjønn, klubbnavn, serieår, dato):
     return execute(peker, f'''
         SELECT
@@ -1070,6 +1178,7 @@ def db_hent_klubblag(peker, kjønn, klubbnavn, serieår, dato):
             AND coalesce(laginfo.til_og_med, '9999-01-01') >= {{placeholder}}
     ''', (serieår, klubbnavn, dato, dato, dato, dato))
 
+@timeit
 def db_hent_rekordranking(peker, kjønn, klubbnavn, lagnummer):
     resultat = execute(peker, f'''
         WITH rangeringsverdier AS (
@@ -1126,6 +1235,7 @@ def db_hent_rekordranking(peker, kjønn, klubbnavn, lagnummer):
     ''', (klubbnavn, lagnummer))
     return [None, None] if resultat == [] else resultat[0]
 
+@timeit
 def db_hent_ranking(peker, kjønn, serieår, klubbnavn, lagnummer):
     resultat = execute(peker, f'''
         WITH rangeringsverdier AS (
@@ -1179,6 +1289,7 @@ def db_hent_ranking(peker, kjønn, serieår, klubbnavn, lagnummer):
 
     return None if resultat == [] else resultat[0][0]
 
+@timeit
 def db_hent_ranking_i_krets(peker, kjønn, serieår, dato, klubbnavn, lagnummer):
     resultat = execute(peker, f'''
         WITH rangeringsverdier AS (
@@ -1236,6 +1347,7 @@ def db_hent_ranking_i_krets(peker, kjønn, serieår, dato, klubbnavn, lagnummer)
     
     return None if resultat == [] else resultat[0][0]
 
+@timeit
 def db_hent_sluttplassering(peker, kjønn, serieår, klubbnavn, lagnummer):
     resultat = execute(peker, f'''
         SELECT divisjon, plassering, poeng
@@ -1246,6 +1358,7 @@ def db_hent_sluttplassering(peker, kjønn, serieår, klubbnavn, lagnummer):
     ''', (klubbnavn, serieår, lagnummer))
     return None if resultat == [] else resultat[0]
 
+@timeit
 def db_hent_klubbkrets(peker, klubbnavn, dato):
     return execute(peker, '''
         SELECT krets
@@ -1255,6 +1368,7 @@ def db_hent_klubbkrets(peker, klubbnavn, dato):
             AND {placeholder} BETWEEN fra_og_med AND coalesce(til_og_med, '9999-01-01');
     ''', (klubbnavn, dato))[0][0]
 
+@timeit
 def db_hent_klubbresultater(peker, kjønn, klubbnavn, serieår, uttrekksdato):
     return execute(peker, f''' 
         SELECT resultat.resultat_id,
@@ -1275,6 +1389,7 @@ def db_hent_klubbresultater(peker, kjønn, klubbnavn, serieår, uttrekksdato):
         ;
         ''', (serieår, klubbnavn, uttrekksdato))
 
+@timeit
 def db_hent_utøverinfo(peker, utøver_id):
     resultat = execute(peker, '''
         SELECT navn, fødselsår
@@ -1284,6 +1399,7 @@ def db_hent_utøverinfo(peker, utøver_id):
     
     return None if len(resultat) == 0 else resultat[0]
 
+@timeit
 def db_hent_utøverresultater(peker, utøver_id):
     resultater = execute(peker, '''
         WITH
@@ -1316,6 +1432,7 @@ def db_hent_utøverresultater(peker, utøver_id):
         per_år[år].append(resultat)
     return per_år
 
+@timeit
 def db_hent_utøverens_lagresultater(peker, utøver_id):
     resultater = execute(peker, '''
         WITH 
@@ -1372,6 +1489,7 @@ def db_hent_utøverens_lagresultater(peker, utøver_id):
         per_år_klubb[år][klubb].append(resultat[:-1])
     return per_år_klubb
 
+@timeit
 def db_hent_klubbresultater_med_overgangsinfo(peker, klubbnavn, serieår, uttrekksdato):
     return execute(peker, f'''
         WITH kvinner_resultater AS (
@@ -1440,6 +1558,7 @@ def db_hent_klubbresultater_med_overgangsinfo(peker, klubbnavn, serieår, uttrek
         ORDER BY coalesce(poeng, 0) DESC
     ''', (klubbnavn, klubbnavn, klubbnavn, klubbnavn, uttrekksdato, uttrekksdato, uttrekksdato, uttrekksdato, klubbnavn, klubbnavn, klubbnavn, klubbnavn, klubbnavn, klubbnavn, uttrekksdato, uttrekksdato, uttrekksdato, uttrekksdato, klubbnavn, klubbnavn, serieår))
 
+@timeit
 def db_hent_resultater(peker, kjønn, klubbnavn, serieår, dato):
     return execute(peker, f'''
         WITH 
@@ -1475,6 +1594,7 @@ def db_hent_resultater(peker, kjønn, klubbnavn, serieår, dato):
         ORDER BY poeng DESC, utøver_id, øvelseskode;
     ''', (serieår, klubbnavn, serieår, dato, dato))
 
+@timeit
 def db_hent_9_nyeste_artikler(peker):
     return execute(peker, '''
         SELECT *
@@ -1484,6 +1604,7 @@ def db_hent_9_nyeste_artikler(peker):
         ;
     ''', ())
     
+@timeit
 def db_hent_artikkel(peker, tittel):
     return execute(peker, '''
         SELECT *
@@ -1492,6 +1613,7 @@ def db_hent_artikkel(peker, tittel):
         ;
     ''', (tittel,))[0]
 
+@timeit
 def db_hent_forsinkede_stevner(peker, dato):
     return execute(peker, '''
         SELECT stevnetittel,
@@ -1504,6 +1626,7 @@ def db_hent_forsinkede_stevner(peker, dato):
         ORDER BY stevnedato;
     ''', (dato,))
      
+@timeit
 def db_hent_andel_rapporterte_stevner(peker, serieår, dato):
     return execute(peker, '''
         WITH stevner AS (
@@ -1534,6 +1657,7 @@ def db_hent_andel_rapporterte_stevner(peker, serieår, dato):
         ;
     ''', (serieår, dato,))[0]
 
+@timeit
 def db_hent_andel_gjennomførte_stevner(peker, serieår, dato):
     return execute(peker, '''
         WITH stevner AS (
@@ -1563,6 +1687,7 @@ def db_hent_andel_gjennomførte_stevner(peker, serieår, dato):
         ;
     ''', (dato, serieår,))[0]
 
+@timeit
 def db_hent_nye_resultater_siste_uke(peker, kjønn, dato):
     resultat = execute(peker, f'''
         SELECT siste_ukes.resultat_id
@@ -1577,6 +1702,7 @@ def db_hent_nye_resultater_siste_uke(peker, kjønn, dato):
 
     return [el[0] for el in resultat]
 
+@timeit
 def db_hent_fjernede_resultater_siste_uke(peker, kjønn, dato, klubbnavn, lagnummer):
     resultat = execute(peker, f'''
         (SELECT serieresultat.resultat_id
@@ -1620,6 +1746,7 @@ def db_hent_fjernede_resultater_siste_uke(peker, kjønn, dato, klubbnavn, lagnum
 
     return [el[0] for el in resultat]
 
+@timeit
 def db_hent_stevnekalender(peker, serieår, uttrekksdato):
     resultat = execute(peker, '''
         WITH stevneinfo AS (
@@ -1685,3 +1812,267 @@ def db_hent_stevnekalender(peker, serieår, uttrekksdato):
         grupperte_stevner[måned].append([stevnedato, stevnetittel, arena, antall_resultater, er_rapportert, er_invitasjon])
 
     return grupperte_stevner
+
+@timeit
+def db_hent_notiser(peker, dato):
+    return execute(peker, '''
+        SELECT *
+        FROM "nettside.notiser"
+        WHERE uttrekksdato >= {placeholder}
+        ORDER BY uttrekksdato DESC, prioritet
+    ''', (dato-timedelta(100),))
+
+@timeit
+def db_hent_notiselementer(peker, dato):
+    return execute(peker, '''
+        SELECT element.*
+        FROM "nettside.notiselementer" AS element
+            JOIN "nettside.notiser" AS notis ON (element.notis_id = notis.notis_id)
+        WHERE uttrekksdato >= {placeholder}
+        ORDER BY element.prioritet
+    ''', (dato-timedelta(100),))
+
+@timeit
+def db_statistikk_hent_antall_resultater(peker):
+    return execute(peker, '''
+        SELECT extract(year from dato), count(distinct statistikk_resultat_id)
+        FROM "uttrekk.resultater"
+        GROUP BY extract(year from dato)
+    ''', ())
+
+def db_statistikk_hent_antall_løpsresultater(peker):
+    return execute(peker, '''
+        WITH serieøvelse AS (
+            SELECT serieår, øvelseskode, er_teknisk FROM "serie.kvinner_serieøvelser"
+            UNION
+            SELECT serieår, øvelseskode, er_teknisk FROM "serie.kvinner_serieøvelser"
+        )
+        SELECT EXTRACT(year FROM dato), COUNT(distinct statistikk_resultat_id)
+        FROM "uttrekk.resultater" AS resultat
+            JOIN serieøvelse ON (extract(year from dato) = serieøvelse.serieår AND resultat.øvelseskode = serieøvelse.øvelseskode)
+        WHERE not er_teknisk
+        GROUP BY extract(year from dato)
+    ''', ())
+
+@timeit
+def db_statistikk_hent_antall_tekniske_resultater(peker):
+    return execute(peker, '''
+        WITH serieøvelse AS (
+            SELECT serieår, øvelseskode, er_teknisk FROM "serie.kvinner_serieøvelser"
+            UNION
+            SELECT serieår, øvelseskode, er_teknisk FROM "serie.kvinner_serieøvelser"
+        )
+        SELECT EXTRACT(year FROM dato), COUNT(distinct statistikk_resultat_id)
+        FROM "uttrekk.resultater" AS resultat
+            JOIN serieøvelse ON (extract(year from dato) = serieøvelse.serieår AND resultat.øvelseskode = serieøvelse.øvelseskode)
+        WHERE er_teknisk
+        GROUP BY extract(year from dato)
+    ''', ())
+
+@timeit
+def db_statistikk_hent_antall_aktive_utøvere(peker):
+    return execute(peker, '''
+        WITH uttrekksresultat AS (
+            SELECT * FROM "uttrekk.menn_uttrekksresultater" WHERE til_og_med IS NULL
+            UNION
+            SELECT * FROM "uttrekk.kvinner_uttrekksresultater" WHERE til_og_med IS null
+        )
+        SELECT EXTRACT(year FROM dato), count(DISTINCT utøver_id)
+        FROM uttrekksresultat
+            JOIN "uttrekk.resultater" AS resultat ON (uttrekksresultat.resultat_id = resultat.resultat_id)
+        GROUP BY EXTRACT(year FROM dato)
+    ''', ())
+
+@timeit
+def db_statistikk_hent_antall_aktive_menn_gutter(peker):
+    return execute(peker, '''
+        SELECT EXTRACT(year FROM dato), count(DISTINCT utøver_id)
+        FROM "uttrekk.menn_uttrekksresultater" AS uttrekksresultat
+            JOIN "uttrekk.resultater" AS resultat ON (uttrekksresultat.resultat_id = resultat.resultat_id)
+        GROUP BY EXTRACT(year FROM dato)
+    ''', ())
+
+@timeit
+def db_statistikk_hent_antall_aktive_kvinner_jenter(peker):
+    return execute(peker, '''
+        SELECT EXTRACT(year FROM dato), count(DISTINCT utøver_id)
+        FROM "uttrekk.kvinner_uttrekksresultater" AS uttrekksresultat
+            JOIN "uttrekk.resultater" AS resultat ON (uttrekksresultat.resultat_id = resultat.resultat_id)
+        GROUP BY EXTRACT(year FROM dato)
+    ''', ())
+
+@timeit
+def db_statistikk_hent_antall_aktive_seniorer_menn(peker):
+    return execute(peker, '''
+        SELECT EXTRACT(year FROM dato), count(DISTINCT utøver.utøver_id)
+        FROM "uttrekk.menn_uttrekksresultater" AS uttrekksresultat
+            JOIN "uttrekk.resultater" AS resultat ON (uttrekksresultat.resultat_id = resultat.resultat_id)
+            JOIN "uttrekk.utøvere" AS utøver ON (resultat.utøver_id = utøver.utøver_id)
+        WHERE EXTRACT(year FROM dato) - coalesce(fødselsår, 1900) >= 20 
+        GROUP BY EXTRACT(year FROM dato)
+    ''', ())
+
+@timeit
+def db_statistikk_hent_antall_aktive_seniorer_kvinner(peker):
+    return execute(peker, '''
+        SELECT EXTRACT(year FROM dato), count(DISTINCT utøver.utøver_id)
+        FROM "uttrekk.kvinner_uttrekksresultater" AS uttrekksresultat
+            JOIN "uttrekk.resultater" AS resultat ON (uttrekksresultat.resultat_id = resultat.resultat_id)
+            JOIN "uttrekk.utøvere" AS utøver ON (resultat.utøver_id = utøver.utøver_id)
+        WHERE EXTRACT(year FROM dato) - coalesce(fødselsår, 1900) >= 20 
+        GROUP BY EXTRACT(year FROM dato)
+    ''', ())
+
+@timeit
+def db_statistikk_hent_antall_aktive_gutter_u20(peker):
+    return execute(peker, '''
+        SELECT EXTRACT(year FROM dato), count(DISTINCT utøver.utøver_id)
+        FROM "uttrekk.menn_uttrekksresultater" AS uttrekksresultat
+            JOIN "uttrekk.resultater" AS resultat ON (uttrekksresultat.resultat_id = resultat.resultat_id)
+            JOIN "uttrekk.utøvere" AS utøver ON (resultat.utøver_id = utøver.utøver_id)
+        WHERE EXTRACT(year FROM dato) - coalesce(fødselsår, 1900) < 20 
+        GROUP BY EXTRACT(year FROM dato)
+        
+    ''', ())
+
+@timeit
+def db_statistikk_hent_antall_aktive_jenter_u20(peker):
+    return execute(peker, '''
+        SELECT EXTRACT(year FROM dato), count(DISTINCT utøver.utøver_id)
+        FROM "uttrekk.kvinner_uttrekksresultater" AS uttrekksresultat
+            JOIN "uttrekk.resultater" AS resultat ON (uttrekksresultat.resultat_id = resultat.resultat_id)
+            JOIN "uttrekk.utøvere" AS utøver ON (resultat.utøver_id = utøver.utøver_id)
+        WHERE EXTRACT(year FROM dato) - coalesce(fødselsår, 1900) < 20 
+        GROUP BY EXTRACT(year FROM dato)
+    ''', ())
+
+@timeit
+def db_statistikk_hent_antall_aktive_klubber(peker):
+    return execute(peker, '''
+        WITH uttrekksresultat AS (
+            SELECT * FROM "uttrekk.menn_uttrekksresultater"
+            UNION
+            SELECT * FROM "uttrekk.kvinner_uttrekksresultater"
+        )
+        SELECT EXTRACT(year FROM dato), count(DISTINCT klubb_id)
+        FROM uttrekksresultat
+            JOIN "uttrekk.resultater" AS resultat ON (uttrekksresultat.resultat_id = resultat.resultat_id)
+        GROUP BY EXTRACT(year FROM dato)
+    ''', ())
+
+@timeit
+def db_statistikk_hent_antall_klubber_med_under_10_aktive_utøvere(peker):
+    return execute(peker, '''
+        WITH
+            uttrekksresultat AS (
+                SELECT * FROM "uttrekk.menn_uttrekksresultater" WHERE til_og_med IS NULL
+                UNION
+                SELECT * FROM "uttrekk.kvinner_uttrekksresultater" WHERE til_og_med IS null
+            ),
+            klubber_med_få_utøvere AS (
+                SELECT EXTRACT(year FROM dato) AS år, klubb_id, count(DISTINCT utøver_id) AS antall
+                FROM uttrekksresultat
+                    JOIN "uttrekk.resultater" AS resultat ON (uttrekksresultat.resultat_id = resultat.resultat_id)
+                GROUP BY EXTRACT(year FROM dato), klubb_id
+                HAVING count(DISTINCT utøver_id) < 10
+            )
+        SELECT år, count(*)
+        FROM klubber_med_få_utøvere
+        GROUP BY år
+    ''', ())
+
+@timeit
+def db_statistikk_hent_antall_klubber_med_10_99_aktive_utøvere(peker):
+    return execute(peker, '''
+        WITH
+            uttrekksresultat AS (
+                SELECT * FROM "uttrekk.menn_uttrekksresultater" WHERE til_og_med IS NULL
+                UNION
+                SELECT * FROM "uttrekk.kvinner_uttrekksresultater" WHERE til_og_med IS null
+            ),
+            klubber_med_få_utøvere AS (
+                SELECT EXTRACT(year FROM dato) AS år, klubb_id, count(DISTINCT utøver_id) AS antall
+                FROM uttrekksresultat
+                    JOIN "uttrekk.resultater" AS resultat ON (uttrekksresultat.resultat_id = resultat.resultat_id)
+                GROUP BY EXTRACT(year FROM dato), klubb_id
+                HAVING count(DISTINCT utøver_id) >= 10 AND count(DISTINCT utøver_id) < 100 
+            )
+        SELECT år, count(*)
+        FROM klubber_med_få_utøvere
+        GROUP BY år
+    ''', ())
+
+@timeit
+def db_statistikk_hent_antall_klubber_med_minst_100_aktive_utøvere(peker):
+    return execute(peker, '''
+        WITH
+            uttrekksresultat AS (
+                SELECT * FROM "uttrekk.menn_uttrekksresultater" WHERE til_og_med IS NULL
+                UNION
+                SELECT * FROM "uttrekk.kvinner_uttrekksresultater" WHERE til_og_med IS null
+            ),
+            klubber_med_få_utøvere AS (
+                SELECT EXTRACT(year FROM dato) AS år, klubb_id, count(DISTINCT utøver_id) AS antall
+                FROM uttrekksresultat
+                    JOIN "uttrekk.resultater" AS resultat ON (uttrekksresultat.resultat_id = resultat.resultat_id)
+                GROUP BY EXTRACT(year FROM dato), klubb_id
+                HAVING count(DISTINCT utøver_id) >= 100 
+            )
+        SELECT år, count(*)
+        FROM klubber_med_få_utøvere
+        GROUP BY år
+    ''', ())
+
+@timeit
+def db_statistikk_hent_antall_stevner(peker):
+    return execute(peker, '''
+        SELECT EXTRACT(year FROM stevnedato), count(*)
+        FROM "uttrekk.stevner"
+        GROUP BY EXTRACT(year FROM stevnedato)
+    ''', ())
+
+@timeit
+def db_statistikk_hent_kretsstatistikk(peker):
+    return execute(peker, '''
+        WITH uttrekksresultat AS (
+            SELECT EXTRACT(year FROM dato) AS år, klubb_id, count(distinct utøver_id) AS utøvere, count(*) AS antall
+            FROM "uttrekk.menn_uttrekksresultater" AS uttrekksresultat
+                JOIN "uttrekk.resultater" AS resultat ON (uttrekksresultat.resultat_id = resultat.resultat_id)
+            WHERE til_og_med IS NULL
+            GROUP BY EXTRACT(year FROM dato), klubb_id
+            UNION
+            SELECT EXTRACT(year FROM dato) AS år, klubb_id, count(distinct utøver_id) AS utøvere, count(*) AS antall
+            FROM "uttrekk.kvinner_uttrekksresultater" AS uttrekksresultat
+                JOIN "uttrekk.resultater" AS resultat ON (uttrekksresultat.resultat_id = resultat.resultat_id)
+            WHERE til_og_med IS NULL
+            GROUP BY EXTRACT(year FROM dato), klubb_id
+        )
+        SELECT år, krets, count(*), sum(utøvere), sum(antall)
+        FROM uttrekksresultat
+            JOIN "uttrekk.klubbkretser" AS klubbkrets ON (uttrekksresultat.klubb_id = klubbkrets.klubb_id)
+        WHERE DATE(CONCAT(år, '-12-31')) BETWEEN klubbkrets.fra_og_med AND coalesce(klubbkrets.til_og_med, '9999-01-01')
+        GROUP BY år, krets
+        ORDER BY krets, år
+    ''', ())
+
+@timeit
+def db_statistikk_hent_øvelsesstatistikk(peker):
+    return execute(peker, '''
+        WITH øvelsesstatistikk AS (
+            SELECT EXTRACT(year FROM dato) AS år, øvelseskode, count(distinct klubb_id) as klubber, count(distinct utøver_id) AS utøvere, count(*) AS antall
+            FROM "uttrekk.menn_uttrekksresultater" AS uttrekksresultat
+                JOIN "uttrekk.resultater" AS resultat ON (uttrekksresultat.resultat_id = resultat.resultat_id)
+            WHERE til_og_med IS NULL
+            GROUP BY EXTRACT(year FROM dato), øvelseskode
+            UNION
+            SELECT EXTRACT(year FROM dato) AS år, øvelseskode, count(distinct klubb_id) as klubber, count(distinct utøver_id) AS utøvere, count(*) AS antall
+            FROM "uttrekk.kvinner_uttrekksresultater" AS uttrekksresultat
+                JOIN "uttrekk.resultater" AS resultat ON (uttrekksresultat.resultat_id = resultat.resultat_id)
+            WHERE til_og_med IS NULL
+            GROUP BY EXTRACT(year FROM dato), øvelseskode
+        )
+        SELECT år, øvelsesnavn, klubber, utøvere, antall
+        FROM øvelsesstatistikk
+            JOIN "uttrekk.øvelser" AS øvelse ON (øvelse.øvelseskode = øvelsesstatistikk.øvelseskode)
+        ORDER BY øvelse.øvelseskode
+    ''', ())

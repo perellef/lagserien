@@ -2,7 +2,7 @@ from flask import render_template, abort
 
 from srcc.main.applikasjon.kalkulatorformidler import Kalkulatorformidler 
 from srcc.main.applikasjon.fellesinfo import cache, seriedata, serieår
-from srcc.main.applikasjon.spørringer import db_hent_klubblag, db_hent_klubb_id, db_hent_laginfo, db_hent_klubbkrets, db_hent_lagresultater, db_hent_nye_resultater_siste_uke, db_hent_fjernede_resultater_siste_uke, db_hent_noteringer_til_lag, db_hent_ranking, db_hent_ranking_i_krets, db_hent_rekordranking, db_hent_sluttplassering, db_hent_resultatplasseringer_til_klubb, db_hent_lagplassering
+from srcc.main.applikasjon.spørringer import db_hent_klubb_id, db_hent_laginfo, db_hent_klubbkrets, db_hent_lagresultater, db_hent_nye_resultater_siste_uke, db_hent_fjernede_resultater_siste_uke, db_hent_noteringer_til_lag, db_hent_ranking, db_hent_ranking_i_krets, db_hent_rekordranking, db_hent_sluttplassering, db_hent_resultatplasseringer_til_klubb, db_hent_lagplassering, db_hent_potensielle_lagresultater
 
 from datetime import timedelta, datetime, timezone
 
@@ -28,8 +28,7 @@ def lag(kjonn, lagnavn):
         
         lagresultater = db_hent_lagresultater(peker, kjonn, klubbnavn, lagnummer, serieår, i_dag)
         tidligere_lagresultater = db_hent_lagresultater(peker, kjonn, klubbnavn, lagnummer, serieår, i_dag-timedelta(7))
-
-        klubblag = db_hent_klubblag(peker, "menn", klubbnavn, serieår, i_dag)
+        potensielle_lagresultater = db_hent_potensielle_lagresultater(peker, kjonn, klubbnavn, lagnummer, serieår, i_dag)
 
         resultatplasseringer = db_hent_resultatplasseringer_til_klubb(peker, kjonn, serieår, i_dag, klubbnavn)
 
@@ -45,13 +44,14 @@ def lag(kjonn, lagnavn):
         if plassering == None:
             abort(404)
             
-    berikede_lagresultater = Kalkulatorformidler.finn_beriket_oppstilling(noteringer, lagresultater, tidligere_lagresultater, nye_resultater, fjernede_resultater, resultatplasseringer)
-        
+    berikede_lagresultater = Kalkulatorformidler.finn_ukas_forbedringer(noteringer, lagresultater, tidligere_lagresultater, nye_resultater, fjernede_resultater, resultatplasseringer)
+    berikede_lagforbedringer = Kalkulatorformidler.finn_optimale_forbedringer(kjonn, noteringer, potensielle_lagresultater, lagresultater, resultatplasseringer)
+
     return render_template(
         "lag.html",
         cache=cache.data,
-        klubblag=klubblag,
         lagresultater=berikede_lagresultater,
+        lagforbedringer=berikede_lagforbedringer,
         laginfo=laginfo,
         klubbnavn=klubbnavn,
         klubb_id=klubb_id if klubb_id in cache.data["klubblogoer"] else None,

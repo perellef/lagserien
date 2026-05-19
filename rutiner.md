@@ -14,6 +14,7 @@
 2. *Oppsettbatch*:
     - Legg inn: 
         - nye verdier for arkiv_sluttplasseringer (csv-fil)
+        - oppdater eventuelle endrede verdier for foregående serieår
         - eventuelle resultatbytter
         - eventuelle klubber for topplag som ikke allerede er lagt inn
     - Kjør.

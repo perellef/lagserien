@@ -8,8 +8,9 @@ Det er en rekke skript for å kjøre batchene:
 - Batch 1: `kjør_seriegrunnlag.py`
 - Batch 2: `kjør_serieuttrekk.py`
 - Batch 3: `kjør_serieutdeling.py`
-- Batch 4: `kjør_seriekalkulator.py`, eventuelt `kjør_seriekalkulator_for_periode.py` ved simulering tilbake i tid ved oppstart
+- Batch 4: `kjør_seriekalkulator.py`,eventuelt `kjør_seriekalkulator_for_periode.py` ved simulering tilbake i tid ved oppstart
 - Batch 5: (mangler)
+- Batch 6: `kjør_notisbatch.py`
 
 Batch 2, 3, 4 kan kjøres sekvensielt med `kjør_rutine.py`.
 

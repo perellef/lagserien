@@ -125,18 +125,22 @@ function sett_deloppstilling(id, oppstillingstype) {
     tbody = document.getElementById(id);
     tbody.innerHTML = "";
     
-    vis_endringer_siste_7_dager = document.getElementById('endringer siste 7 dager').checked
+    vis_endringer_siste_7_dager = document.getElementById('vis-endringer').checked
 
-    resultater = lagresultater[oppstillingstype]
+    vis_potensial = window.getComputedStyle(document.getElementById('oppstilling-potensial')).backgroundColor === "rgb(255, 255, 255)"
+    
+    resultater = vis_potensial ? lagforbedringer[oppstillingstype] : lagresultater[oppstillingstype];
 
     resultater.forEach(function(resultat) {
         tr = document.createElement("tr");
 
+        if (!vis_endringer_siste_7_dager && (resultat[10] == "ut" || resultat[10] == "ut-ned" || resultat[10] == "ut-opp")) {
+            return;
+        }
+
         resultat.forEach(function(verdi, indeks) {
-            if (!vis_endringer_siste_7_dager && (resultat[9] == "ut" || resultat[9] == "ut-ned" || resultat[9] == "ut-opp")) {
-                return;
-            }
-            if (indeks == 9) {
+            
+            if (indeks == 9 || indeks == 10) {
                 return;
             }
             if (indeks == 0) {
@@ -182,33 +186,38 @@ function sett_deloppstilling(id, oppstillingstype) {
                     celle.appendChild(anchor)
                 }
                 if (vis_endringer_siste_7_dager) {
-                    celle.style.backgroundColor = finn_bakgrunnsfarge(resultat[9]);
+                    celle.style.backgroundColor = vis_potensial ? finn_potensialfarge(resultat[10]) : finn_endringsfarge(resultat[10]);
                 }
                 tr.appendChild(celle);
 
                 celle = td_med("", verdi);
             } else if (indeks == 8) {
-                if (verdi == "") {
+                if (verdi == "" || resultat[8] == null) {
                     celle = td_med("", "");
                 } else {
                     celle = td_med("", datoNormalform(verdi));
                 }
-            } else if (indeks == 10) {
+            } else if (indeks == 11) {
                 celle = td_med("", "");
-                if (verdi == "ny" || verdi == "fjernet") {
+                if (verdi == "ny" || verdi == "fjernet" || verdi == "forslag") {
                     var div = document.createElement('div');
                     div.style.height = "20px";
                     div.style.border = "1px gray solid";
-                    if (verdi == "ny") {
+                    if (verdi == "forslag") {
+                        div.style.backgroundColor = "#cedfff";
+                        div.style.width = "52px";
+                        div.textContent = "forslag";
+                    } else if (verdi == "ny") {
                         div.style.backgroundColor = "#d8ffce";
                         div.style.width = "30px";
+                        div.textContent = verdi;
                     } else {
                         div.style.backgroundColor = "#F8E0E0";
                         div.style.width = "50px";
+                        div.textContent = verdi;
                     }
                     div.style.lineHeight = "16px";
                     div.style.paddingLeft = "4px";
-                    div.textContent = verdi;
                     celle.appendChild(div);
                 }
                 celle.style.border = "none";
@@ -217,8 +226,8 @@ function sett_deloppstilling(id, oppstillingstype) {
             }
             
             if (vis_endringer_siste_7_dager && indeks > 0 && indeks < 9) {
-                celle.style.backgroundColor = finn_bakgrunnsfarge(resultat[9]);
-                if (resultat[9] == "ut" || resultat[9] == "ut-opp" || resultat[9] == "ut-ned") {
+                celle.style.backgroundColor = vis_potensial ? finn_potensialfarge(resultat[10]) : finn_endringsfarge(resultat[10]);
+                if (resultat[10] == "ut" || resultat[10] == "ut-opp" || resultat[10] == "ut-ned") {
                     celle.style.fontStyle = "italic";
                 }
             }
@@ -234,7 +243,7 @@ function sett_deloppstilling(id, oppstillingstype) {
     })
 }
 
-function finn_bakgrunnsfarge(endringsverdi) {
+function finn_endringsfarge(endringsverdi) {
     if (endringsverdi == "") {
         return "#ffffff"
     } else if (endringsverdi == "ut") {
@@ -243,6 +252,18 @@ function finn_bakgrunnsfarge(endringsverdi) {
         return "#fdffd7ff";
     } else if (endringsverdi == "inn") {
         return "#d8ffce"
+    }
+}
+
+function finn_potensialfarge(endringsverdi) {
+    if (endringsverdi == "") {
+        return "#ffffff"
+    } else if (endringsverdi == "ut") {
+        return "#f5f5f5";
+    } else if (endringsverdi == "ut-opp" || endringsverdi == "ut-ned" || endringsverdi == "inn-opp" || endringsverdi == "inn-ned") {
+        return "#fdffd7ff";
+    } else if (endringsverdi == "inn") {
+        return "#cee5ff"
     }
 }
 
@@ -270,8 +291,30 @@ document.getElementById("laginfo-knapp").addEventListener('click', function() {
     document.getElementById("oppstilling-knapp").style.backgroundColor = "rgb(233, 233, 233)";
 });
 
-document.getElementById('endringer siste 7 dager').addEventListener('change', function () {
-    sett_oppstilling()
+document.getElementById('oppstilling-nå').addEventListener("click", function () {
+    if (window.getComputedStyle(this).backgroundColor === "rgb(255, 255, 255)") {
+        return;
+    }
+    this.style.backgroundColor = "white";
+    document.getElementById('oppstilling-potensial').style.backgroundColor = "#efefef";
+    sett_oppstilling();
+
+    document.getElementById('vis-endringer').parentElement.children[1].textContent = "Vis endringer siste 7 dager";
+});
+
+document.getElementById('oppstilling-potensial').addEventListener("click", function () {
+    if (window.getComputedStyle(this).backgroundColor === "rgb(255, 255, 255)") {
+        return;
+    }
+    this.style.backgroundColor = "white";
+    document.getElementById('oppstilling-nå').style.backgroundColor = "#efefef";
+    sett_oppstilling();
+
+    document.getElementById('vis-endringer').parentElement.children[1].textContent = "Vis endringer";
+});
+
+document.getElementById('vis-endringer').addEventListener('change', function () {
+    sett_oppstilling();
 });
 
 document.getElementById("oppstilling-knapp").addEventListener('click', function() {
