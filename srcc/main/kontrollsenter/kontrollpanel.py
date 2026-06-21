@@ -13,7 +13,6 @@ from srcc.main.batch_3_utdeling.utdelingsbatch import Utdelingsbatch
 from srcc.main.batch_4_kalkulator.kalkulatorbatch import Kalkulatorbatch
 
 import traceback
-import sys
 from datetime import datetime, date, timezone
 
 DATABASE = Database.PRODUKSJON
@@ -25,20 +24,14 @@ class Kontrollpanel:
         tilganger = Tilganger.til(batch)
         seriedata = Seriedata(tilganger, DATABASE)
         seriedata.åpne()
-
         endringsdatoer = Kontrollpanel.__finn_endringsdatoer(seriedata, første_uttrekksdato, siste_uttrekksdato)
+        seriedata.lukk()
 
-        try:
-            for uttrekksdato in endringsdatoer:
-                Kontrollpanel.__kjør_batch(batch, seriedata, serieår, uttrekksdato)
-            
-            seriedata.commit()
-        except Exception as e:
-            seriedata.rollback()
-            print(traceback.format_exc())
-            sys.exit(1)
-        finally:
-            seriedata.lukk()
+        for uttrekksdato in endringsdatoer:
+            try:
+                Kontrollpanel.kjør(batch, seriedata, serieår, uttrekksdato)
+            except Exception:
+                break
 
     @staticmethod
     def __finn_endringsdatoer(seriedata, første_uttrekksdato, siste_uttrekksdato):
@@ -56,36 +49,58 @@ class Kontrollpanel:
 
     @staticmethod
     def kjør(batch, serieår, uttrekksdato):
-        print(datetime.now(timezone.utc), "Starter opp.")
+        
         seriedata = Seriedata(DATABASE)
         seriedata.initier()
         seriedata.åpne()
-        
-        print(datetime.now(timezone.utc), "Validerer tillatt batchkjøring.")
 
-        try:
-            Kontrollpanel.__kjør_batch(batch, seriedata, serieår, uttrekksdato)
-            seriedata.commit()
-            print(datetime.now(timezone.utc), "Batch ferdigkjørt. Avslutter.")
-        except Exception:
-            seriedata.rollback()
-            print(traceback.format_exc())
-            print(datetime.now(timezone.utc), "Feil oppsto. Avslutter.")
-            sys.exit(1)
-        finally:
+        if Kontrollpanel.tilsvarende_kjøring_pågår_eller_er_ferdig(seriedata, batch, serieår, uttrekksdato):
             seriedata.lukk()
-
-    @staticmethod
-    def __kjør_batch(batch, seriedata, serieår, uttrekksdato):
-        Kontrollpanel.__valider_tillatt_batchkjøring(batch, seriedata, serieår, uttrekksdato)
+            print(datetime.now(timezone.utc), f"[Batch {batch.batchnummer}] Tilsvarende kjøring finnes. Avslutter.")
+            return
 
         print(start := datetime.now(timezone.utc), f"[Batch {batch.batchnummer}] Kjører serieår {serieår} på uttrekksdato {uttrekksdato}")
-        batch.kjør(seriedata, serieår, uttrekksdato)
-        slutt = datetime.now(timezone.utc)    
+        pågående_kjøring = Batchkjøring(batch=batch.batchnummer, serieår=serieår, uttrekksdato=uttrekksdato, status="pågår", start=start, slutt=None)
+        seriedata.bulkinnsett([pågående_kjøring])
+        seriedata.commit()
 
-        Kontrollpanel.__valider_tillatt_batchkjøring(batch, seriedata, serieår, uttrekksdato)
+        try:
+            Kontrollpanel.__valider_tillatt_batchkjøring(batch, seriedata, serieår, uttrekksdato)
+        except Exception:
+            print(datetime.now(timezone.utc), f"[Batch {batch.batchnummer}] Kjøring avbrytes.")
+            seriedata.bulkslett([pågående_kjøring])
+            seriedata.bulkinnsett([Batchkjøring(batch=batch.batchnummer, serieår=serieår, uttrekksdato=uttrekksdato, status="avbrutt", start=start, slutt=datetime.now(timezone.utc))])
+            seriedata.commit()
+            seriedata.lukk()
+            raise
 
-        seriedata.bulkinnsett([Batchkjøring(batch=batch.batchnummer, serieår=serieår, uttrekksdato=uttrekksdato, start=start, slutt=slutt)])
+        try:
+            batch.kjør(seriedata, serieår, uttrekksdato)
+        except Exception:
+            seriedata.rollback()
+            seriedata.bulkslett([pågående_kjøring])
+            seriedata.bulkinnsett([Batchkjøring(batch=batch.batchnummer, serieår=serieår, uttrekksdato=uttrekksdato, status="feilet", start=datetime.now(timezone.utc), slutt=datetime.now(timezone.utc))])
+            seriedata.commit()
+            seriedata.lukk()
+            print(traceback.format_exc())
+            print(datetime.now(timezone.utc), f"[Batch {batch.batchnummer}] Kjøring feilet.")
+            raise
+
+        try:
+            Kontrollpanel.__valider_tillatt_batchkjøring(batch, seriedata, serieår, uttrekksdato)
+            print(datetime.now(timezone.utc), f"[Batch {batch.batchnummer}] Kjøring fullført.")
+            seriedata.bulkslett([pågående_kjøring])
+            seriedata.bulkinnsett([Batchkjøring(batch=batch.batchnummer, serieår=serieår, uttrekksdato=uttrekksdato, status="ferdig", start=datetime.now(timezone.utc), slutt=datetime.now(timezone.utc))])
+            seriedata.commit()
+            seriedata.lukk()
+        except Exception:
+            print(datetime.now(timezone.utc), f"[Batch {batch.batchnummer}] Kjøring avbrytes.")
+            seriedata.rollback()
+            seriedata.bulkslett([pågående_kjøring])
+            seriedata.bulkinnsett([Batchkjøring(batch=batch.batchnummer, serieår=serieår, uttrekksdato=uttrekksdato, status="avbrutt", start=datetime.now(timezone.utc), slutt=datetime.now(timezone.utc))])
+            seriedata.commit()
+            seriedata.lukk()
+            raise
 
     @staticmethod
     def __valider_tillatt_batchkjøring(batch, seriedata, serieår, uttrekksdato):
@@ -98,6 +113,14 @@ class Kontrollpanel:
         Kontrollpanel.valider_eksisterende_serie(seriedata, serieår)
         Kontrollpanel.valider_batchens_seneste_kjøring(batch, seriedata, serieår, uttrekksdato)
         Kontrollpanel.valider_forutsatte_batchkjøringer(batch, seriedata, serieår, uttrekksdato)
+
+    def tilsvarende_kjøring_pågår_eller_er_ferdig(seriedata, batch, serieår, uttrekksdato):
+        kjøringer = (seriedata.hent(Batchkjøring)
+                    .filter_by(batch=batch.batchnummer, serieår=serieår, uttrekksdato=uttrekksdato)
+                    .filter((Batchkjøring.status == "pågår") | (Batchkjøring.status == "ferdig"))
+                    .all())
+
+        return len(list(kjøringer)) > 0
 
     @staticmethod
     def valider_batch(batch):
@@ -115,9 +138,10 @@ class Kontrollpanel:
     @staticmethod
     def valider_batchens_seneste_kjøring(batch, seriedata, serieår, uttrekksdato):
         kjøringer_etter_uttrekksdato = (seriedata.hent(Batchkjøring)
-                    .filter_by(batch=batch.batchnummer, serieår=serieår)
-                    .filter(Batchkjøring.uttrekksdato >= uttrekksdato)
-                    .all())
+                .filter_by(batch=batch.batchnummer, serieår=serieår)
+                .filter((Batchkjøring.status == "pågår") | (Batchkjøring.status == "ferdig"))
+                .filter(Batchkjøring.uttrekksdato > uttrekksdato)
+                .all())
         
         assert len(list(kjøringer_etter_uttrekksdato)) == 0, f"Avbryter. Forutsetter ingen batchkjøringer av batch {batch.batchnummer} på eller etter uttrekksdato: {uttrekksdato}."
 
@@ -142,7 +166,10 @@ class Kontrollpanel:
             Kontrollpanel.valider_kjøring_på_dato(seriedata, 3, serieår, uttrekksdato)
             Kontrollpanel.valider_kjøring_på_dato(seriedata, 4, serieår, uttrekksdato)
         if batch.batchnummer == 6:
-            return
+            Kontrollpanel.valider_kjøring_på_serieår(seriedata, 1, serieår)
+            Kontrollpanel.valider_kjøring_på_dato(seriedata, 2, serieår, uttrekksdato)
+            Kontrollpanel.valider_kjøring_på_dato(seriedata, 3, serieår, uttrekksdato)
+            Kontrollpanel.valider_kjøring_på_dato(seriedata, 4, serieår, uttrekksdato)
 
     def valider_kjøring_på_serieår(seriedata, batchnummer, serieår):
         kjøring = seriedata.hent(Batchkjøring).filter_by(batch=batchnummer, serieår=serieår).all()
@@ -150,7 +177,7 @@ class Kontrollpanel:
         assert len(list(kjøring)) >= 1, f"Avbryter. Forutsetter minst 1 batchkjøringer av batch {batchnummer} på serieår: {serieår}."
 
     def valider_kjøring_på_dato(seriedata, batchnummer, serieår, dato):
-        kjøring = seriedata.hent(Batchkjøring).filter_by(batch=batchnummer, serieår=serieår, uttrekksdato=dato).all()
+        kjøring = seriedata.hent(Batchkjøring).filter_by(batch=batchnummer, serieår=serieår, uttrekksdato=dato, status="ferdig").all()
         
         assert len(list(kjøring)) == 1, f"Avbryter. Forutsetter nøyaktig 1 batchkjøringer av batch {batchnummer} på serieår {serieår} og dato {dato}."
 

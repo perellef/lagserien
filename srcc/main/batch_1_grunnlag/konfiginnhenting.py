@@ -50,19 +50,18 @@ class Konfiginnhenting:
         resultatavvik = årkonfig["resultatavvik"]
 
         overklubber, overbygninger = Konfiginnhenting.les_overbygningsklubber(serieår, resultatavvik, seriedata)
-        
-        seriedata.bulkslett(seriedata.hent(Overbygning).filter_by(serieår=serieår).all())        
-        seriedata.bulkslett(seriedata.hent(Overklubb).filter_by(serieår=serieår).all())        
-        seriedata.bulkinnsett(overklubber)
-        seriedata.bulkinnsett(overbygninger)
-
         klubber_unntatt_overbygning = Konfiginnhenting.les_klubber_unntatt_overbygning(serieår, resultatavvik, seriedata)
         utøvere_unntatt_overbygning = Konfiginnhenting.les_utøvere_unntatt_overbygning(serieår, resultatavvik, seriedata)
         rullestolutøvere = Konfiginnhenting.les_rullestolutøvere(serieår, resultatavvik, seriedata)
 
+        seriedata.bulkslett(seriedata.hent(Overbygning).filter_by(serieår=serieår).all())        
         seriedata.bulkslett(seriedata.hent(KlubbUnntattOverbygning).filter_by(serieår=serieår).all())
         seriedata.bulkslett(seriedata.hent(UtøverUnntattOverbygning).filter_by(serieår=serieår).all())
+        seriedata.bulkslett(seriedata.hent(Overklubb).filter_by(serieår=serieår).all())        
         seriedata.bulkslett(seriedata.hent(Rullestolutøver).filter_by(serieår=serieår).all())
+        
+        seriedata.bulkinnsett(overklubber)
+        seriedata.bulkinnsett(overbygninger)
         seriedata.bulkinnsett(klubber_unntatt_overbygning)
         seriedata.bulkinnsett(utøvere_unntatt_overbygning)
         seriedata.bulkinnsett(rullestolutøvere)

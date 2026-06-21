@@ -2,7 +2,9 @@ name: Kjør dagsrutine
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 12 * * *' 
+    - cron: '0 10 * * *'
+    - cron: '0 12 * * *'
+    - cron: '0 14 * * *'
 jobs:
   daglig-kjoring:
     runs-on: ubuntu-latest
@@ -10,6 +12,7 @@ jobs:
     env:
       LAGSERIEN_DB_PSW: ${{ secrets.LAGSERIEN_DB_PSW }}
     steps:
+
       - name: Sjekk ut repository
         uses: actions/checkout@v3
       
