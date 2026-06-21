@@ -79,7 +79,7 @@ class Poengberegner:
         if prestasjon > 3600:
             return f"{int(prestasjon)//3600},{(int(prestasjon)%3600)//60},{str((int(prestasjon)%60)//1).zfill(2)},{100*(prestasjon % 1):.0f}"
         if prestasjon > 60:
-            return f"{(int(prestasjon)%3600)//60},{str((int(prestasjon)%60)//1).zfill(2)},{100*(prestasjon % 1):.0f}"
+            return f"{(int(prestasjon)%3600)//60},{str((int(prestasjon)%60)//1).zfill(2)},{str(prestasjon).split('.')[1].ljust(2, '0')}"
         return f"{int(prestasjon)},{str(prestasjon).split('.')[1].ljust(2, '0')}"
     
     @staticmethod
@@ -115,11 +115,10 @@ class Poengberegner:
         grenser = grenseverdier[kjønn][øvelse]
 
         if poeng % 50 == 0:
-            return Poengberegner.til_lesveennlig_format(grenser[poeng//50])
+            return Poengberegner.til_lesveennlig_format(math.ceil(100*grenser[poeng//50])/100)
 
         under = grenser[poeng//50]
         over = grenser[poeng//50+1]
 
         prestasjon = math.ceil(100*(under+(over-under)*(poeng/50-poeng//50)))/100
-
         return Poengberegner.til_lesveennlig_format(prestasjon)
