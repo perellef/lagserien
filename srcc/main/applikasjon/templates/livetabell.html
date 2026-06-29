@@ -18,15 +18,15 @@
 </style>
 <div style="background-color: white;">
     <div style="display: flex; justify-content: space-between; width: 98%; margin: 5px auto; padding: 5px 0">
-        <div class="notis-scroll-knapp" style="display: flex; align-items: center; cursor: pointer">
+        <div id="notis-scroll-knapp-venstre" style="display: flex; align-items: center; cursor: pointer">
             <svg viewBox="0 0 24 24" width="1.75em" height="1.75em" aria-hidden="true" focusable="false">
-                <path fill="#7c93fd" d="M10.88 4l5.6 8-5.6 8H9l5.6-8L9 4h1.88z"></path>
+                <path fill="#7c93fd" d="M14.6 4 l-5.6 8 l5.6 8 H16.48 l-5.6 -8 L16.48 4 h-1.88z"></path>
             </svg>
         </div>
         <div id="notisbar" style="display: flex; width: 100%; font-size: 13px;;">
 
         </div>
-        <div class="notis-scroll-knapp" style=" display: flex; align-items: center; cursor: pointer">
+        <div id="notis-scroll-knapp-høyre" style=" display: flex; align-items: center; cursor: pointer">
             <svg viewBox="0 0 24 24" width="1.75em" height="1.75em" aria-hidden="true" focusable="false">
                 <path fill="#7c93fd" d="M10.88 4l5.6 8-5.6 8H9l5.6-8L9 4h1.88z"></path>
             </svg>
@@ -38,10 +38,10 @@
 
 {% block innhold %}
 <div style="display: flex; margin-top: 10px;">
-  <div id="oversikt-knapp" class="enkeltknapp" style="width: 25%; text-align: center; background-color: white; border: 1px solid #cccccc; cursor: pointer;">Oversikt</div>
-  <div id="tabell-knapp" class="enkeltknapp" style="width: 25%; text-align: center; background-color: #e4f2ff; border: 1px solid #afbfff; cursor: pointer;">Tabell</div>
-  <div id="rangeringer-knapp" class="enkeltknapp" style="width: 25%; text-align: center; background-color: white; border: 1px solid #cccccc; cursor: pointer;">Rangeringer</div>
-  <div id="kalender-knapp" class="enkeltknapp" style="width: 25%; text-align: center; background-color: white; border: 1px solid #cccccc; cursor: pointer;">Kalender</div>
+  <div id="oversikt-knapp" class="enkeltknapp" style="flex: 1 1 0; padding: 0 5px; text-align: center; background-color: white; border: 1px solid #cccccc; cursor: pointer; white-space: nowrap;">Siste nytt</div>
+  <div id="tabell-knapp" class="enkeltknapp" style="flex: 1 1 0; padding: 0 5px; text-align: center; background-color: #e4f2ff; border: 1px solid #afbfff; cursor: pointer;">Tabell</div>
+  <div id="rangeringer-knapp" class="enkeltknapp" style="flex: 1 1 0; padding: 0 5px; text-align: center; background-color: white; border: 1px solid #cccccc; cursor: pointer;">Rangeringer</div>
+  <div id="kalender-knapp" class="enkeltknapp" style="flex: 1 1 0; padding: 0 5px; text-align: center; background-color: white; border: 1px solid #cccccc; cursor: pointer;">Kalender</div>
 </div>
 {% endblock %}
 

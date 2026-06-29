@@ -13,8 +13,6 @@ from srcc.main.utils.orm._resultat import Resultat
 from datetime import datetime
 from collections import defaultdict
 
-from srcc.main.utils.varsel import Varsel
-
 import time
         
 til_øvelseskode = {

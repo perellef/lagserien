@@ -1,11 +1,4 @@
-from srcc.main.utils.orm._utøver import Utøver
-from srcc.main.utils.orm._stevne import Stevne
-from srcc.main.utils.orm._øvelse import Øvelse
 from srcc.main.utils.orm._resultat import Resultat
-from srcc.main.utils.orm._mann_serieresultat import MannSerieresultat
-from srcc.main.utils.orm._mann_serieøvelse import MannSerieøvelse
-
-from srcc.main.utils.beholdere.liste import Liste
 
 class Resultattype:
 

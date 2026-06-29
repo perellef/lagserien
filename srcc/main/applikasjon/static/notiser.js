@@ -76,14 +76,7 @@ function vis_notiser() {
             } else if (seksjon_nr > 1) {
                 notisbar.lastElementChild.style.borderRight = "1px solid #dbdbdb";
 
-                svgdiv.style.margin = "0 60px 0 60px";
-            
-                const circle = document.createElement("div")
-                circle.style.backgroundColor = "#7c93fd";
-                circle.style.width = "7px";
-                circle.style.height = "7px";
-                circle.style.borderRadius = "50%";
-                svgdiv.appendChild(circle);
+                svgdiv.style.margin = "0 20px 0 10px";
             }
             
             notisbar.appendChild(svgdiv);
@@ -419,7 +412,6 @@ const placeholdere = {
 function erstatt_placeholders(s, notisdata) {
     const container = document.createElement("div");
     container.innerHTML = s.replace(/<([\wæøåÆØÅ-]+)>/g, (match, key) => {
-        console.log(match)
         return placeholdere[match](notisdata);
     });
     return container;
@@ -442,15 +434,22 @@ function joinWithOg(arr) {
 }
 
 
-document.querySelectorAll(".notis-scroll-knapp").forEach(el =>
-    el.addEventListener("click", () => {
-        notisbar = document.getElementById("notisbar");
+document.getElementById("notis-scroll-knapp-høyre").addEventListener("click", () => {
+    notisbar = document.getElementById("notisbar");
 
-        notisbar.scrollBy({
-            left: notisbar.clientWidth,
-            behavior: "smooth"
-        });
-    })
-)
+    notisbar.scrollBy({
+        left: notisbar.clientWidth,
+        behavior: "smooth"
+    });
+})
+
+document.getElementById("notis-scroll-knapp-venstre").addEventListener("click", () => {
+    notisbar = document.getElementById("notisbar");
+
+    notisbar.scrollBy({
+        left: -notisbar.clientWidth,
+        behavior: "smooth"
+    });
+})
 
 vis_notiser()
