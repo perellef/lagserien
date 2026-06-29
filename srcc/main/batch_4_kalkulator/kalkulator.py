@@ -60,11 +60,13 @@ class Kalkulator:
                 merverdier[(klubb.klubb_id, utøver_id)] = poeng
 
             lagpotensialer[lag] = (lagpotensial[0]-poeng_obligatoriske-poeng_valgfri)
-            lagpotensial_felter[lag] = {"OBLIGATORISK": [], "VALGFRI": []}
-            for el in lagpotensial[1].obl():
-                lagpotensial_felter[lag]["OBLIGATORISK"].append((el.øvelseskode, el.utøver_id, el.poeng, None if el.resultat_id == 0 else el.resultat_id))
-            for el in lagpotensial[1].val():
-                lagpotensial_felter[lag]["VALGFRI"].append((el.øvelseskode, el.utøver_id, el.poeng, None if el.resultat_id == 0 else el.resultat_id))
+            
+            if lagpotensial[1] != None:
+                lagpotensial_felter[lag] = {"OBLIGATORISK": [], "VALGFRI": []}
+                for el in lagpotensial[1].obl():
+                    lagpotensial_felter[lag]["OBLIGATORISK"].append((el.øvelseskode, el.utøver_id, el.poeng, None if el.resultat_id == 0 else el.resultat_id))
+                for el in lagpotensial[1].val():
+                    lagpotensial_felter[lag]["VALGFRI"].append((el.øvelseskode, el.utøver_id, el.poeng, None if el.resultat_id == 0 else el.resultat_id))
 
     @classmethod
     def hent_lag_ellers_opprett(cls, seriedata, serieklasser, serieår, klubb, lagnummer, nye_lag):
@@ -132,6 +134,8 @@ class Kalkulator:
     def beregn_forbedringsmuligheter(cls, resultater, krav, serieøvelser, lagoppstilling, lagpoeng):
         nye_resultater = list(resultater)
         for res in resultater:
+            if res.øvelseskode not in dugnadsmatrise: # for kjøring fra applikasjon
+                return (0, None)
             for ny_øvelse, (a, b) in dugnadsmatrise[res.øvelseskode].items():
                 if ny_øvelse not in serieøvelser:
                     continue

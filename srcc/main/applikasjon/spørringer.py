@@ -752,6 +752,7 @@ def db_hent_rangering_juniorlag(peker, serieår, dato):
             WHERE 2026 - coalesce(fødselsår, 2026) < 20
             GROUP BY coalesce(nå.kjønn, forrige.kjønn), nå.klubb_id, klubbnavn, coalesce(nå.lagnummer, forrige.lagnummer)
             ORDER BY coalesce(sum(nå.poeng),0) DESC
+            LIMIT 100
         ;
     ''', (dato, dato, serieår, dato, dato, serieår, dato-timedelta(7), dato-timedelta(7), serieår, dato-timedelta(7), dato-timedelta(7), serieår,))
 
@@ -1703,7 +1704,7 @@ def db_hent_nye_resultater_siste_uke(peker, kjønn, dato):
     return [el[0] for el in resultat]
 
 @timeit
-def db_hent_fjernede_resultater_siste_uke(peker, kjønn, dato, klubbnavn, lagnummer):
+def db_hent_fjernede_resultater_siste_uke(peker, kjønn, serieår, dato, klubbnavn, lagnummer):
     resultat = execute(peker, f'''
         (SELECT serieresultat.resultat_id
         FROM (
@@ -1734,6 +1735,7 @@ def db_hent_fjernede_resultater_siste_uke(peker, kjønn, dato, klubbnavn, lagnum
          FROM "uttrekk.klubber" AS klubb 
             JOIN "serie.{kjønn}_lagresultater" AS lagresultat ON (
                 lagresultat.klubb_id = klubb.klubb_id
+                AND lagresultat.serieår = {{placeholder}}
                 AND lagresultat.lagnummer < {{placeholder}}
                 AND {{placeholder}} BETWEEN lagresultat.fra_og_med AND coalesce(lagresultat.til_og_med, '9999-01-01')
             )
@@ -1742,7 +1744,7 @@ def db_hent_fjernede_resultater_siste_uke(peker, kjønn, dato, klubbnavn, lagnum
          WHERE klubb.klubbnavn = {{placeholder}}
         )
         ;
-    ''', (dato-timedelta(7), dato, lagnummer, dato, klubbnavn))
+    ''', (dato-timedelta(7), dato, serieår, lagnummer, dato, klubbnavn))
 
     return [el[0] for el in resultat]
 
@@ -1820,7 +1822,7 @@ def db_hent_notiser(peker, dato):
         FROM "nettside.notiser"
         WHERE uttrekksdato >= {placeholder}
         ORDER BY uttrekksdato DESC, prioritet
-    ''', (dato-timedelta(100),))
+    ''', (dato-timedelta(7),))
 
 @timeit
 def db_hent_notiselementer(peker, dato):

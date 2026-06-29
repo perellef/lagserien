@@ -1,7 +1,32 @@
 
-body {
-    background-color: #f3f3f3;;
+@media (max-width: 850px) {
+  #notiser-høyremarg {
+    display: none;
+  }
 }
+
+@media (max-width: 550px) {
+  #notiser-liste {
+    display: none;
+  }
+}
+
+@media (max-width: 920px) {
+    .notistabell col:nth-child(7),
+    .notistabell th:nth-child(6),
+    .notistabell td:nth-child(7) {
+      display: none;
+    }
+}
+
+@media (max-width: 700px) {
+    .notistabell col:nth-child(8),
+    .notistabell th:nth-child(7),
+    .notistabell td:nth-child(8) {
+      display: none;
+    }
+}
+
 
 @media (max-width: 740px) {
     .divisjonstabell col:nth-child(7),

@@ -3,7 +3,7 @@ from .deklarativ_base import DeklarativBase
 from sqlalchemy import Column, Integer, String, ForeignKey, PrimaryKeyConstraint, CheckConstraint
 from sqlalchemy.orm import relationship
 
-class Notiseleent(DeklarativBase):
+class Notiselement(DeklarativBase):
 
     __tablename__ = "nettside.notiselementer"
     
@@ -15,10 +15,11 @@ class Notiseleent(DeklarativBase):
     felt3 = Column(String, nullable=True)
     felt4 = Column(String, nullable=True)
     felt5 = Column(String, nullable=True)
+    felt6 = Column(String, nullable=True)
 
     klubb = relationship('Notis')
     
     __table_args__ = (
         PrimaryKeyConstraint('notis_id', 'elementtype', 'prioritet'),
-        CheckConstraint("elementtype in ('klubb','utøver','stevne','kontroll')"),
+        CheckConstraint("elementtype in ('klubb','utøver','lag','stevne','kontroll','oppdatering-info','tabell','tabell-rad','tabell-rad-lag','ideallag-rad','juniorlag-rad','allroundere-rad','nykommere-rad','nøkkelutøvere-rad')"),
     )

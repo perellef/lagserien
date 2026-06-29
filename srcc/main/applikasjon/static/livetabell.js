@@ -1,36 +1,3 @@
-
-document.getElementById('divisjon-venstre').addEventListener('click', function() {
-    divisjon = document.getElementById('livetabell-divisjon');
-    divisjon.textContent = ((divisjon.textContent + 1) % 3) + 1
-    vis_lagplasseringer()
-});
-
-document.getElementById('divisjon-høyre').addEventListener('click', function() {
-    divisjon = document.getElementById('livetabell-divisjon');
-    divisjon.textContent = (divisjon.textContent % 3) + 1
-    vis_lagplasseringer()
-});
-
-document.getElementById('kjønn-venstre').addEventListener('click', function() {
-    divisjon = document.getElementById('livetabell-kjønn');
-    if (divisjon.textContent == "menn") {
-        divisjon.textContent = "kvinner"
-    } else {
-        divisjon.textContent = "menn"
-    }
-    vis_lagplasseringer()
-});
-
-document.getElementById('kjønn-høyre').addEventListener('click', function() {
-    divisjon = document.getElementById('livetabell-kjønn');
-    if (divisjon.textContent == "menn") {
-        divisjon.textContent = "kvinner"
-    } else {
-        divisjon.textContent = "menn"
-    }
-    vis_lagplasseringer()
-});
-
 function vis_lagplasseringer() {
     kjønn = document.getElementById('livetabell-kjønn').textContent;
     divisjon = document.getElementById('livetabell-divisjon').textContent;
@@ -171,22 +138,6 @@ const colNoteringer = document.getElementById('col-noteringer');
 
 // Cache initial widths
 const initialColWidth = colNoteringer ? getComputedStyle(colNoteringer).width : '100px';
-
-visninger = ["oversikt", "tabell", "rangeringer", "kalender"];
-
-visninger.forEach(visning => {
-    document.getElementById(visning + "-knapp").addEventListener('click', function() {
-        visninger.forEach(visning2 => {
-            document.getElementById(visning2 + "-knapp").style.backgroundColor = "white";
-            document.getElementById(visning2 + "-knapp").style.borderColor = "#cccccc";
-            document.getElementById(visning2).style.display = "none";
-        });
-
-        this.style.backgroundColor = "#e4f2ff";
-        this.style.borderColor = "#afbfff";
-        document.getElementById(visning).style.display = "block";
-    });
-});
 
 vis_lagplasseringer();
 sett_inn_kretsalternativer()

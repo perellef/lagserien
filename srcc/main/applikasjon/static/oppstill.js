@@ -92,7 +92,7 @@ function erIkkeØvelse(øvelseValue) {
 }
 
 function erUkjentKlubb(klubbValue) {
-    return !(cached_data.klubber.includes(klubbValue))
+    return !cached_data.klubber.some(pair => pair[0] === klubbValue)
 }
 
 function erIkkeUtøverformat(utøverValue) {

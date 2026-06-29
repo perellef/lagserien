@@ -23,7 +23,6 @@ function autocomplete(input, options) {
     
         options.forEach(function(option) {
             index = option[0].toUpperCase().indexOf(val.toUpperCase())
-            console.log(option[0]);
             if (index == 0) {
                 listContainer.appendChild(createItem(option[0], val, index));
             }

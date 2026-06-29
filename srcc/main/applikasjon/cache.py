@@ -1,7 +1,7 @@
 import time
 from datetime import datetime, timezone
 
-from srcc.main.applikasjon.spørringer import db_hent_serier, db_hent_sist_kjørt, db_hent_seriens_øvelser, db_hent_klubber, db_hent_utøvere, db_hent_lagplasseringer, db_hent_rangering_allroundere, db_hent_rangering_nøkkelutøvere, db_hent_rangering_nykommere, db_hent_rangering_ideallag, db_hent_rangering_kommersterke, db_hent_rangering_juniorlag, db_hent_rangering_vekstklubber, db_hent_rangering_storklubber, db_hent_rangering_største_krets, db_hent_maksimalt_antall_noteringer, db_hent_oppstillingskrav, db_hent_9_nyeste_artikler, db_hent_forsinkede_stevner, db_hent_andel_gjennomførte_stevner, db_hent_andel_rapporterte_stevner, db_hent_stevnekalender, db_hent_kretser
+from srcc.main.applikasjon.spørringer import *
 from sqlalchemy.exc import OperationalError
 from functools import cache
 
@@ -50,6 +50,7 @@ class Cache:
         subprocess.run(['python', 'bin/oppdater_offisielle_excelark.py', f"{self.__serieår}"])
 
     def oppdater_cache(self, uttrekksdato):
+        s = time.time()
         with self.__seriedata.connect() as peker:
             self.data = {
                 "serieår": self.__serieår,
@@ -57,6 +58,7 @@ class Cache:
                 "klubber": db_hent_klubber(peker),
                 "utøvere": db_hent_utøvere(peker),
                 "serier": db_hent_serier(peker),
+                "notiser": self.hent_notiser(peker, uttrekksdato),
                 "livetabell": {
                     "menn": {
                         1: db_hent_lagplasseringer(peker, self.__serieår, uttrekksdato, "menn", 1),
@@ -105,9 +107,34 @@ class Cache:
                 "artikler": db_hent_9_nyeste_artikler(peker),
                 "sist_oppdatert": db_hent_sist_kjørt(peker, self.__serieår),
                 "klubblogoer": self.finn_klubblogoer(),
-                "kretser": db_hent_kretser(peker, uttrekksdato)
+                "kretser": db_hent_kretser(peker, uttrekksdato),
             }
+            
+        print(f"Data lastet inn ({round(time.time()-s, 2)}s)")
 
+    def hent_notiser(self, peker, uttrekksdato):
+        notiselementer = db_hent_notiselementer(peker, uttrekksdato)
+
+        notiser = []
+        for notis in db_hent_notiser(peker, uttrekksdato):
+            notiser.append({
+                "generert": notis[2],
+                "kategori": notis[4],
+                "notistype": notis[5],
+                "undertype": notis[6],
+                "elementer": {}
+            })
+
+            for e in notiselementer:
+                if e[0] != notis[0]:
+                    continue
+                
+                if e[1] not in notiser[-1]["elementer"]:
+                    notiser[-1]["elementer"][e[1]] = []
+                notiser[-1]["elementer"][e[1]].append(e[3:])
+
+        return notiser    
+            
     @cache
     def finn_klubblogoer(self):
         return [int(img.removesuffix(".png")) for img in os.listdir(ASSETS_DIR + "/klubblogo/")]

@@ -14,11 +14,11 @@ from srcc.main.applikasjon.routes.bestill_kjøring import bestill_kjøring
 from srcc.main.applikasjon.routes.produser_exceloppsett import produser_exceloppsett
 from srcc.main.applikasjon.routes.forside import forside
 from srcc.main.applikasjon.routes.nyhetsarkiv import nyheter
-from srcc.main.applikasjon.routes.om_serien import om_serien
 from srcc.main.applikasjon.routes.livetabell import livetabell
 from srcc.main.applikasjon.routes.tidligere_år import tidligere_år
-from srcc.main.applikasjon.routes.utøver import utøver
 from srcc.main.applikasjon.routes.verktøy import verktøy
+from srcc.main.applikasjon.routes.om_serien import om_serien
+from srcc.main.applikasjon.routes.utøver import utøver
 from srcc.main.applikasjon.routes.artikkel import artikkel
 from srcc.main.applikasjon.routes.klubb import klubb
 from srcc.main.applikasjon.routes.lag import lag

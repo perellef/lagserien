@@ -1,18 +1,13 @@
-name: Kjør dagsrutine
+name: Kjør notisbatch
 on:
   workflow_dispatch:
-  schedule:
-    - cron: '0 10 * * *'
-    - cron: '0 12 * * *'
-    - cron: '0 14 * * *'
 jobs:
-  daglig-kjoring:
+  kjor-notisbatch:
     runs-on: ubuntu-latest
-    timeout-minutes: 90
+    timeout-minutes: 10
     env:
       LAGSERIEN_DB_PSW: ${{ secrets.LAGSERIEN_DB_PSW }}
     steps:
-
       - name: Sjekk ut repository
         uses: actions/checkout@v3
       
@@ -26,14 +21,5 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Kjører serieuttrekk
-        run: python bin/kjør_serieuttrekk.py ${{ secrets.LAGSERIEN_SERIEAR }}
-        
-      - name: Kjører serietildeling
-        run: python bin/kjør_serieutdeling.py ${{ secrets.LAGSERIEN_SERIEAR }}
-        
-      - name: Kjører seriekalkulator
-        run: python bin/kjør_seriekalkulator.py ${{ secrets.LAGSERIEN_SERIEAR }}
-        
       - name: Kjører notisbatch
         run: python bin/kjør_notisbatch.py ${{ secrets.LAGSERIEN_SERIEAR }}

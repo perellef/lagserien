@@ -16,7 +16,7 @@ def lag(kjonn, lagnavn):
 
     with seriedata.connect() as peker:
         nye_resultater = set(db_hent_nye_resultater_siste_uke(peker, kjonn, i_dag))
-        fjernede_resultater = set(db_hent_fjernede_resultater_siste_uke(peker, kjonn, i_dag, klubbnavn, lagnummer))
+        fjernede_resultater = set(db_hent_fjernede_resultater_siste_uke(peker, kjonn, serieår, i_dag, klubbnavn, lagnummer))
 
         laginfo = db_hent_laginfo(peker, kjonn, klubbnavn, lagnummer, serieår, i_dag)
         klubbkrets = db_hent_klubbkrets(peker, klubbnavn, i_dag)

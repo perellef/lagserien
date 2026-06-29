@@ -192,7 +192,7 @@ function erTomKlubb(klubbValue) {
 }
 
 function erUkjentKlubb(klubbValue) {
-    return !(cached_data.klubber.includes(klubbValue))
+    return !cached_data.klubber.some(pair => pair[0] === klubbValue)
 }
 
 function finn_feilmelding_til_input(serieårValue, datoalternativ, datoValue, klubbValue) {

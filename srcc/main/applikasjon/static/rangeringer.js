@@ -5,11 +5,23 @@ function removeSuffix(str, suffix) {
   return str.endsWith(suffix) ? str.slice(0, -suffix.length) : str;
 }
 
-function vis_data(data, tbody_id, utoverhrefer, laghrefer, klubbhrefer, forbedringer, mothoyre) {
-    tbody = document.getElementById(tbody_id);
+const rangeringsinfo = {
+    "allroundere": ["utøvere", [2], [], [], [1,6], [0,1,5,6]],
+    "nøkkelutøvere": ["utøvere", [2], [8], [], [1,6], [0,1,5,6]],
+    "nykommere": ["utøvere", [2], [], [], [1], [0,1,5,6]],
+    "ideallag": ["lag", [], [3], [], [1,6], [0,1,5,6]],
+    "kommersterke": ["lag", [], [3], [], [1,6], [0,1,5,6]],
+    "juniorlag": ["lag", [], [3], [], [1,5], [0,1,4,5]],
+    "vekstklubber": ["klubber", [], [3], [], [1], [0,1]],
+    "storklubber": ["klubber", [], [], [3], [1,5], [0,1,4,5]],
+    "største-krets": ["kretser", [], [], [], [1], [0,1]],
+}
 
-    forrige_poeng = 0
-    forrige_indeks = 0
+function vis_data(tbody, data, tittel) {
+    const [kategori, utoverhrefer, laghrefer, klubbhrefer, forbedringer, mothoyre] = rangeringsinfo[tittel];
+
+    forrige_poeng = -1;
+    forrige_indeks = -1;
 
     data.forEach(function(rad, i) {
         var tr = document.createElement('tr');
@@ -110,29 +122,7 @@ function vis_data(data, tbody_id, utoverhrefer, laghrefer, klubbhrefer, forbedri
     });
 }
 
-alle_utmerkelser = [
-    ["utøvere", "allroundere", [2], [], [], [1,6], [0,1,5,6]],
-    ["utøvere", "nøkkelutøvere", [2], [8], [], [1,6], [0,1,5,6]],
-    ["utøvere", "nykommere", [2], [], [], [1], [0,1,5,6]],
-    ["lag", "ideallag", [], [3], [], [1,6], [0,1,5,6]],
-    ["lag", "kommersterke", [], [3], [], [1,6], [0,1,5,6]],
-    ["lag", "juniorlag", [], [3], [], [1,5], [0,1,4,5]],
-    ["klubber", "vekstklubber", [], [3], [], [1], [0,1]],
-    ["klubber", "storklubber", [], [], [3], [1,5], [0,1,4,5]],
-    ["kretser", "største-krets", [], [], [], [1], [0,1]]
-]
-
-alle_utmerkelser.forEach(function(verdi) {
-    const [kategori, tittel, utoverhrefer, laghrefer, klubbhrefer, forbedringer, mothoyre] = verdi;
-
-    vis_data(cached_data.rangeringer[kategori][tittel], tittel, utoverhrefer, laghrefer, klubbhrefer, forbedringer, mothoyre);
-
-    document.getElementById(tittel + "-knapp").addEventListener('click', function() {
-        document.querySelectorAll(".selected").forEach(knapp => {
-            document.getElementById(removeSuffix(knapp.id, "-knapp") + "-visning").style.display = "none";
-            knapp.classList.remove("selected");
-        });
-        document.getElementById(tittel + "-visning").style.display = "block";
-        document.getElementById(tittel + "-knapp").classList.add("selected");
-    });
+Object.entries(rangeringsinfo).forEach(([tittel, verdier]) => {
+    const rangering = cached_data.rangeringer[rangeringsinfo[tittel][0]][tittel];
+    vis_data(document.getElementById(tittel), rangering, tittel);
 });

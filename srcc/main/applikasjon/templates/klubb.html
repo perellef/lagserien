@@ -110,7 +110,6 @@
         const children = Array.from(container.children);
         const firstRowBottom = children[2].offsetTop;
 
-        children.forEach(child => console.log(child.offsetTop))
         const isSplit = children.some(child => child.offsetTop > firstRowBottom);
 
         if (isSplit) {
