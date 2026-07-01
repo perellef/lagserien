@@ -10,10 +10,10 @@ import re
 def livetabell():
     oslo = pytz.timezone("Europe/Oslo")
 
-    if cache.data["sist_oppdatert"] is None:
+    if cache.sist_oppdatert["gjennomkjøring"] is None:
         sist_oppdatert = ""
     else:
-        dt_utc = datetime.strptime(cache.data["sist_oppdatert"], "%Y-%m-%d %H:%M:%S.%f")
+        dt_utc = datetime.strptime(cache.sist_oppdatert["gjennomkjøring"], "%Y-%m-%d %H:%M:%S.%f")
         dt_oslo = dt_utc.astimezone(oslo)    
         sist_oppdatert = dt_oslo.strftime("%d.%m.%Y kl. %H:%M")
 

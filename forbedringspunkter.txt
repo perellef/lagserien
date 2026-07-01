@@ -4,28 +4,20 @@ Mulige forbedringspunkter
 Nettside (tidsvekt):
 -   Lagserien, Veteranserien (andre regler?), Juniorserien (støtte for å bytte over til en annen side, kanskje liknende språk på andre nettsider?)
 -   (4) Overordnet klubbside, med klubbside for 2026, 2025, 2024, etc under seg
--   (?) Finne ut av hvordan håndtere artikler ...
--   (3) Fullføre poengberegner-siden.
--   (4) Legge inn i klubbsiden
+-   (6) Legge inn i klubbsiden
         - utøvere
         - samarbeidsklubber i klubbsiden
+- x (?) Finne ut av hvordan håndtere artikler ...
+-   (2) Fullføre poengberegner-siden.
 -   (5) Legge inn i lagsiden:
         - lagpotensial med felter
         - utøvere merverdier++
-        - lagforbedringer analyse (verktøy)
--   (8) Legge inn notiser
--   (6) Lage statistikkside
--   (5) Legge til utøvere i Klubbsiden
+        - alle verktøy (og fjerne verktøy-siden)
+- v (8) Legge inn notiser
+- x (6) Lage statistikkside
 - / (10) Lage adminside:
-    - 
-    -
-    -
--   (8) Lage tidligere år-side:
-    -
-    -
-    -
-    - 
--   (?) Lage stevneside der man kan se alle resultatene til et stevne. Kanskje best å bare videresende til statistikken? - tror jeg ikke går
+-   (7) Lage tidligere år-side:
+-   (5) Lage stevneside der man kan se alle resultatene til et stevne. Kanskje best å bare videresende til statistikken? - tror jeg ikke går
 
 Bugliste:
 - Vis klubber i 1. og 2. divisjon som ikke har poeng enda
@@ -41,7 +33,6 @@ Skjermtilpasning:
 Senere:
 - I oversikten:
     - Legge til tabell basert på potensialer
-    - Nye ledere i rangeringer
     - Nye stevner
 - I lagvisning ha en "? Hvordan settes lagene opp" som man kan trykke på for å få info
 - start_nettside.py med serieår og uttrekksdato, og så kan jeg se hvordan serien xx så ut ved dato xx

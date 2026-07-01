@@ -1,5 +1,4 @@
 import time
-from datetime import datetime, timezone
 
 from srcc.main.applikasjon.spørringer import *
 from sqlalchemy.exc import OperationalError
@@ -12,33 +11,42 @@ ASSETS_DIR = "srcc/main/applikasjon/static/assets"
 
 class Cache:
     
-    def __init__(self, seriedata, serieår):
+    def __init__(self, seriedata, serieår, f_uttrekksdato):
         self.__seriedata = seriedata
         self.__serieår = serieår
+        self.__f_uttrekksdato = f_uttrekksdato
 
-        self.data = {"sist_oppdatert": None}
-        self.exceltabell = None # TODO: legge til måte å automatisk laste inn dette på.
+        self.data = {}
+        self.sist_oppdatert = {"gjennomkjøring": None, "notiser": None}
+        self.exceltabell = None
 
     def lytt_etter_og_oppdater_cache(self):
         print("Cacher seriedata")
-        self.oppdater_cache(datetime.now(timezone.utc).date())
+        self.oppdater_cache(self.__f_uttrekksdato())
         self.oppdater_excelfiler()
         while True:
             try:
-                if self.kan_oppdateres():
+                if self.er_usynkronisert("gjennomkjøring", lambda x: db_hent_siste_gjennomkjøring(x, self.__serieår)):
                     print("Oppdaterer cache")
-                    self.oppdater_cache(datetime.now(timezone.utc).date())
+                    self.oppdater_cache(self.__f_uttrekksdato())
                     self.oppdater_excelfiler()
+                    with self.__seriedata.connect() as peker:
+                        self.sist_oppdatert["gjennomkjøring"] = db_hent_siste_gjennomkjøring(peker, self.__serieår)
+                if self.er_usynkronisert("notiser", lambda x: db_hent_siste_notiskjøring(x, self.__serieår)):
+                    print("Oppdaterer notiser")
+                    with self.__seriedata.connect() as peker:
+                        self.data["notiser"] = self.hent_notiser(peker)
+                        self.sist_oppdatert["notiser"] = db_hent_siste_notiskjøring(peker, self.__serieår)
             except OperationalError as e:
                 print(e)
                 time.sleep(300)
             time.sleep(10)
 
-    def kan_oppdateres(self):
-        siste_oppdatering = self.data["sist_oppdatert"]
+    def er_usynkronisert(self, k, f):
+        siste_oppdatering = self.sist_oppdatert[k]
         nyeste_kjøring = None
         with self.__seriedata.connect() as peker:
-            nyeste_kjøring = db_hent_sist_kjørt(peker, self.__serieår)
+            nyeste_kjøring = f(peker)
 
         if nyeste_kjøring is None:
             return False
@@ -58,7 +66,7 @@ class Cache:
                 "klubber": db_hent_klubber(peker),
                 "utøvere": db_hent_utøvere(peker),
                 "serier": db_hent_serier(peker),
-                "notiser": self.hent_notiser(peker, uttrekksdato),
+                "notiser": self.hent_notiser(peker),
                 "livetabell": {
                     "menn": {
                         1: db_hent_lagplasseringer(peker, self.__serieår, uttrekksdato, "menn", 1),
@@ -105,18 +113,17 @@ class Cache:
                 "stevnekalender": db_hent_stevnekalender(peker, self.__serieår, uttrekksdato),
                 "forsinkelser": db_hent_forsinkede_stevner(peker, uttrekksdato),
                 "artikler": db_hent_9_nyeste_artikler(peker),
-                "sist_oppdatert": db_hent_sist_kjørt(peker, self.__serieår),
                 "klubblogoer": self.finn_klubblogoer(),
                 "kretser": db_hent_kretser(peker, uttrekksdato),
             }
             
         print(f"Data lastet inn ({round(time.time()-s, 2)}s)")
 
-    def hent_notiser(self, peker, uttrekksdato):
-        notiselementer = db_hent_notiselementer(peker, uttrekksdato)
+    def hent_notiser(self, peker):
+        notiselementer = db_hent_notiselementer(peker, self.__serieår, self.__f_uttrekksdato())
 
         notiser = []
-        for notis in db_hent_notiser(peker, uttrekksdato):
+        for notis in db_hent_notiser(peker, self.__serieår, self.__f_uttrekksdato()):
             notiser.append({
                 "generert": notis[2],
                 "kategori": notis[4],

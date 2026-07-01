@@ -96,11 +96,25 @@ def db_hent_resultatbytter(peker):
     ''', ())
 
 @timeit
-def db_hent_sist_kjørt(peker, serieår):
+def db_hent_siste_gjennomkjøring(peker, serieår):
     resultat = execute(peker, '''
         SELECT CAST(slutt AS text)
         FROM "metadata.batchkjøringer"
         WHERE serieår = {placeholder} and batch = 4
+        ORDER BY uttrekksdato DESC
+        LIMIT 1
+        ;
+    ''', (serieår,))
+    if len(resultat) == 0:
+        return None
+    return resultat[0][0]
+
+@timeit
+def db_hent_siste_notiskjøring(peker, serieår):
+    resultat = execute(peker, '''
+        SELECT CAST(slutt AS text)
+        FROM "metadata.batchkjøringer"
+        WHERE serieår = {placeholder} and batch = 6
         ORDER BY uttrekksdato DESC
         LIMIT 1
         ;
@@ -1816,23 +1830,25 @@ def db_hent_stevnekalender(peker, serieår, uttrekksdato):
     return grupperte_stevner
 
 @timeit
-def db_hent_notiser(peker, dato):
+def db_hent_notiser(peker, serieår, dato):
     return execute(peker, '''
         SELECT *
         FROM "nettside.notiser"
-        WHERE uttrekksdato >= {placeholder}
+        WHERE serieår = {placeholder}
+            AND uttrekksdato BETWEEN {placeholder} AND {placeholder}
         ORDER BY uttrekksdato DESC, prioritet
-    ''', (dato-timedelta(7),))
+    ''', (serieår, dato-timedelta(7), dato))
 
 @timeit
-def db_hent_notiselementer(peker, dato):
+def db_hent_notiselementer(peker, serieår, dato):
     return execute(peker, '''
         SELECT element.*
         FROM "nettside.notiselementer" AS element
             JOIN "nettside.notiser" AS notis ON (element.notis_id = notis.notis_id)
-        WHERE uttrekksdato >= {placeholder}
+        WHERE serieår = {placeholder}
+            AND uttrekksdato BETWEEN {placeholder} AND {placeholder}
         ORDER BY element.prioritet
-    ''', (dato-timedelta(100),))
+    ''', (serieår, dato-timedelta(7), dato))
 
 @timeit
 def db_statistikk_hent_antall_resultater(peker):

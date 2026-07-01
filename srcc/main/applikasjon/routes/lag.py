@@ -1,13 +1,13 @@
 from flask import render_template, abort 
 
 from srcc.main.applikasjon.kalkulatorformidler import Kalkulatorformidler 
-from srcc.main.applikasjon.fellesinfo import cache, seriedata, serieår
+from srcc.main.applikasjon.fellesinfo import cache, seriedata, serieår, f_uttrekksdato
 from srcc.main.applikasjon.spørringer import db_hent_klubb_id, db_hent_laginfo, db_hent_klubbkrets, db_hent_lagresultater, db_hent_nye_resultater_siste_uke, db_hent_fjernede_resultater_siste_uke, db_hent_noteringer_til_lag, db_hent_ranking, db_hent_ranking_i_krets, db_hent_rekordranking, db_hent_sluttplassering, db_hent_resultatplasseringer_til_klubb, db_hent_lagplassering, db_hent_potensielle_lagresultater
 
 from datetime import timedelta, datetime, timezone
 
 def lag(kjonn, lagnavn):
-    i_dag = datetime.now(timezone.utc).date()
+    i_dag = f_uttrekksdato()
     
     klubbnavn, lagnummer = utled_klubb_og_lagnummer(lagnavn)
 
