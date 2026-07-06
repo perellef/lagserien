@@ -19,4 +19,4 @@ Batch 2, 3, 4 kan kjøres sekvensielt med `kjør_rutine.py`.
 - `kjør_isolert_gjennomkjøring.py` er nyttig hvis man ønsker en full kjøring som ikke påvirker produksjonsdataene.
 - `oppdater_offisielle_excelark.py` er et skript som oppdaterer excelarkene liggende under `srcc/applikasjon/static/assets/excelfiler/serieoppsett_yyyy-mm-dd.zip`.
 - `kjør_features.py` brukes for å kjøre featurefilene.
-- `kjør_to_og_sammenlikn.py` er et sammenlikningsskript for å se effekten av en endring togglet med en feature-toggle.
+- `testkjør_batch.py` starter en kjøring som ikke skriver til databasen

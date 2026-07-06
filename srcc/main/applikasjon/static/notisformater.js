@@ -168,7 +168,7 @@ var notisformater = {
         },
         "overtar-ett-lag-skyver-ut": {
             "tittel": [
-                "<ett-to-eller-flere-lag> inntar opprykksplass, mens <lag-2> skyves ut",
+                "<lag> inntar opprykksplass, mens <lag-2> skyves ut",
             ],
             "innhold": [
                 "<utsnitt-tabell>"

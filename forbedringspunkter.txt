@@ -10,7 +10,8 @@ Nettside (tidsvekt):
 - x (?) Finne ut av hvordan håndtere artikler ...
 -   (2) Fullføre poengberegner-siden.
 -   (5) Legge inn i lagsiden:
-        - lagpotensial med felter
+        - fjerne laginfo siden (legge generell laginfo i header)
+  v     - lagpotensial med felter
         - utøvere merverdier++
         - alle verktøy (og fjerne verktøy-siden)
 - v (8) Legge inn notiser
@@ -34,23 +35,12 @@ Senere:
 - I oversikten:
     - Legge til tabell basert på potensialer
     - Nye stevner
+- notiser: vise oppdatering hvis ingen endringer også?
 - I lagvisning ha en "? Hvordan settes lagene opp" som man kan trykke på for å få info
-- start_nettside.py med serieår og uttrekksdato, og så kan jeg se hvordan serien xx så ut ved dato xx
 - effektivisere trege spørringer, indexering av uttrekksresultater (resultat_id) hadde stor effekt, det har sikkert også indeksering av lagresultater og serieresultater
 - istedenfor å oversette all cache til cached_data, kun det som brukes. Kan dette være en grunn til at nettsiden laster litt tregt?
-- fjerne featuretoggles - brukes ikke
-- BUG - autocomplete på verktøyene fungerer ikke
 - få inn verktøy-delen direkte inn i lagvisning, og så fjerne verktøy-delen
 - ikke ha alle utøvere tilgjengelig i js, heller laste inn i ved autocomplete i meny
-- statistikksiden, alt per år:
-    - Resultater: antall resultater, antall tekniske, antall løps, antall fjernede, antall overførte samarbeidsklubber
-    - Utøvere: antall aktive utøvere, menn/gutter, kvinner/jenter, antall seniorer, antall veteraner, antall utøvere unntatt overbygning
-    - Klubber: Antall klubber (aktive), antall overbygningsklubber, antall moderklubber, snitt resultater per klubb, snitt aktive utøvere per klubb
-    - Stevner: Antall stevner, innendørsstevner, utendørsstevner, antall stevner > 500 resultater, antall stevner > 100 resultater, snitt utøver per stevne, snitt resultat per stevne, snitt deltakende klubber per stevne, snitt øvelser per stevne
-    - Rapportering: Gjennomsnittlig forsinkelse innrapportering, andel stevner innrapportert innen 1 uke (%), andel stevner innraportert innen 2 uker, andel stevner innrapportert innen 1 måned
-    - Korreksjoner: Antall fjernede resultater, andel i %, antall manglende resultater, andel i %, antall rettede, andel i (%), tid mellom korreksjon og stevnedato, andel resultater med korreksjon av utøver, andel resultater med korreksjon av øvelse, andel resultater med korreksjon av resultat
-    - Øvelse: deltakelse på 60m, deltakelse på 100m, deltakelse på 200m, ... , pr utøver, pr resultat
-    - lag: antall lag, antall herrelag, antall kvinnelag, antall førstelag, antall andrelag, antall tredjelag, gjennomsnittlig poeng, gj obligatoriske poeng, gj valpoeng
 - rangeringsvisning på mobil (burde fjerne visse felter)
 - rar padding til høyre på alternativene til søkefelt
 - BUG: liten skjerm skal kun vise hamburger-knappen, ikke alle menyvalgene

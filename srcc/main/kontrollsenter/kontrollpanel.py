@@ -49,6 +49,17 @@ class Kontrollpanel:
         return sorted(datoer)
 
     @staticmethod
+    def testkjør(batch, serieår, uttrekksdato):
+        seriedata = Seriedata(DATABASE)
+        seriedata.initier()
+        seriedata.åpne()
+
+        print(datetime.now(timezone.utc), f"[Batch {batch.batchnummer}] Kjører testkjøring.")
+        batch.kjør(seriedata, serieår, uttrekksdato)
+        seriedata.rollback()
+        seriedata.lukk()
+
+    @staticmethod
     def kjør(batch, serieår, uttrekksdato):
         
         seriedata = Seriedata(DATABASE)
