@@ -34,7 +34,7 @@ class Kalkuleringsbesparelse:
     def finn_serieårets_siste_kalkulatorkjøring(seriedata, serieår):
         batchkjøringer = seriedata.hent(Batchkjøring).all()
 
-        er_årets_kalkulatorkjøring = lambda kjøring: kjøring.serieår==serieår and kjøring.batch == 4
+        er_årets_kalkulatorkjøring = lambda kjøring: kjøring.serieår==serieår and kjøring.batch == 4 and kjøring.status == "ferdig"
         
         tidligere_kjøringer = [kjøring.uttrekksdato for kjøring in batchkjøringer if er_årets_kalkulatorkjøring(kjøring)]
         
