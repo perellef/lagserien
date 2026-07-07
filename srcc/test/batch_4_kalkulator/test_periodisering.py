@@ -13,14 +13,12 @@ from srcc.main.utils.orm._mann_utøver_merverdi import MannUtøverMerverdi
 from srcc.main.batch_4_kalkulator.periodisering import Periodisering
 from srcc.main.batch_4_kalkulator.kalkulatorbatch import Kalkulatorbatch
 
-from srcc.main.kontrollsenter.tilganger import Tilganger
-
 from datetime import date
 
 # periodiser_lagresultater
 def test_periodiser_lagresultater_starter_ny_periode_hvis_lagresultat_ikke_finnes():
 
-    seriedata = (Testdatabygger(Tilganger.KALKULATOR)
+    seriedata = (Testdatabygger()
             .med(MannLagresultat, [])
             .bygg())
 
@@ -37,7 +35,7 @@ def test_periodiser_lagresultater_beholder_periode_hvis_lagresultat_finnes():
 
     lagresultat = et_mann_lagresultat(serieår=2025, fra_og_med=date(2023,1,1), til_og_med=None, oppstillingstype="VALGFRI")
 
-    seriedata = (Testdatabygger(Tilganger.KALKULATOR)
+    seriedata = (Testdatabygger()
             .med(MannSerieresultat, [et_serieresultat(fra_og_med=date(2023,1,1), til_og_med=None, poeng=100)])
             .med(MannLagresultat, [lagresultat])
             .bygg())
@@ -53,7 +51,7 @@ def test_periodiser_lagresultater_avslutter_gammel_og_starter_ny_periode_hvis_la
  
     lagresultat = et_mann_lagresultat(serieår=2025, fra_og_med=date(2023,1,1), til_og_med=None, oppstillingstype="VALGFRI")
 
-    seriedata = (Testdatabygger(Tilganger.KALKULATOR)
+    seriedata = (Testdatabygger()
             .med(MannSerieresultat, [et_serieresultat(fra_og_med=date(2023,1,1), til_og_med=None, poeng=100)])
             .med(MannLagresultat, [lagresultat])
             .bygg())
@@ -74,7 +72,7 @@ def test_periodiser_lagresultater_avslutter_gammel_og_starter_ny_periode_hvis_la
  
     lagresultat = et_mann_lagresultat(serieår=2025, fra_og_med=date(2023,1,1), til_og_med=None, oppstillingstype="VALGFRI")
 
-    seriedata = (Testdatabygger(Tilganger.KALKULATOR)
+    seriedata = (Testdatabygger()
             .med(MannSerieresultat, [et_serieresultat(fra_og_med=date(2023,1,1), til_og_med=None, poeng=200)])
             .med(MannLagresultat, [lagresultat])
             .bygg())
@@ -94,7 +92,7 @@ def test_periodiser_lagresultater_avslutter_gammel_og_starter_ny_periode_hvis_la
 def test_periodiser_lagresultater_avkutter_ikke_lagresultater_fra_andre_serieår():
     lagresultat = et_mann_lagresultat(serieår=2024, fra_og_med=date(2023,1,1), til_og_med=None, oppstillingstype="VALGFRI")
 
-    seriedata = (Testdatabygger(Tilganger.KALKULATOR)
+    seriedata = (Testdatabygger()
             .med(MannSerieresultat, [et_serieresultat(fra_og_med=date(2023,1,1), til_og_med=None)])
             .med(MannLagresultat, [lagresultat])
             .bygg())
@@ -109,7 +107,7 @@ def test_periodiser_lagresultater_avkutter_ikke_lagresultater_fra_andre_serieår
 # periodiser_laginfo
 def test_periodiser_laginfo_starter_ny_periode_hvis_laginfo_ikke_finnes():
 
-    seriedata = (Testdatabygger(Tilganger.KALKULATOR)
+    seriedata = (Testdatabygger()
             .med(MannLaginfo, [])
             .bygg())
 
@@ -144,7 +142,7 @@ def test_periodiser_laginfo_beholder_periode_hvis_laginfo_finnes():
         antall_deltakere=10,
     )
 
-    seriedata = (Testdatabygger(Tilganger.KALKULATOR)
+    seriedata = (Testdatabygger()
             .med(MannLaginfo, [laginfo])
             .bygg())
 
@@ -168,7 +166,7 @@ def test_periodiser_laginfo_avslutter_gammel_og_starter_ny_periode_hvis_laginfo_
         antall_deltakere=10,
     )
 
-    seriedata = (Testdatabygger(Tilganger.KALKULATOR)
+    seriedata = (Testdatabygger()
             .med(MannLaginfo, [laginfo])
             .bygg())
 
@@ -197,7 +195,7 @@ def test_periodiser_laginfo_avkutter_ikke_laginfo_fra_andre_serieår():
         antall_deltakere=10,
     )
 
-    seriedata = (Testdatabygger(Tilganger.KALKULATOR)
+    seriedata = (Testdatabygger()
             .med(MannLaginfo, [laginfo])
             .bygg())
 
@@ -211,7 +209,7 @@ def test_periodiser_laginfo_avkutter_ikke_laginfo_fra_andre_serieår():
 # periodiser_lagplassering
 def test_periodiser_lagplassering_starter_ny_periode_hvis_lagplassering_ikke_finnes():
 
-    seriedata = (Testdatabygger(Tilganger.KALKULATOR)
+    seriedata = (Testdatabygger()
             .med(MannLagplassering, [])
             .bygg())
 
@@ -228,7 +226,7 @@ def test_periodiser_lagplassering_beholder_periode_hvis_lagplassering_finnes():
 
     lagplassering = en_mann_lagplassering(serieår=2025, fra_og_med=date(2023,1,1), til_og_med=None, divisjon=1, plassering=1)
 
-    seriedata = (Testdatabygger(Tilganger.KALKULATOR)
+    seriedata = (Testdatabygger()
             .med(MannLagplassering, [lagplassering])
             .bygg())
 
@@ -246,7 +244,7 @@ def test_periodiser_lagplassering_avslutter_gammel_og_starter_ny_periode_hvis_la
         en_mann_lagplassering(serieår=2025, klubb="Ski", fra_og_med=date(2023,1,1), til_og_med=None, divisjon=1, plassering=2),
     ]
 
-    seriedata = (Testdatabygger(Tilganger.KALKULATOR)
+    seriedata = (Testdatabygger()
             .med(MannLagplassering, lagplasseringer)
             .bygg())
 
@@ -268,7 +266,7 @@ def test_periodiser_lagplassering_avkutter_ikke_lagplassering_fra_andre_serieår
 
     lagplassering = en_mann_lagplassering(serieår=2024, fra_og_med=date(2023,1,1), til_og_med=None, divisjon=1, plassering=1)
 
-    seriedata = (Testdatabygger(Tilganger.KALKULATOR)
+    seriedata = (Testdatabygger()
             .med(MannLagplassering, [lagplassering])
             .bygg())
 
@@ -282,7 +280,7 @@ def test_periodiser_lagplassering_avkutter_ikke_lagplassering_fra_andre_serieår
 # periodiser_utøver_merverdier
 def test_periodiser_utøver_merverdier_starter_ny_periode_hvis_utøver_merverdi_ikke_finnes():
 
-    seriedata = (Testdatabygger(Tilganger.KALKULATOR)
+    seriedata = (Testdatabygger()
             .med(MannUtøverMerverdi, [])
             .bygg())
 
@@ -315,7 +313,7 @@ def test_periodiser_utøver_merverdier_beholder_periode_hvis_utøver_merverdi_fi
         poeng=100,
     )
 
-    seriedata = (Testdatabygger(Tilganger.KALKULATOR)
+    seriedata = (Testdatabygger()
         .med(MannUtøverMerverdi, [utøver_merverdi])
         .bygg())
     
@@ -340,7 +338,7 @@ def test_periodiser_utøver_merverdier_avslutter_gammel_og_starter_ny_periode_hv
         poeng=100,
     )
 
-    seriedata = (Testdatabygger(Tilganger.KALKULATOR)
+    seriedata = (Testdatabygger()
         .med(MannUtøverMerverdi, [utøver_merverdi])
         .bygg())
     
@@ -370,7 +368,7 @@ def test_periodiser_utøver_merverdier_avkutter_ikke_utøver_merverdi_fra_andre_
         poeng=100,
     )
 
-    seriedata = (Testdatabygger(Tilganger.KALKULATOR)
+    seriedata = (Testdatabygger()
         .med(MannUtøverMerverdi, [utøver_merverdi])
         .bygg())
     

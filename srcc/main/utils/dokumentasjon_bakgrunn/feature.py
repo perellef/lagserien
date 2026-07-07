@@ -2,7 +2,6 @@ import sys
 sys.path.append('./')
 
 from srcc.main.utils.testverktøy._testdatabygger import Testdatabygger
-from srcc.main.kontrollsenter.tilganger import Tilganger
 
 from srcc.main.utils.dokumentasjon_bakgrunn.utsagn import Utsagn
 
@@ -10,7 +9,7 @@ class Feature:
 
     class Tilstand:
         def __init__(self):
-            self.testdatabygger = Testdatabygger(Tilganger.ALT)
+            self.testdatabygger = Testdatabygger()
             self.seriedata = None
             self.defaulttabeller = [] 
             self.tabeller = []

@@ -1,4 +1,3 @@
-from srcc.main.kontrollsenter.tilganger import Tilganger
 from srcc.main.kontrollsenter.seriedata import Seriedata
 from srcc.main.kontrollsenter.database import Database
 from srcc.main.utils.orm._mann_serieresultat import MannSerieresultat
@@ -22,8 +21,7 @@ class Kontrollpanel:
 
     @staticmethod
     def kjør_over_periode(batch, serieår, første_uttrekksdato, siste_uttrekksdato):
-        tilganger = Tilganger.til(batch)
-        seriedata = Seriedata(tilganger, DATABASE)
+        seriedata = Seriedata(DATABASE)
         seriedata.åpne()
         endringsdatoer = Kontrollpanel.__finn_endringsdatoer(seriedata, første_uttrekksdato, siste_uttrekksdato)
         seriedata.lukk()

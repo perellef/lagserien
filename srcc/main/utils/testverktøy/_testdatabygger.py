@@ -3,14 +3,12 @@ sys.path.append('./')
 
 from srcc.main.kontrollsenter.seriedata import Seriedata
 from srcc.main.kontrollsenter.database import Database
-from srcc.main.kontrollsenter.tilganger import Tilganger
 
 DATABASE = Database.TOM
 
 class Testdatabygger:
 
-    def __init__(self, tilganger):
-        self.__tilganger = tilganger
+    def __init__(self):
         self.__seriedata = Seriedata(DATABASE)
         self.__seriedata.initier()
         self.__seriedata.åpne()
@@ -23,5 +21,4 @@ class Testdatabygger:
         return self
 
     def bygg(self):
-        self.__seriedata._Seriedata__tilganger = self.__tilganger
         return self.__seriedata

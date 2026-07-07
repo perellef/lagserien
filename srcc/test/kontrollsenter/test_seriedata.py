@@ -3,7 +3,6 @@ sys.path.append('./')
 
 from srcc.main.utils.testverktøy.assert_at import assert_at
 from srcc.main.utils.testverktøy._testdatabygger import Testdatabygger
-from srcc.main.kontrollsenter.tilganger import Tilganger
 from srcc.main.utils.testverktøy._testobjekter import en_utøver, en_øvelse, et_stevne, en_klubb, en_klubbkrets
 from srcc.main.utils.orm._resultat import Resultat
 from srcc.main.utils.orm._klubb import Klubb
@@ -14,7 +13,7 @@ from sqlalchemy.exc import IntegrityError
 # innsett_muteres
 def test_innsett_muteres_innsetter_objekt_i_databasen():
 
-    seriedata = Testdatabygger(Tilganger.ALT).bygg()
+    seriedata = Testdatabygger().bygg()
 
     resultat = Resultat(
         stevne_id=12,
@@ -44,7 +43,7 @@ def test_innsett_muteres_muterer_objekt_med_manglende_verdi():
     stevne = et_stevne(sted="Ås")
     utøver = en_utøver(navn="Ole")
 
-    seriedata = Testdatabygger(Tilganger.ALT).bygg()
+    seriedata = Testdatabygger().bygg()
 
     resultat = Resultat(
         stevne_id=stevne.stevne_id,
@@ -61,7 +60,7 @@ def test_innsett_muteres_muterer_objekt_med_manglende_verdi():
 
 # bulkinnsett_muteres
 def test_bulkinnsett_muteres_innsetter_objekter_i_databasen():
-    seriedata = Testdatabygger(Tilganger.ALT).bygg()
+    seriedata = Testdatabygger().bygg()
 
     resultater = [
         Resultat(stevne_id=1, utøver_id="Ole", øvelseskode="stav", prestasjon="3.23", dato=date(2100,1,1), statistikk_resultat_id=1),
@@ -80,7 +79,7 @@ def test_bulkinnsett_muteres_innsetter_objekter_i_databasen():
     assert_at(seriedata).av_type(Resultat).kun_har(forventede_resultater)
 
 def test_bulkinnsett_muteres_muterer_objekter_med_manglende_verdi():
-    seriedata = Testdatabygger(Tilganger.ALT).bygg()
+    seriedata = Testdatabygger().bygg()
 
     resultat1 = Resultat(stevne_id=1, utøver_id="Ole", øvelseskode="stav", prestasjon="3.23", dato=date(2100,1,1), statistikk_resultat_id=1)
     resultat2 = Resultat(stevne_id=2, utøver_id="Ole", øvelseskode="kule", prestasjon="9.42", dato=date(2100,1,1), statistikk_resultat_id=2)
@@ -94,7 +93,7 @@ def test_bulkinnsett_muteres_muterer_objekter_med_manglende_verdi():
 
 # bulkinnsett_erstatt
 def test_bulkinnsett_erstatt_innsetter_objekter_i_databasen_hvis_de_ikke_bryter_med_noen_betingelser():
-    seriedata = Testdatabygger(Tilganger.ALT).bygg()
+    seriedata = Testdatabygger().bygg()
 
     klubb = Klubb(klubb_id=1, klubbnavn="Ås IL", kjernenavn="Ås")
     seriedata.bulkinnsett_erstatt([klubb])
@@ -104,7 +103,7 @@ def test_bulkinnsett_erstatt_innsetter_objekter_i_databasen_hvis_de_ikke_bryter_
 def test_bulkinnsett_erstatt_erstatter_objekter_i_databasen_hvis_de_bryter_med_primærnøkkel():
     eksisterende_klubb = Klubb(klubb_id=1, klubbnavn="Ås IL", kjernenavn="Ås")
     
-    seriedata = (Testdatabygger(Tilganger.ALT)
+    seriedata = (Testdatabygger()
             .med(Klubb, [eksisterende_klubb])
             .bygg())
 
@@ -116,7 +115,7 @@ def test_bulkinnsett_erstatt_erstatter_objekter_i_databasen_hvis_de_bryter_med_p
 def test_bulkinnsett_erstatt_feiler_hvis_objektene_ikke_bryter_med_primærnøkkel_men_noe_annet():
     eksisterende_klubb = Klubb(klubb_id=1, klubbnavn="Ås IL", kjernenavn="Ås")
     
-    seriedata = (Testdatabygger(Tilganger.ALT)
+    seriedata = (Testdatabygger()
             .med(Klubb, [eksisterende_klubb])
             .bygg())
 
@@ -128,7 +127,7 @@ def test_bulkinnsett_erstatt_fjerner_ikke_seriedata_med_annen_primærnøkkel():
     ski_il = Klubb(klubb_id=1, klubbnavn="Ski IL", kjernenavn="Ski")
     vestby_il = Klubb(klubb_id=2, klubbnavn="Vestby IL", kjernenavn="Vestby")
     
-    seriedata = (Testdatabygger(Tilganger.ALT)
+    seriedata = (Testdatabygger()
             .med(Klubb, [ski_il, vestby_il])
             .bygg())
 
@@ -139,7 +138,7 @@ def test_bulkinnsett_erstatt_fjerner_ikke_seriedata_med_annen_primærnøkkel():
 
 # bulkinnsett_ignorer
 def test_bulkinnsett_ignorer_innsetter_objekter_i_databasen_hvis_de_ikke_allerede_finnes():
-    seriedata = Testdatabygger(Tilganger.ALT).bygg()
+    seriedata = Testdatabygger().bygg()
 
     klubb = Klubb(klubb_id=1, klubbnavn="Ås IL", kjernenavn="Ås")
     seriedata.bulkinnsett_ignorer([klubb])
@@ -149,7 +148,7 @@ def test_bulkinnsett_ignorer_innsetter_objekter_i_databasen_hvis_de_ikke_allered
 def test_bulkinnsett_ignorer_foretar_seg_ingenting_for_objekter_kolliderer_med_primærnøkkel():
     eksisterende_klubb = Klubb(klubb_id=1, klubbnavn="Ås IL", kjernenavn="Ås")
     
-    seriedata = (Testdatabygger(Tilganger.ALT)
+    seriedata = (Testdatabygger()
             .med(Klubb, [eksisterende_klubb])
             .bygg())
 
@@ -161,7 +160,7 @@ def test_bulkinnsett_ignorer_foretar_seg_ingenting_for_objekter_kolliderer_med_p
 def test_bulkinnsett_ignorer_feiler_hvis_objektene_ikke_bryter_med_primærnøkkel_men_noe_annet():
     eksisterende_klubb = Klubb(klubb_id=1, klubbnavn="Ås IL", kjernenavn="Ås")
     
-    seriedata = (Testdatabygger(Tilganger.ALT)
+    seriedata = (Testdatabygger()
             .med(Klubb, [eksisterende_klubb])
             .bygg())
 
@@ -176,7 +175,7 @@ def test_bulkslett_sletter_objekter_som_angitt():
         Klubb(klubb_id=2, klubbnavn="Ski IL", kjernenavn="Ski"),
     ]
     
-    seriedata = (Testdatabygger(Tilganger.ALT)
+    seriedata = (Testdatabygger()
             .med(Klubb, eksisterende_klubber)
             .bygg())
 
@@ -188,7 +187,7 @@ def test_bulkslett_sletter_kun_objekter_som_er_angitt():
     ås_il = Klubb(klubb_id=1, klubbnavn="Ås IL", kjernenavn="Ås")
     ski_il = Klubb(klubb_id=2, klubbnavn="Ski IL", kjernenavn="Ski")
     
-    seriedata = (Testdatabygger(Tilganger.ALT)
+    seriedata = (Testdatabygger()
             .med(Klubb, [ås_il, ski_il])
             .bygg())
 

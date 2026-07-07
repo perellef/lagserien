@@ -11,14 +11,12 @@ from srcc.main.utils.orm._serie import Serie
 from srcc.main.utils.orm._klubbkrets import Klubbkrets
 from srcc.main.batch_2_uttrekk.uttrekksperiodiserer import Uttrekksperiodiserer
 
-from srcc.main.kontrollsenter.tilganger import Tilganger
-
 from datetime import date
 
 # periodiser_uttrekksresultater_uttrekksresultater
 def test_periodiser_uttrekksresultater_starter_ny_periode_hvis_uttrekksresultat_ikke_finnes():
 
-    seriedata = (Testdatabygger(Tilganger.UTTREKK)
+    seriedata = (Testdatabygger()
             .med(Serie, [en_serie(serieår=2025)])
             .med(MannUttrekksresultat, [])
             .bygg())
@@ -39,7 +37,7 @@ def test_periodiser_uttrekksresultater_beholder_periode_hvis_uttrekksresultat_fi
 
     uttrekksresultat = et_mann_uttrekksresultat(dato=date(2025,1,1), fra_og_med=date(2023,1,1), til_og_med=None, klubb="Ås IL")
 
-    seriedata = (Testdatabygger(Tilganger.UTTREKK)
+    seriedata = (Testdatabygger()
             .med(Serie, [en_serie(serieår=2025)])
             .med(MannUttrekksresultat, [uttrekksresultat])
             .bygg())
@@ -58,7 +56,7 @@ def test_periodiser_uttrekksresultater_avslutter_gammel_og_starter_ny_periode_hv
 
     uttrekksresultat = et_mann_uttrekksresultat(dato=date(2025,1,1), fra_og_med=date(2025,1,1), til_og_med=None, klubb="Ski IL")
 
-    seriedata = (Testdatabygger(Tilganger.UTTREKK)
+    seriedata = (Testdatabygger()
             .med(Serie, [en_serie(serieår=2025)])
             .med(MannUttrekksresultat, [uttrekksresultat])
             .bygg())
@@ -80,7 +78,7 @@ def test_periodiser_uttrekksresultater_avslutter_gammel_og_starter_ny_periode_hv
 
 def test_periodiser_uttrekksresultater_produserer_uttrekksresultater_som_er_tilsvarende_kjønnsinndelt_som_resultatforløp():
 
-    seriedata = (Testdatabygger(Tilganger.UTTREKK)
+    seriedata = (Testdatabygger()
             .med(Serie, [en_serie(serieår=2025)])
             .med(MannUttrekksresultat, [])
             .bygg())
@@ -101,7 +99,7 @@ def test_periodiser_uttrekksresultater_produserer_uttrekksresultater_som_er_tils
 def test_periodiser_uttrekksresultater_uttrekksresultater_avkutter_ikke_uttrekksresultater_fra_andre_serieår():
     uttrekksresultat = et_mann_uttrekksresultat(dato=date(2025,1,1), fra_og_med=date(2025,1,1), til_og_med=None, klubb="Ås IL")
 
-    seriedata = (Testdatabygger(Tilganger.UTTREKK)
+    seriedata = (Testdatabygger()
             .med(Serie, [
                 en_serie(serieår=2025),
                 en_serie(serieår=2026)
@@ -119,7 +117,7 @@ def test_periodiser_uttrekksresultater_uttrekksresultater_avkutter_ikke_uttrekks
 def test_periodiser_klubbkretser_starter_ny_periode_hvis_klubbkrets_ikke_finnes():
     
     klubb = en_klubb(klubb="Ås IL")
-    seriedata = (Testdatabygger(Tilganger.UTTREKK)
+    seriedata = (Testdatabygger()
             .med(Serie, [en_serie(serieår=2025)])
             .med(Klubbkrets, [])
             .bygg())
@@ -141,7 +139,7 @@ def test_periodiser_klubbkretser_beholder_periode_hvis_klubbkrets_finnes():
     klubb = en_klubb(klubb="Ås IL")
     klubbkrets = en_klubbkrets(klubb="Ås IL", fra_og_med=date(2023,1,1), til_og_med=None, krets="Akershus")
 
-    seriedata = (Testdatabygger(Tilganger.UTTREKK)
+    seriedata = (Testdatabygger()
         .med(Serie, [en_serie(serieår=2025)])
         .med(Klubbkrets, [klubbkrets])
         .bygg())
@@ -161,7 +159,7 @@ def test_periodiser_klubbkretser_avslutter_gammel_og_starter_ny_periode_hvis_klu
     klubb = en_klubb(klubb="Ås IL")
     klubbkrets = en_klubbkrets(klubb="Ås IL", fra_og_med=date(2023,1,1), til_og_med=None, krets="Akershus")
 
-    seriedata = (Testdatabygger(Tilganger.UTTREKK)
+    seriedata = (Testdatabygger()
             .med(Serie, [en_serie(serieår=2025)])
             .med(Klubbkrets, [klubbkrets])
             .bygg())

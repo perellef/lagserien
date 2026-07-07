@@ -112,7 +112,6 @@ class Cache:
                 "andel_gjennomførte": db_hent_andel_gjennomførte_stevner(peker, self.__serieår, uttrekksdato),
                 "stevnekalender": db_hent_stevnekalender(peker, self.__serieår, uttrekksdato),
                 "forsinkelser": db_hent_forsinkede_stevner(peker, uttrekksdato),
-                "artikler": db_hent_9_nyeste_artikler(peker),
                 "klubblogoer": self.finn_klubblogoer(),
                 "kretser": db_hent_kretser(peker, uttrekksdato),
             }

@@ -18,8 +18,6 @@ from srcc.main.utils.orm._utøver_unntatt_overbygning import UtøverUnntattOverb
 
 from srcc.main.batch_3_utdeling.resultatbehandling import Resultatbehandling
 
-from srcc.main.kontrollsenter.tilganger import Tilganger
-
 from datetime import date, datetime
 
 # fjern_resultater_til_klubber_utenfor_seriekretsene
@@ -33,7 +31,7 @@ def fjern_resultater_til_klubber_utenfor_seriekretsene_fjerner_ikke_resultat_hvi
 
     resultatforløp = {et_resultat(): (klubb, "Innlastet.")}
 
-    seriedata = (Testdatabygger(Tilganger.MANIPULATOR)
+    seriedata = (Testdatabygger()
         .med(Klubbkrets, klubbkretser)
         .med(Resultat, [et_resultat()])
         .bygg())
@@ -52,7 +50,7 @@ def fjern_resultater_til_klubber_utenfor_seriekretsene_fjerner_resultat_hvis_klu
     
     resultatforløp = {et_resultat(): (klubb, "Innlastet.")}
 
-    seriedata = (Testdatabygger(Tilganger.MANIPULATOR)
+    seriedata = (Testdatabygger()
         .med(Klubbkrets, klubbkretser)
         .med(Resultat, [et_resultat()])
         .bygg())
@@ -76,7 +74,7 @@ def test_fjern_mellomtider_til_serieresultat_fjerner_ikke_mellomtid_hvis_det_er_
         resultat2: (klubb, "Innlastet."),
     }
     
-    seriedata = (Testdatabygger(Tilganger.MANIPULATOR)
+    seriedata = (Testdatabygger()
             .med(Øvelsesregel, [
                     en_øvelsesregel(serieår=2100, øvelse="3000m", mellomtidgruppe="løp", mellomtidgruppe_distanse=1),
                     en_øvelsesregel(serieår=2100, øvelse="5000m", mellomtidgruppe="løp", mellomtidgruppe_distanse=2),
@@ -100,7 +98,7 @@ def test_fjern_mellomtider_til_serieresultat_fjerner_mellomtid_til_serieresultat
         serieresultat: (klubb, "Innlastet."),
     }
     
-    seriedata = (Testdatabygger(Tilganger.MANIPULATOR)
+    seriedata = (Testdatabygger()
             .med(Øvelsesregel, [
                     en_øvelsesregel(serieår=2100, øvelse="3000m", mellomtidgruppe="løp", mellomtidgruppe_distanse=1),
                     en_øvelsesregel(serieår=2100, øvelse="5000m", mellomtidgruppe="løp", mellomtidgruppe_distanse=2),
@@ -126,7 +124,7 @@ def test_fjern_mellomtider_til_serieresultat_fjerner_flere_mellomtider_til_serie
         serieresultat: (klubb, "Innlastet."),
     }
     
-    seriedata = (Testdatabygger(Tilganger.MANIPULATOR)
+    seriedata = (Testdatabygger()
             .med(Øvelsesregel, [
                     en_øvelsesregel(serieår=2100, øvelse="3000m", mellomtidgruppe="løp", mellomtidgruppe_distanse=1),
                     en_øvelsesregel(serieår=2100, øvelse="5000m", mellomtidgruppe="løp", mellomtidgruppe_distanse=2),
@@ -151,7 +149,7 @@ def test_fjern_mellomtider_til_serieresultat_fjerner_manuelle_mellomtid_til_seri
         serieresultat: (klubb, "Innlastet."),
     }
     
-    seriedata = (Testdatabygger(Tilganger.MANIPULATOR)
+    seriedata = (Testdatabygger()
             .med(Øvelsesregel, [
                     en_øvelsesregel(serieår=2100, øvelse="60m", mellomtidgruppe="løp", mellomtidgruppe_distanse=1),
                     en_øvelsesregel(serieår=2100, øvelse="100m", mellomtidgruppe="løp", mellomtidgruppe_distanse=2),
@@ -172,7 +170,7 @@ def test_fjern_manuelle_resultater_i_elektroniske_øvelser_fjerner_manuelt_resul
         manuelt_resultat: (en_klubb(klubb="Ås IL"), "Innlastet."),
     }
     
-    seriedata = (Testdatabygger(Tilganger.MANIPULATOR)
+    seriedata = (Testdatabygger()
             .med(Øvelsesregel, [
                     en_øvelsesregel(serieår=2100, øvelse="60m", forutsetter_elektronisk_tidtaking=True),
             ])
@@ -191,7 +189,7 @@ def test_fjern_manuelle_resultater_i_elektroniske_øvelser_fjerner_ikke_manuelt_
         manuelt_resultat: (klubb, "Innlastet."),
     }
     
-    seriedata = (Testdatabygger(Tilganger.MANIPULATOR)
+    seriedata = (Testdatabygger()
             .med(Øvelsesregel, [
                     en_øvelsesregel(serieår=2100, øvelse="60m", forutsetter_elektronisk_tidtaking=False),
             ])
@@ -212,7 +210,7 @@ def test_fjern_manuelle_resultater_i_elektroniske_øvelser_fjerner_ikke_resultat
         resultat_målt_lengde: (klubb, "Innlastet."),
     }
     
-    seriedata = (Testdatabygger(Tilganger.MANIPULATOR)
+    seriedata = (Testdatabygger()
             .med(Øvelsesregel, [
                     en_øvelsesregel(serieår=2100, øvelse="60m", forutsetter_elektronisk_tidtaking=True),
                     en_øvelsesregel(serieår=2100, øvelse="Lengde", forutsetter_elektronisk_tidtaking=False),
@@ -233,7 +231,7 @@ def test_fjern_manuelle_resultater_i_elektroniske_øvelser_fjerner_manuell_mello
         manuelt_resultat: (klubb, "Innlastet."),
     }
     
-    seriedata = (Testdatabygger(Tilganger.MANIPULATOR)
+    seriedata = (Testdatabygger()
             .med(Øvelsesregel, [
                     en_øvelsesregel(serieår=2100, øvelse="60m", forutsetter_elektronisk_tidtaking=True),
             ])
@@ -299,7 +297,7 @@ def test_fjern_rullestolresultater_fjerner_resultat_hvis_den_er_av_en_rullestolu
         rullestolresultat: (en_klubb(klubb="Ås IL"), "Innlastet."),
     }
 
-    seriedata = (Testdatabygger(Tilganger.MANIPULATOR)
+    seriedata = (Testdatabygger()
             .med(Rullestolutøver, [en_rullestolutøver(serieår=2100, utøver="rullestolutøver")])
             .med(Resultat, [rullestolresultat])
             .bygg())
@@ -316,7 +314,7 @@ def test_fjern_rullestolresultater_fjerner_ikke_resultat_hvis_den_ikke_er_av_en_
         resultat: (klubb, "Innlastet."),
     }
 
-    seriedata = (Testdatabygger(Tilganger.MANIPULATOR)
+    seriedata = (Testdatabygger()
             .med(Rullestolutøver, [])
             .med(Resultat, [resultat])
             .bygg())
@@ -343,7 +341,7 @@ def test_flytt_overbygningsresultater_flytter_resultater_i_aldersgruppen_til_ove
         resultat3: (heming, "Innlastet."),
     }
 
-    seriedata = (Testdatabygger(Tilganger.MANIPULATOR)
+    seriedata = (Testdatabygger()
             .med(Klubb, [tjalve, koll, heming])
             .med(Overklubb, [tjalve_overklubb])
             .med(Overbygning, [
@@ -378,7 +376,7 @@ def test_flytt_overbygningsresultater_flytter_ikke_resultater_i_annen_aldersgrup
         resultat3: (heming, "Innlastet."),
     }
 
-    seriedata = (Testdatabygger(Tilganger.MANIPULATOR)
+    seriedata = (Testdatabygger()
             .med(Klubb, [tjalve, koll, heming])
             .med(Overklubb, [tjalve_overklubb])
             .med(Overbygning, [
@@ -408,7 +406,7 @@ def test_flytt_overbygningsresultater_flytter_ikke_resultater_fra_klubber_som_ik
         resultat1: (ås, "Innlastet."),
     }
 
-    seriedata = (Testdatabygger(Tilganger.MANIPULATOR)
+    seriedata = (Testdatabygger()
             .med(Klubb, [tjalve, ås, koll, heming])
             .med(Overklubb, [tjalve_overklubb])
             .med(Overbygning, [
@@ -436,7 +434,7 @@ def test_flytt_overbygningsresultater_flytter_ikke_resultat_av_utøver_som_er_un
         resultat1: (heming, "Innlastet."),
     }
 
-    seriedata = (Testdatabygger(Tilganger.MANIPULATOR)
+    seriedata = (Testdatabygger()
             .med(Klubb, [tjalve, koll, heming])
             .med(Overklubb, [tjalve_overklubb])
             .med(Overbygning, [
@@ -465,7 +463,7 @@ def test_tilbakeflytt_utøverunntatte_overbygningsresultater_tilbakeflytter_utø
         resultat1: (ås, "Innlastet."),
     }
 
-    seriedata = (Testdatabygger(Tilganger.MANIPULATOR)
+    seriedata = (Testdatabygger()
             .med(Klubb, [nordby, ås])
             .med(Overklubb, [ås_overklubb])
             .med(Overbygning, [
@@ -493,7 +491,7 @@ def test_tilbakeflytt_utøverunntatte_overbygningsresultater_tilbakeflytter_ikke
         resultat1: (ski, "Innlastet."),
     }
 
-    seriedata = (Testdatabygger(Tilganger.MANIPULATOR)
+    seriedata = (Testdatabygger()
             .med(Klubb, [nordby, ås])
             .med(Overklubb, [ås_overklubb])
             .med(Overbygning, [
@@ -519,7 +517,7 @@ def test_overskriv_klubb_ved_resultatbytte_setter_resultatets_klubb_til_det_angi
         resultat: (utledet_klubb, "Innlastet."),
     }
 
-    seriedata = (Testdatabygger(Tilganger.MANIPULATOR)
+    seriedata = (Testdatabygger()
             .med(Klubb, [utledet_klubb, ønsket_klubb])
             .med(Resultat, [resultat])
             .med(Resultatbytte, [resultatbytte])
@@ -540,7 +538,7 @@ def test_overskriv_klubb_ved_resultatbytte_setter_resultatets_klubb_til_None_hvi
         resultat: (utledet_klubb, "Innlastet."),
     }
 
-    seriedata = (Testdatabygger(Tilganger.MANIPULATOR)
+    seriedata = (Testdatabygger()
             .med(Klubb, [utledet_klubb])
             .med(Resultat, [resultat])
             .med(Resultatbytte, [resultatbytte])
@@ -562,7 +560,7 @@ def test_overskriv_klubb_ved_resultatbytte_overskriver_ikke_hvis_uttrekksdato_er
         resultat: (utledet_klubb, "Innlastet."),
     }
 
-    seriedata = (Testdatabygger(Tilganger.MANIPULATOR)
+    seriedata = (Testdatabygger()
             .med(Klubb, [utledet_klubb, ønsket_klubb])
             .med(Resultat, [resultat])
             .med(Resultatbytte, [resultatbytte])
@@ -587,7 +585,7 @@ def test_tilbakeflytt_klubbunntatte_overbygningsresultater_flytter_ikke_vanlig_r
         resultat: (ullkisa, "Innlastet."),
     }
 
-    seriedata = (Testdatabygger(Tilganger.MANIPULATOR)
+    seriedata = (Testdatabygger()
             .med(Klubb, [ullkisa, lørenskog])
             .med(Overklubb, [ullkisa_overklubb])
             .med(KlubbUnntattOverbygning, [
@@ -616,7 +614,7 @@ def test_tilbakeflytt_klubbunntatte_overbygningsresultater_flytter_resultat_fra_
         resultat2: (ås, "Innlastet."),
     }
 
-    seriedata = (Testdatabygger(Tilganger.MANIPULATOR)
+    seriedata = (Testdatabygger()
             .med(Klubb, [nordby, ås])
             .med(Overklubb, [ås_overklubb])
             .med(KlubbUnntattOverbygning, [
@@ -651,7 +649,7 @@ def test_tilbakeflytt_klubbunntatte_overbygningsresultater_flytter_ikke_resultat
         resultat3: (ås, "Innlastet."),
     }
 
-    seriedata = (Testdatabygger(Tilganger.MANIPULATOR)
+    seriedata = (Testdatabygger()
             .med(Klubb, [nordby, ås])
             .med(Overklubb, [ås_overklubb])
             .med(KlubbUnntattOverbygning, [

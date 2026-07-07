@@ -1,7 +1,6 @@
 import sys
 sys.path.append('./')
 
-from srcc.main.kontrollsenter.tilganger import Tilganger
 from srcc.main.utils.testverktøy._testobjekter import en_klubb
 from srcc.main.utils.testverktøy.assert_at import assert_at
 from srcc.main.utils.testverktøy._testdatabygger import Testdatabygger
@@ -178,7 +177,7 @@ def test_assert_at_seriedata_av_type_kun_har_asserter_false_hvis_seriedataen_ikk
     ski_il = en_klubb(klubb="Ski IL")
     nordby_il = en_klubb(klubb="Nordby IL")
 
-    seriedata = (Testdatabygger(Tilganger.MANIPULATOR)
+    seriedata = (Testdatabygger()
         .med(Klubb, [ås_il, ski_il])
         .bygg())
     
@@ -194,7 +193,7 @@ def test_assert_at_seriedata_av_type_kun_har_asserter_true_hvis_seriedataen_har_
     ski_il = en_klubb(klubb="Ski IL")
     nordby_il = en_klubb(klubb="Nordby IL")
 
-    seriedata = (Testdatabygger(Tilganger.MANIPULATOR)
+    seriedata = (Testdatabygger()
         .med(Klubb, [ås_il, ski_il, nordby_il])
         .bygg())
     
@@ -209,7 +208,7 @@ def test_assert_at_seriedata_av_type_kun_inneholder_asserter_false_hvis_seriedat
     ski_il = en_klubb(klubb="Ski IL")
     nordby_il = en_klubb(klubb="Nordby IL")
 
-    seriedata = (Testdatabygger(Tilganger.MANIPULATOR)
+    seriedata = (Testdatabygger()
         .med(Klubb, [ås_il, ski_il])
         .bygg())
     
@@ -225,7 +224,7 @@ def test_assert_at_seriedata_av_type_kun_inneholder_asserter_true_hvis_seriedata
     ski_il = en_klubb(klubb="Ski IL")
     nordby_il = en_klubb(klubb="Nordby IL")
 
-    seriedata = (Testdatabygger(Tilganger.MANIPULATOR)
+    seriedata = (Testdatabygger()
         .med(Klubb, [ås_il, ski_il, nordby_il])
         .bygg())
     
@@ -240,7 +239,7 @@ def test_assert_at_seriedata_av_type_er_tom_asserter_false_hvis_seriedataen_ikke
     ås_il = en_klubb(klubb="Ås IL")
     ski_il = en_klubb(klubb="Ski IL")
 
-    seriedata = (Testdatabygger(Tilganger.MANIPULATOR)
+    seriedata = (Testdatabygger()
         .med(Klubb, [ås_il, ski_il])
         .bygg())
     
@@ -249,7 +248,7 @@ def test_assert_at_seriedata_av_type_er_tom_asserter_false_hvis_seriedataen_ikke
     assert assertionerror_kastes(f)
     
 def test_assert_at_seriedata_av_type_er_tom_asserter_true_hvis_seriedataen_ikke_er_tom():
-    seriedata = (Testdatabygger(Tilganger.MANIPULATOR)
+    seriedata = (Testdatabygger()
         .med(Klubb, [])
         .bygg())
     

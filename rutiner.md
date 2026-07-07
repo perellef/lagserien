@@ -22,9 +22,6 @@
 ### Nytt resultatbytte
 1. *Oppsettbatch*: Legg inn resultatbytte, og kjør.
 
-### Ny artikkel
-1. *Oppsettbatch*: Legg inn artikkel, og kjør.
-
 ### Ny eller fjerning av rullestolutøvere
 1. *Konfig*: Endre rullestolutøvere i `konfig/<serieår>/resultatavvik.json`
 2. *Grunnlagsbatch*: Kjør.

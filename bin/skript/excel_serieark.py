@@ -1,4 +1,3 @@
-from srcc.main.kontrollsenter.tilganger import Tilganger
 from srcc.main.utils.orm._klubbkrets import Klubbkrets
 from srcc.main.utils.orm._klubb import Klubb
 from srcc.main.utils.orm._mann_lagresultat import MannLagresultat

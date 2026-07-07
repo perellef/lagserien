@@ -1,5 +1,3 @@
-from srcc.main.kontrollsenter.tilganger import Tilganger
-
 class AssertAt:
 
     def __init__(self, input):
@@ -59,7 +57,6 @@ class AssertAtSeriedata:
     class AvType:
         def __init__(self, seriedata, cls):
             self.__seriedata = seriedata
-            self.__seriedata._Seriedata__tilganger = Tilganger.ALT
             self.__cls = cls
 
         def kun_har(self, elementer):

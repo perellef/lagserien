@@ -1,6 +1,5 @@
 from ._arkiv_kvinne_sluttplasseringer import ArkivKvinneSluttplassering
 from ._arkiv_mann_sluttplasseringer import ArkivMannSluttplassering
-from ._artikkel import Artikkel
 from ._batchkjøring import Batchkjøring
 from ._klubb import Klubb
 from ._klubb_unntatt_overbygning import KlubbUnntattOverbygning

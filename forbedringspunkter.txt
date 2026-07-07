@@ -32,6 +32,7 @@ Skjermtilpasning:
 - I Lagoppstiller så skvises Mine Resultater og Oppstillingsregler sammen 
 
 Senere:
+- Sørge for at tester fungerer...
 - oppdatere excelfiler burde også støtte uttrekksdato
 - I oversikten:
     - Legge til tabell basert på potensialer
@@ -86,18 +87,7 @@ Senere:
 - legge til lagnummer i menn/kvinner_merverdi_utøver. Svært vanskelig å forholde seg til uten.
 - forenkle spørring om merverdi utmerkelser
 - Ikke la det være mulig å fjerne resultatbytter, dvs. det må kunne være flere og hvis flere for samme resultat_id, velg siste (i utdelingsbatch)
-- notisnyheter som genereres automatisk og automatisk blas gjennom under menyen på alle sider
 - utdeling -> tildeling
-- notiser der du blir navigert (byttet til relevant kjønn+divisjon og skrollet til aktuelt sted) når du trykker
-- Legge til titler:
-    - viktigste utøver (merverdi)
-    - utøver med mest poeng totalt (sum alle øvelser)
-    - mest juniorpoeng
-    - beste øvelse (sum av alle poeng)
-    - størst bredde -flest lag
-    - mest komplette lag - størst poeng av alle resultatene
-    - stevne med flest gjeldende resultater
-    - største forbedring fra fjoråret
 - Test for om oppsettbatch er synkron med database på visse dataer (?)
 - React fremfor Html+css+javascript?
 - lage ordentlig logo til Lagserien
@@ -156,11 +146,9 @@ Senere:
 - Legge inn samarbeidsklubber i klubbsiden
 - Hover-over forklaring på hvorfor resultat er fjernet i klubb->resultater-oversikt
 - Finne ut av hvordan jeg får til å lage artikler fra nettsiden
-- Fjern tilganger, masse kode som ikke brukes lenger
 - Legge inn visning av samarbeidsklubber i klubbsiden.
 - Vise klubboverganger (der overganger allerede er gjort i statistikken) også (?).
 - VIKTIG: Lage admin-side der man kan:
-   - Lage artikkel (hvordan håndtere bilder?)
    - Flette sammen stevner og stevneinvitasjoner
    - Se alle som har NULL i poeng tydelig i admin-siden (og andre feil, som f.eks klubber som ikke er i Norge)
    - Legge inn manuelle resultatbytter
@@ -196,7 +184,6 @@ Senere:
 - bulkslett bruker 10 minutter på å slette noe bulkinnsett bruker 3 sekunder på
 - kjøring for periode burde ha validering av ingen batrchkjøringer mellom periode på forhånd
 - VIKTIG. I app.py: Gjør beregn_oppstilling asynkron
-- fjerne Testdatabygger helt? Ble vel brukt fordi alle cls i tilganger må være gitt. I praksis brukes ikke den funksjonaliteten, så den kan også fjernes.  
 - erstatte alle Set([...]) og Liste([...]) med Set.of(...) og Liste.of(...)
 - erstatte alle assert med assert_at
 - gjør TODOs i koden
@@ -212,7 +199,7 @@ Senere:
   - Kan fjerne lagplasseringer helt, og legge til nytt felt i laginfo: poenger - en kommaseparert streng med alle poenger: "1000,0998,0991..." ,
   - (strengt tatt trengs ikke kommaene engang). Strengene blir lange (120-150 tegn lange)
   - lagplasseringer utledes fra laginfos poeng og poengstrengen.
-  - Forhåpentligvis er dette relativt rett frem og ikke tregt.  
+  - Forhåpentligvis er dette relativt rett frem og ikke tregt.
 
 Uttrekksbatch
 - Vurdere indeksering.

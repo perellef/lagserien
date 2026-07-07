@@ -268,7 +268,6 @@ def db_hent_besøksdata(peker):
             SELECT bruker_uuid
             FROM "nettside.nettside_besøk"
             WHERE side = '/'
-                OR side LIKE '%nyhetsarkiv%'
                 OR side LIKE '%livetabell%'
                 OR side LIKE '%tidligere_år%'
                 OR side LIKE '%verktøy%'
@@ -281,7 +280,6 @@ def db_hent_besøksdata(peker):
         FROM "nettside.nettside_besøk" besøk
             JOIN relevante_brukere on (besøk.bruker_uuid = relevante_brukere.bruker_uuid)
         WHERE side = '/'
-            OR side LIKE '%nyhetsarkiv%'
             OR side LIKE '%livetabell%'
             OR side LIKE '%tidligere_år%'
             OR side LIKE '%verktøy%'
@@ -1608,25 +1606,6 @@ def db_hent_resultater(peker, kjønn, klubbnavn, serieår, dato):
         WHERE rn = 1
         ORDER BY poeng DESC, utøver_id, øvelseskode;
     ''', (serieår, klubbnavn, serieår, dato, dato))
-
-@timeit
-def db_hent_9_nyeste_artikler(peker):
-    return execute(peker, '''
-        SELECT *
-        FROM "nettside.artikler"
-        ORDER BY publisert DESC
-        LIMIT 9
-        ;
-    ''', ())
-    
-@timeit
-def db_hent_artikkel(peker, tittel):
-    return execute(peker, '''
-        SELECT *
-        FROM "nettside.artikler"
-        WHERE tittel = {placeholder}
-        ;
-    ''', (tittel,))[0]
 
 @timeit
 def db_hent_forsinkede_stevner(peker, dato):

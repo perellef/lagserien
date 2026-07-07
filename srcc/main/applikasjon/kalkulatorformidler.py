@@ -10,7 +10,6 @@ from srcc.main.batch_3_utdeling.poengberegner import Poengberegner
 from srcc.main.utils.beholdere.liste import Liste 
 
 from srcc.main.utils.testverktøy._testdatabygger import Testdatabygger
-from srcc.main.kontrollsenter.tilganger import Tilganger
 
 from collections import defaultdict
 
@@ -74,7 +73,7 @@ class Kalkulatorformidler:
         serieøvelser_tekniske = [MannSerieøvelse(serieår=2100, øvelseskode=øvelse, er_obligatorisk=True, er_teknisk=True, prioritet=i+len(serieøvelser_løp)) for i,øvelse in enumerate(tekniske_øvelser, start=1)]
         menn_serieøvelser = serieøvelser_løp+serieøvelser_tekniske
 
-        seriedata = (Testdatabygger(Tilganger.KALKULATOR)
+        seriedata = (Testdatabygger()
             .med(Serie, [Serie(serieår=2100, fra_og_med=date(2100,1,1), til_og_med=date(2100,12,31))])
             .med(Oppstillingskrav, oppstillingskrav)
             .med(Utøver, list(utøvere.values()))

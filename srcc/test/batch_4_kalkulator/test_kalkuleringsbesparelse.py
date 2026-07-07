@@ -13,14 +13,12 @@ from srcc.main.utils.orm._mann_serieresultat import MannSerieresultat
 from srcc.main.batch_4_kalkulator.kalkuleringsbesparelse import Kalkuleringsbesparelse
 from srcc.main.batch_4_kalkulator.kalkulatorbatch import Kalkulatorbatch
 
-from srcc.main.kontrollsenter.tilganger import Tilganger
-
 from datetime import date
 
 # finn_uforandrede_klubber
 def test_finn_uforandrede_klubber_returnerer_ingen_klubber_hvis_ingen_tidligere_kalkulatorkjøring():
 
-    seriedata = (Testdatabygger(Tilganger.KALKULATOR)
+    seriedata = (Testdatabygger()
         .med(Batchkjøring, [])
         .bygg())
     
@@ -40,7 +38,7 @@ def test_finn_uforandrede_klubber_returnerer_ingen_klubber_hvis_ingen_tidligere_
     assert len(klubber) == 0
 
 def test_finn_uforandrede_klubber_returnerer_ingen_klubber_hvis_et_resultat_har_kommet_etter_siste_kalkulatorkjøring():
-    seriedata = (Testdatabygger(Tilganger.KALKULATOR)
+    seriedata = (Testdatabygger()
         .med(Batchkjøring, [
             en_batchkjøring(batch=4, serieår=2100, uttrekksdato=date(2100,1,1)),
             en_batchkjøring(batch=4, serieår=2100, uttrekksdato=date(2100,1,2)),
@@ -70,7 +68,7 @@ def test_finn_uforandrede_klubber_returnerer_ingen_klubber_hvis_et_resultat_har_
     assert len(klubber) == 0
 
 def test_finn_uforandrede_klubber_returnerer_ingen_klubber_hvis_et_resultat_er_fjernet_etter_siste_kalkulatorkjøring():
-    seriedata = (Testdatabygger(Tilganger.KALKULATOR)
+    seriedata = (Testdatabygger()
     .med(Batchkjøring, [
         en_batchkjøring(batch=4, serieår=2100, uttrekksdato=date(2100,1,1)),
         en_batchkjøring(batch=4, serieår=2100, uttrekksdato=date(2100,1,2)),
@@ -96,7 +94,7 @@ def test_finn_uforandrede_klubber_returnerer_ingen_klubber_hvis_et_resultat_er_f
 
 def test_finn_uforandrede_klubber_returnerer_klubber_der_siste_resultat_var_hentet_før_forrige_kalkulatorkjøring():
 
-    seriedata = (Testdatabygger(Tilganger.KALKULATOR)
+    seriedata = (Testdatabygger()
         .med(Batchkjøring, [
             en_batchkjøring(batch=4, serieår=2100, uttrekksdato=date(2100,1,1)),
             en_batchkjøring(batch=4, serieår=2100, uttrekksdato=date(2100,1,2)),
@@ -127,7 +125,7 @@ def test_finn_uforandrede_klubber_returnerer_klubber_der_siste_resultat_var_hent
 def test_legg_inn_uforandret_data_legger_inn_oppstilling_til_uforandrede_klubber():
     uforandrede_klubber = set([en_klubb(klubb="Ås").klubb_id])
 
-    seriedata = (Testdatabygger(Tilganger.KALKULATOR)
+    seriedata = (Testdatabygger()
         .med(MannLagresultat, [
             et_mann_lagresultat(serieår=2100, klubb="Ås", lagnummer=1, utøver="A", øvelse="60m", oppstillingstype="OBLIGATORISK"),
             et_mann_lagresultat(serieår=2100, klubb="Ås", lagnummer=1, utøver="B", øvelse="100m", oppstillingstype="VALGFRI"),
@@ -154,7 +152,7 @@ def test_legg_inn_uforandret_data_legger_inn_oppstilling_til_uforandrede_klubber
 def test_legg_inn_uforandret_data_legger_ikke_inn_oppstilling_til_ikkeuforandrede_klubber():
     uforandrede_klubber = set()
 
-    seriedata = (Testdatabygger(Tilganger.KALKULATOR)
+    seriedata = (Testdatabygger()
         .med(MannLagresultat, [
             et_mann_lagresultat(serieår=2100, klubb="Ås", lagnummer=1, utøver="A", øvelse="60m", oppstillingstype="OBLIGATORISK"),
             et_mann_lagresultat(serieår=2100, klubb="Ås", lagnummer=1, utøver="B", øvelse="100m", oppstillingstype="VALGFRI"),
@@ -176,7 +174,7 @@ def test_legg_inn_uforandret_data_legger_ikke_inn_oppstilling_til_ikkeuforandred
 def test_legg_inn_uforandret_data_legger_inn_laginfo_til_uforandrede_klubber():
     uforandrede_klubber = set([en_klubb(klubb="Ås").klubb_id])
 
-    seriedata = (Testdatabygger(Tilganger.KALKULATOR)
+    seriedata = (Testdatabygger()
         .med(MannLaginfo, [
             en_mann_laginfo(serieår=2100, klubb="Ås", lagnummer=1, poeng=4000, poeng_obligatoriske=2000, poeng_valgfri=2000, antall_noteringer=5, antall_deltakere=5)
         ])
@@ -193,7 +191,7 @@ def test_legg_inn_uforandret_data_legger_inn_laginfo_til_uforandrede_klubber():
 def test_legg_inn_uforandret_data_legger_ikke_inn_laginfo_til_ikkeuforandrede_klubber():
     uforandrede_klubber = set()
 
-    seriedata = (Testdatabygger(Tilganger.KALKULATOR)
+    seriedata = (Testdatabygger()
         .med(MannLaginfo, [
             en_mann_laginfo(serieår=2100, klubb="Ås", lagnummer=1, poeng=4000, poeng_obligatoriske=2000, poeng_valgfri=2000, antall_noteringer=5, antall_deltakere=5)
         ])
@@ -210,7 +208,7 @@ def test_legg_inn_uforandret_data_legger_ikke_inn_laginfo_til_ikkeuforandrede_kl
 def test_legg_inn_uforandret_data_legger_inn_utøver_merverdi_til_uforandrede_klubber():
     uforandrede_klubber = set([en_klubb(klubb="Ås").klubb_id])
 
-    seriedata = (Testdatabygger(Tilganger.KALKULATOR)
+    seriedata = (Testdatabygger()
         .med(MannUtøverMerverdi, [
             en_mann_utøver_merverdi(serieår=2100, klubb="Ås", utøver="Per", poeng=100)
         ])
@@ -230,7 +228,7 @@ def test_legg_inn_uforandret_data_legger_inn_utøver_merverdi_til_uforandrede_kl
 def test_legg_inn_uforandret_data_legger_ikke_inn_utøver_merverdi_til_ikkeuforandrede_klubber():
     uforandrede_klubber = set()
 
-    seriedata = (Testdatabygger(Tilganger.KALKULATOR)
+    seriedata = (Testdatabygger()
         .med(MannUtøverMerverdi, [
             en_mann_utøver_merverdi(serieår=2100, klubb="Ås", utøver="Per", poeng=100)
         ])

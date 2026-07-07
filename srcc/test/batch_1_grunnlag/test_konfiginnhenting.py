@@ -18,8 +18,6 @@ from srcc.main.utils.orm._utøver_unntatt_overbygning import UtøverUnntattOverb
 from srcc.main.utils.orm._rullestolutøver import Rullestolutøver
 from srcc.main.batch_1_grunnlag.konfiginnhenting import Konfiginnhenting
 
-from srcc.main.kontrollsenter.tilganger import Tilganger
-
 # innsett_setting
 def test_innsett_setting_setter_innleste_oppstillingskrav():
     årkonfig = {
@@ -33,7 +31,7 @@ def test_innsett_setting_setter_innleste_oppstillingskrav():
         }
     }
 
-    seriedata = Testdatabygger(Tilganger.ALT).bygg()
+    seriedata = Testdatabygger().bygg()
     serieår = 2100
     
     Konfiginnhenting.innsett_setting(serieår, årkonfig, seriedata)
@@ -58,7 +56,7 @@ def test_innsett_setting_beholder_oppstillingskrav_fra_andre_serieår():
         }
     }
 
-    seriedata = (Testdatabygger(Tilganger.ALT)
+    seriedata = (Testdatabygger()
         .med(Klubb, [et_oppstillingskrav(serieår=2099), et_oppstillingskrav(serieår=2101)])
         .bygg())
     
@@ -88,7 +86,7 @@ def test_innsett_setting_fjerner_oppstillingskrav_som_ikke_finnes_i_serieårets_
         }
     }
 
-    seriedata = (Testdatabygger(Tilganger.ALT)
+    seriedata = (Testdatabygger()
         .med(Oppstillingskrav, [et_oppstillingskrav(serieår=2100, obl=1, val=1, obl_løp=1, val_løp=1, res_per_utøver=1)])
         .bygg())
     serieår = 2100
@@ -114,7 +112,7 @@ def test_innsett_øvelsesinfo_setter_innleste_øvelsesregler():
         }
     }
 
-    seriedata = Testdatabygger(Tilganger.ALT).bygg()
+    seriedata = Testdatabygger().bygg()
     serieår = 2100
     
     Konfiginnhenting.innsett_øvelsesinfo(serieår, årkonfig, seriedata)
@@ -133,7 +131,7 @@ def test_innsett_øvelsesinfo_beholder_øvelsesregel_fra_andre_serieår():
         'øvelsesinfo': {}
     }
 
-    seriedata = (Testdatabygger(Tilganger.ALT)
+    seriedata = (Testdatabygger()
         .med(Øvelsesregel, [en_øvelsesregel(serieår=2099), en_øvelsesregel(serieår=2101)])
         .bygg())
     serieår = 2100
@@ -158,7 +156,7 @@ def test_innsett_øvelsesinfo_fjerner_øvelsesregler_som_ikke_finnes_i_serieåre
     
     serieår = 2100
 
-    seriedata = (Testdatabygger(Tilganger.ALT)
+    seriedata = (Testdatabygger()
         .med(Øvelsesregel, [
             en_øvelsesregel(serieår=serieår, øvelse="60h", mellomtidgruppe="hekk", mellomtidgruppe_distanse=1, forutsetter_elektronisk_tidtaking=True),
             en_øvelsesregel(serieår=serieår, øvelse="100h", mellomtidgruppe="hekk", mellomtidgruppe_distanse=2, forutsetter_elektronisk_tidtaking=False),
@@ -187,7 +185,7 @@ def test_innsett_øvelsesinfo_setter_innleste_menn_serieøvelser():
         }
     }
 
-    seriedata = Testdatabygger(Tilganger.ALT).bygg()
+    seriedata = Testdatabygger().bygg()
     serieår = 2100
     
     Konfiginnhenting.innsett_øvelsesinfo(serieår, årkonfig, seriedata)
@@ -205,7 +203,7 @@ def test_innsett_øvelsesinfo_beholder_mann_serieøvelse_fra_andre_serieår():
         'øvelsesinfo': {}
     }
 
-    seriedata = (Testdatabygger(Tilganger.ALT)
+    seriedata = (Testdatabygger()
         .med(MannSerieøvelse, [en_mann_serieøvelse(serieår=2099), en_mann_serieøvelse(serieår=2101)])
         .bygg())
     serieår = 2100
@@ -229,7 +227,7 @@ def test_innsett_øvelsesinfo_fjerner_mann_serieøvelse_som_ikke_finnes_i_serie�
 
     serieår = 2100
 
-    seriedata = (Testdatabygger(Tilganger.ALT)
+    seriedata = (Testdatabygger()
         .med(MannSerieøvelse, [
             en_mann_serieøvelse(serieår=serieår, øvelse="60h", er_obligatorisk=True, er_teknisk=False, prioritet=1),
             en_mann_serieøvelse(serieår=serieår, øvelse="stav", er_obligatorisk=True, er_teknisk=True, prioritet=3),
@@ -256,7 +254,7 @@ def test_innsett_øvelsesinfo_setter_innleste_kvinner_serieøvelser():
         }
     }
 
-    seriedata = Testdatabygger(Tilganger.ALT).bygg()
+    seriedata = Testdatabygger().bygg()
     serieår = 2100
     
     Konfiginnhenting.innsett_øvelsesinfo(serieår, årkonfig, seriedata)
@@ -275,7 +273,7 @@ def test_innsett_øvelsesinfo_beholder_kvinne_serieøvelse_fra_andre_serieår():
         'øvelsesinfo': {}
     }
 
-    seriedata = (Testdatabygger(Tilganger.ALT)
+    seriedata = (Testdatabygger()
         .med(MannSerieøvelse, [
             en_kvinne_serieøvelse(serieår=2099),
             en_kvinne_serieøvelse(serieår=2101),
@@ -300,7 +298,7 @@ def test_innsett_øvelsesinfo_fjerner_kvinne_serieøvelse_som_ikke_finnes_i_seri
     }
     
     serieår = 2100
-    seriedata = (Testdatabygger(Tilganger.ALT)
+    seriedata = (Testdatabygger()
         .med(KvinneSerieøvelse, [
             en_kvinne_serieøvelse(serieår=serieår, øvelse="60h", er_obligatorisk=True, er_teknisk=False, prioritet=1),
             en_kvinne_serieøvelse(serieår=serieår, øvelse="100h", er_obligatorisk=True, er_teknisk=False, prioritet=2),
@@ -333,7 +331,7 @@ def test_les_overbygningsklubber_returnerer_innleste_overklubber_fra_serieåret(
         ]
     }
 
-    seriedata = (Testdatabygger(Tilganger.ALT)
+    seriedata = (Testdatabygger()
             .med(Klubb, [ås_il, ski_il, nordby_il])
             .bygg())
         
@@ -363,7 +361,7 @@ def test_les_overbygningsklubber_med_ikkematchende_overklubb_id_og_navn_feiler()
         ]
     }
 
-    seriedata = (Testdatabygger(Tilganger.ALT)
+    seriedata = (Testdatabygger()
             .med(Klubb, [ås_il, ski_il, nordby_il])
             .bygg())
         
@@ -389,7 +387,7 @@ def test_les_overbygningsklubber_returnerer_innleste_overbygninger_fra_serieåre
         ]
     }
 
-    seriedata = (Testdatabygger(Tilganger.ALT)
+    seriedata = (Testdatabygger()
             .med(Klubb, [ås_il, ski_il, nordby_il])
             .bygg())
         
@@ -420,7 +418,7 @@ def test_les_overbygningsklubber_med_ikkematchende_moderklubb_id_og_navn_feiler(
         ]
     }
 
-    seriedata = (Testdatabygger(Tilganger.ALT)
+    seriedata = (Testdatabygger()
             .med(Klubb, [ås_il, ski_il, nordby_il])
             .bygg())
         
@@ -444,7 +442,7 @@ def test_les_klubber_unntatt_overbygning_returnerer_innleste_klubber_unntatt_ove
         ]
     }
 
-    seriedata = (Testdatabygger(Tilganger.ALT)
+    seriedata = (Testdatabygger()
             .med(Klubb, [ås_il, vestby_il])
             .med(Overklubb, [ås_il_overklubb])
             .bygg())
@@ -468,7 +466,7 @@ def test_les_klubber_unntatt_overbygning_med_overklubb_som_ikke_finnes_feiler():
         ]
     }
 
-    seriedata = (Testdatabygger(Tilganger.ALT)
+    seriedata = (Testdatabygger()
             .med(Klubb, [ås_il, vestby_il])
             .med(Overklubb, [])
             .bygg())
@@ -493,7 +491,7 @@ def test_les_klubber_unntatt_overbygning_med_ikkematchende_overklubb_id_og_navn_
         ]
     }
 
-    seriedata = (Testdatabygger(Tilganger.ALT)
+    seriedata = (Testdatabygger()
             .med(Klubb, [ås_il, vestby_il])
             .med(Overklubb, [ås_il_overklubb])
             .bygg())
@@ -516,7 +514,7 @@ def test_les_klubber_unntatt_overbygning_med_ikkematchende_moderklubb_id_og_navn
         ]
     }
 
-    seriedata = (Testdatabygger(Tilganger.ALT)
+    seriedata = (Testdatabygger()
             .med(Klubb, [ås_il, vestby_il])
             .med(Overklubb, [ås_il_overklubb])
             .bygg())
@@ -544,7 +542,7 @@ def test_les_utøvere_unntatt_overbygning_returnerer_innleste_utøvere_unntatt_o
         ]
     }
     
-    seriedata = (Testdatabygger(Tilganger.ALT)
+    seriedata = (Testdatabygger()
             .med(Utøver, [utøver])
             .med(Klubb, [ås_il, ik_tjalve])
             .med(Overklubb, [ik_tjalve_overklubb])
@@ -575,7 +573,7 @@ def test_les_utøvere_unntatt_overbygning_med_ikkematchende_utøver_id_og_navn_f
         ]
     }
     
-    seriedata = (Testdatabygger(Tilganger.ALT)
+    seriedata = (Testdatabygger()
             .med(Utøver, [utøver])
             .med(Klubb, [ås_il, ik_tjalve])
             .med(Overklubb, [ik_tjalve_overklubb])
@@ -601,7 +599,7 @@ def test_les_utøvere_unntatt_overbygning_med_overbygning_som_ikke_finnes_feiler
         ]
     }
     
-    seriedata = (Testdatabygger(Tilganger.ALT)
+    seriedata = (Testdatabygger()
             .med(Utøver, [utøver])
             .med(Klubb, [ås_il, ik_tjalve])
             .med(Overklubb, [ik_tjalve_overklubb])
@@ -628,7 +626,7 @@ def test_les_utøvere_unntatt_overbygning_med_ikkematchende_moderklubb_id_og_nav
         ]
     }
     
-    seriedata = (Testdatabygger(Tilganger.ALT)
+    seriedata = (Testdatabygger()
             .med(Utøver, [utøver])
             .med(Klubb, [ås_il, ik_tjalve])
             .med(Overklubb, [ik_tjalve_overklubb])
@@ -650,7 +648,7 @@ def test_les_rullestolutøvere_returnerer_innleste_rullestolutøvere():
         ]
     }
 
-    seriedata = (Testdatabygger(Tilganger.ALT)
+    seriedata = (Testdatabygger()
             .med(Utøver, [per])
             .bygg())
     
@@ -674,7 +672,7 @@ def test_les_rullestolutøvere_med_ikkematchende_utøver_id_og_navn_feiler():
         ]
     }
 
-    seriedata = (Testdatabygger(Tilganger.ALT)
+    seriedata = (Testdatabygger()
             .med(Utøver, [per])
             .bygg())
     

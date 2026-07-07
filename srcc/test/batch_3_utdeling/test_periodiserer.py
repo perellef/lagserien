@@ -10,14 +10,12 @@ from srcc.main.utils.orm._serie import Serie
 
 from srcc.main.batch_3_utdeling.periodiserer import Periodiserer
 
-from srcc.main.kontrollsenter.tilganger import Tilganger
-
 from datetime import date
 
 # periodiserer_serieresultater
 def test_periodiser_serieresultater_starter_ny_periode_hvis_serieresultat_ikke_finnes():
 
-    seriedata = (Testdatabygger(Tilganger.MANIPULATOR)
+    seriedata = (Testdatabygger()
             .med(Serie, [en_serie(serieår=2025)])
             .med(MannSerieresultat, [])
             .bygg())
@@ -39,7 +37,7 @@ def test_periodiser_serieresultater_beholder_periode_hvis_serieresultat_finnes()
 
     serieresultat = et_serieresultat(fra_og_med=date(2025,1,1), til_og_med=None, poeng=100, klubb="Ås IL", dato=date(2025,1,1), resultatforløp="Innlastet.")
 
-    seriedata = (Testdatabygger(Tilganger.MANIPULATOR)
+    seriedata = (Testdatabygger()
             .med(Serie, [en_serie(serieår=2025)])
             .med(MannSerieresultat, [serieresultat])
             .bygg())
@@ -59,7 +57,7 @@ def test_periodiser_serieresultater_avslutter_gammel_og_starter_ny_periode_hvis_
  
     serieresultat = et_serieresultat(fra_og_med=date(2025,1,1), til_og_med=None, poeng=100, klubb="Ski IL", dato=date(2025,1,1), resultatforløp="Innlastet.")
 
-    seriedata = (Testdatabygger(Tilganger.MANIPULATOR)
+    seriedata = (Testdatabygger()
             .med(Serie, [en_serie(serieår=2025)])
             .med(MannSerieresultat, [serieresultat])
             .bygg())
@@ -81,7 +79,7 @@ def test_periodiser_serieresultater_avslutter_gammel_og_starter_ny_periode_hvis_
 def test_periodiser_serieresultater_avslutter_gammel_og_starter_ny_periode_hvis_serieresultat_har_annen_poeng():
     serieresultat = et_serieresultat(fra_og_med=date(2025,1,1), til_og_med=None, poeng=200, klubb="Ås IL", dato=date(2025,1,1), resultatforløp="Innlastet.")
 
-    seriedata = (Testdatabygger(Tilganger.MANIPULATOR)
+    seriedata = (Testdatabygger()
             .med(Serie, [en_serie(serieår=2025)])
             .med(MannSerieresultat, [serieresultat])
             .bygg())
@@ -106,7 +104,7 @@ def test_periodiser_serieresultater_avslutter_gammel_og_starter_ny_periode_hvis_
  
     serieresultat = et_serieresultat(fra_og_med=date(2025,1,1), til_og_med=None, poeng=100, klubb="Ås IL", dato=date(2025,1,1), resultatforløp="Innlastet.")
 
-    seriedata = (Testdatabygger(Tilganger.MANIPULATOR)
+    seriedata = (Testdatabygger()
             .med(Serie, [en_serie(serieår=2025)])
             .med(MannSerieresultat, [serieresultat])
             .bygg())
@@ -130,7 +128,7 @@ def test_periodiser_serieresultater_avslutter_gammel_og_starter_ny_periode_hvis_
 def test_periodiser_serieresultater_avkutter_ikke_serieresultater_fra_andre_serieår():
     serieresultat = et_serieresultat(fra_og_med=date(2025,1,1), til_og_med=None, poeng=100, klubb="Ås IL", dato=date(2025,1,1), resultatforløp="Innlastet.")
 
-    seriedata = (Testdatabygger(Tilganger.MANIPULATOR)
+    seriedata = (Testdatabygger()
             .med(Serie, [
                 en_serie(serieår=2025),
                 en_serie(serieår=2026)

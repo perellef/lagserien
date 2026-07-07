@@ -15,8 +15,6 @@ from srcc.main.utils.orm._kvinne_serieøvelse import KvinneSerieøvelse
 from srcc.main.batch_4_kalkulator.resultatklargjøring import Resultatklargjøring
 from srcc.main.batch_4_kalkulator.kalkulatorbatch import Kalkulatorbatch
 
-from srcc.main.kontrollsenter.tilganger import Tilganger
-
 from datetime import date
 
 # hent_klubbresultater
@@ -37,7 +35,7 @@ def test_hent_klubbresultater_henter_kun_serieresultater_som_overlapper_uttrekks
 
     serieøvelser = [en_mann_serieøvelse(serieår=serieår, øvelse=øvelse, prioritet=i) for i,(øvelse, _, _, _) in enumerate(resultatdata)]
 
-    seriedata = (Testdatabygger(Tilganger.KALKULATOR)
+    seriedata = (Testdatabygger()
             .med(Serie, [en_serie(serieår=serieår)])
             .med(Resultat, resultater)
             .med(MannSerieresultat, serieresultater)
@@ -69,7 +67,7 @@ def test_hent_klubbresultater_fordeler_resultatene_på_klubb():
 
     serieøvelser = [en_mann_serieøvelse(serieår=serieår, øvelse=øvelse, prioritet=i) for i,(øvelse, _, _) in enumerate(resultatdata)]
 
-    seriedata = (Testdatabygger(Tilganger.KALKULATOR)
+    seriedata = (Testdatabygger()
             .med(Serie, [en_serie(serieår=serieår)])
             .med(Resultat, resultater)
             .med(MannSerieresultat, serieresultater)
@@ -102,7 +100,7 @@ def test_hent_klubbresultater_henter_kun_serieresultater_med_serieøvelse_tilhø
 
     menn_serieøvelser = [en_mann_serieøvelse(serieår=serieår, øvelse="110m hekk", prioritet=1)]
 
-    seriedata = (Testdatabygger(Tilganger.KALKULATOR)
+    seriedata = (Testdatabygger()
             .med(Serie, [en_serie(serieår=serieår)])
             .med(Resultat, resultater)
             .med(MannSerieresultat, serieresultater)
