@@ -32,6 +32,7 @@ Skjermtilpasning:
 - I Lagoppstiller så skvises Mine Resultater og Oppstillingsregler sammen 
 
 Senere:
+- oppdatere excelfiler burde også støtte uttrekksdato
 - I oversikten:
     - Legge til tabell basert på potensialer
     - Nye stevner

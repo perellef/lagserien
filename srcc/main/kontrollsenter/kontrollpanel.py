@@ -91,7 +91,7 @@ class Kontrollpanel:
         except Exception:
             seriedata.rollback()
             seriedata.bulkslett([pågående_kjøring])
-            seriedata.bulkinnsett([Batchkjøring(batch=batch.batchnummer, serieår=serieår, uttrekksdato=uttrekksdato, status="feilet", start=datetime.now(timezone.utc), slutt=datetime.now(timezone.utc))])
+            seriedata.bulkinnsett([Batchkjøring(batch=batch.batchnummer, serieår=serieår, uttrekksdato=uttrekksdato, status="feilet", start=start, slutt=datetime.now(timezone.utc))])
             seriedata.commit()
             seriedata.lukk()
             print(traceback.format_exc())
