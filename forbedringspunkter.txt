@@ -19,6 +19,7 @@ Nettside (tidsvekt):
 - / (10) Lage adminside:
 -   (7) Lage tidligere år-side:
 -   (5) Lage stevneside der man kan se alle resultatene til et stevne. Kanskje best å bare videresende til statistikken? - tror jeg ikke går
+-   (3) Gjøre Om serien mer fin å lese. Flytte poengtabell hit.
 
 Bugliste:
 - Vis klubber i 1. og 2. divisjon som ikke har poeng enda
@@ -26,6 +27,17 @@ Bugliste:
 - Hvis man kjører tilbake i tid (tidligere uttrekksdato), så blir (nok) resultatbytter lagt til senere også tatt med. Det gjør det vanskeligere å sammenlikne. 
 
 Skjermtilpasning:
+
+- Lagverktøy:
+    - Lagsammenlikner:
+        - Felt der man velger hvem man sammenlikner med er ved siden av, på venstre side. (må ha en knapp for "endre lag" etter sammenlikning er gjort)
+    - Lagverifiserer:
+        - Drag and drop av resultater for å bytte plass
+        - Automatisk vurdering av om oppstillingen er gyldig (rød skrift for å indikere reglene som brytes)
+        - Automatisk vurdering av om oppstillingen er svakere eller bedre enn beregnet optimal
+    - Lagoppstiller:
+        - Ha en "+"-knapp istedenfor permanent "Legg til resultat"-felt
+
 - Undersider, Kontakt og Ressurser plasseres rart når de skvises på hver sin linje
 - Nyhetsartiklene på forsiden blir skvist. Tenker det heller burde være så mange man får plass på en linje.
 - Linjehøyden blir veldig stor når ting skvises til to linjer (f.eks "Ikoner er hentet ..." (footer) og "Beste lag i ...")

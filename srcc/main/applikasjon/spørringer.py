@@ -261,20 +261,27 @@ def db_hent_kretser(peker, dato):
     
     return [el[0] for el in resultat]
 
+
 @timeit
-def db_hent_besøksdata(peker):
+def db_hent_besøksdata_antall_klikk(peker):
     resultat = execute(peker, f'''
         WITH relevante_brukere AS (
             SELECT bruker_uuid
             FROM "nettside.nettside_besøk"
-            WHERE side = '/'
-                OR side LIKE '%livetabell%'
-                OR side LIKE '%tidligere_år%'
-                OR side LIKE '%verktøy%'
-                OR side LIKE '%stevnestatus%'
-                OR side LIKE '%om_serien%'
             GROUP BY bruker_uuid
-            HAVING count(*) > 1
+            HAVING count(*) > 1 
+                AND SUM(
+                    CASE
+                        WHEN side = '/'
+                        OR side LIKE '%livetabell%'
+                        OR side LIKE '%tidligere_år%'
+                        OR side LIKE '%verktøy%'
+                        OR side LIKE '%stevnestatus%'
+                        OR side LIKE '%om_serien%'
+                        THEN 1
+                        ELSE 0
+                    END
+                )::numeric / COUNT(*) > 0.9
         )
         SELECT CAST(tidspunkt as DATE), count(*)
         FROM "nettside.nettside_besøk" besøk
@@ -291,6 +298,44 @@ def db_hent_besøksdata(peker):
     ''', ())
 
     return [(str(x), y) for x,y in resultat]
+
+@timeit
+def db_hent_besøksdata_antall_brukere(peker):
+    resultat = execute(peker, f'''
+        WITH relevante_brukere AS (
+            SELECT bruker_uuid
+            FROM "nettside.nettside_besøk"
+            GROUP BY bruker_uuid
+            HAVING count(*) > 1
+                AND SUM(
+                    CASE
+                        WHEN side = '/'
+                        OR side LIKE '%livetabell%'
+                        OR side LIKE '%tidligere_år%'
+                        OR side LIKE '%verktøy%'
+                        OR side LIKE '%stevnestatus%'
+                        OR side LIKE '%om_serien%'
+                        THEN 1
+                        ELSE 0
+                    END
+                )::numeric / COUNT(*) > 0.9
+        )
+        SELECT CAST(tidspunkt as DATE), count(distinct besøk.bruker_uuid)
+        FROM "nettside.nettside_besøk" besøk
+            JOIN relevante_brukere on (besøk.bruker_uuid = relevante_brukere.bruker_uuid)
+        WHERE side = '/'
+            OR side LIKE '%livetabell%'
+            OR side LIKE '%tidligere_år%'
+            OR side LIKE '%verktøy%'
+            OR side LIKE '%stevnestatus%'
+            OR side LIKE '%om_serien%'
+        GROUP BY cast(tidspunkt as DATE)
+        ORDER BY cast(tidspunkt as DATE)
+        ;
+    ''', ())
+
+    return [(str(x), y) for x,y in resultat]
+
 
 @timeit
 def db_hent_noteringer_til_lag(peker, kjønn, serieår, klubbnavn, lagnummer):

@@ -12,23 +12,47 @@
 <h3>Se oversikter</h3>
 
 <div>
-  <canvas id="myChart"></canvas>
+  <canvas id="myChart1"></canvas>
+  <canvas id="myChart2"></canvas>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0/dist/chart.umd.min.js"></script>
 <script>
-  const ctx = document.getElementById('myChart');
+  const ctx1 = document.getElementById('myChart1');
+  const ctx2 = document.getElementById('myChart2');
 
-  const besøkstall_per_dag = {{ besøkstall|tojson }}
+  const besøkstall_klikk_per_dag = {{ besøksdata_antall_klikk | tojson }}
+  const besøkstall_brukere_per_dag = {{ besøksdata_antall_brukere | tojson }}
 
-  new Chart(ctx, {
+  new Chart(ctx1, {
     type: 'line',
     data: {
-      labels: besøkstall_per_dag.map(par => par[0]),
+      labels: besøkstall_klikk_per_dag.map(par => par[0]),
       datasets: [{
-        label: 'Besøkstall per dag',
-        data: besøkstall_per_dag.map(par => par[1]),
-        borderWidth: 1
+        label: 'Brukerklikk per dag',
+        data: besøkstall_klikk_per_dag.map(par => par[1]),
+        borderWidth: 1,
+        pointRadius: 0
+      }]
+    },
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+    }
+  });
+
+  new Chart(ctx2, {
+    type: 'line',
+    data: {
+      labels: besøkstall_brukere_per_dag.map(par => par[0]),
+      datasets: [{
+        label: 'Brukere/enheter per dag',
+        data: besøkstall_brukere_per_dag.map(par => par[1]),
+        borderWidth: 1,
+        pointRadius: 0
       }]
     },
     options: {
