@@ -336,6 +336,78 @@ def db_hent_besøksdata_antall_brukere(peker):
 
     return [(str(x), y) for x,y in resultat]
 
+@timeit
+def db_hent_besøksdata_klokkeslett(peker, serieår):
+    return execute(peker, f'''
+        WITH relevante_brukere AS (
+            SELECT bruker_uuid
+            FROM "nettside.nettside_besøk"
+            GROUP BY bruker_uuid
+            HAVING count(*) > 1 
+                AND SUM(
+                    CASE
+                        WHEN side = '/'
+                        OR side LIKE '%livetabell%'
+                        OR side LIKE '%tidligere_år%'
+                        OR side LIKE '%verktøy%'
+                        OR side LIKE '%stevnestatus%'
+                        OR side LIKE '%om_serien%'
+                        THEN 1
+                        ELSE 0
+                    END
+                )::numeric / COUNT(*) > 0.9
+        )
+        SELECT LPAD(EXTRACT(HOUR FROM date_trunc('hour', tidspunkt + interval '30 minutes'))::int::text, 2, '0'),
+            count(*)
+        FROM "nettside.nettside_besøk" besøk
+            JOIN relevante_brukere on (besøk.bruker_uuid = relevante_brukere.bruker_uuid)
+        WHERE (side = '/'
+                OR side LIKE '%livetabell%'
+                OR side LIKE '%tidligere_år%'
+                OR side LIKE '%verktøy%'
+                OR side LIKE '%stevnestatus%'
+                OR side LIKE '%om_serien%')
+            AND EXTRACT(YEAR FROM tidspunkt) = {{placeholder}}
+        GROUP BY EXTRACT(HOUR FROM date_trunc('hour', tidspunkt + interval '30 minutes'))
+        ORDER BY EXTRACT(HOUR FROM date_trunc('hour', tidspunkt + interval '30 minutes'))
+        ;
+    ''', (serieår,))
+
+@timeit
+def db_hent_besøksdata_klubber(peker, serieår):
+    return execute(peker, f'''
+        WITH
+            relevante_brukere AS (
+                SELECT bruker_uuid
+                FROM "nettside.nettside_besøk"
+                GROUP BY bruker_uuid
+                HAVING count(*) > 1 
+                    AND SUM(
+                        CASE
+                            WHEN side = '/'
+                            OR side LIKE '%livetabell%'
+                            OR side LIKE '%tidligere_år%'
+                            OR side LIKE '%verktøy%'
+                            OR side LIKE '%stevnestatus%'
+                            OR side LIKE '%om_serien%'
+                            THEN 1
+                            ELSE 0
+                        END
+                    )::numeric / COUNT(*) > 0.9
+            ),
+            klubbtrykk AS (
+                SELECT regexp_replace(regexp_replace(regexp_replace(split_part(side, '/', 3), '\s*\(menn\)$', ''), '\s*\(kvinner\)$', ''), '\s+\S+\s+lag$', '') AS klubb
+                FROM "nettside.nettside_besøk" besøk
+                    JOIN relevante_brukere on (besøk.bruker_uuid = relevante_brukere.bruker_uuid)
+                WHERE EXTRACT(YEAR FROM tidspunkt) = {{placeholder}}
+                AND side LIKE '%livetabell/%'
+            )
+        SELECT klubb, count(*)
+        FROM klubbtrykk
+        GROUP BY klubb
+        ORDER BY count(*) desc
+        ;
+    ''', (serieår,))
 
 @timeit
 def db_hent_noteringer_til_lag(peker, kjønn, serieår, klubbnavn, lagnummer):

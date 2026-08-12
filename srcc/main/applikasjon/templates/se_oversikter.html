@@ -14,15 +14,21 @@
 <div>
   <canvas id="myChart1"></canvas>
   <canvas id="myChart2"></canvas>
+  <canvas id="myChart3"></canvas>
+  <canvas id="myChart4"></canvas>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0/dist/chart.umd.min.js"></script>
 <script>
   const ctx1 = document.getElementById('myChart1');
   const ctx2 = document.getElementById('myChart2');
+  const ctx3 = document.getElementById('myChart3');
+  const ctx4 = document.getElementById('myChart4');
 
   const klikk_per_dag = {{ klikk_per_dag | tojson }}
   const brukere_per_dag = {{ brukere_per_dag | tojson }}
+  const daglige_klikk_per_time = {{ daglige_klikk_per_time | tojson }}
+  const besøksdata_klubber = {{ besøksdata_klubber | tojson }}
   const gj_klikk = {{ gj_klikk | tojson }}
   const gj_brukere = {{ gj_brukere | tojson }}
 
@@ -77,6 +83,49 @@
       }
     }
   });
+
+  new Chart(ctx3, {
+    type: 'bar',
+    data: {
+      labels: daglige_klikk_per_time.map(par => par[0]),
+      datasets: [{
+        label: 'Daglige klikk per klokketime ' + cached_data.serieår,
+        data: daglige_klikk_per_time.map(par => par[1]),
+        borderWidth: 1,
+        pointRadius: 0
+      }]
+    },
+    options: {
+      aspectRatio: 4,
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+    }
+  });
+  
+  new Chart(ctx4, {
+    type: 'bar',
+    data: {
+      labels: besøksdata_klubber.map(par => par[0]),
+      datasets: [{
+        label: 'Klubbaktivitet ' + cached_data.serieår,
+        data: besøksdata_klubber.map(par => par[1]),
+        borderWidth: 1,
+        pointRadius: 0
+      }]
+    },
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+    }
+  });
+
+
 </script>
 <br>
 <br>
