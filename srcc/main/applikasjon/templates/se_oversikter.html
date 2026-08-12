@@ -21,16 +21,24 @@
   const ctx1 = document.getElementById('myChart1');
   const ctx2 = document.getElementById('myChart2');
 
-  const besøkstall_klikk_per_dag = {{ besøksdata_antall_klikk | tojson }}
-  const besøkstall_brukere_per_dag = {{ besøksdata_antall_brukere | tojson }}
+  const klikk_per_dag = {{ klikk_per_dag | tojson }}
+  const brukere_per_dag = {{ brukere_per_dag | tojson }}
+  const gj_klikk = {{ gj_klikk | tojson }}
+  const gj_brukere = {{ gj_brukere | tojson }}
 
   new Chart(ctx1, {
     type: 'line',
     data: {
-      labels: besøkstall_klikk_per_dag.map(par => par[0]),
+      labels: klikk_per_dag.map(par => par[0]),
       datasets: [{
         label: 'Brukerklikk per dag',
-        data: besøkstall_klikk_per_dag.map(par => par[1]),
+        data: klikk_per_dag.map(par => par[1]),
+        borderWidth: 1,
+        pointRadius: 0
+      },
+      {
+        label: 'Gj.snitt ±3 dager',
+        data: gj_klikk,
         borderWidth: 1,
         pointRadius: 0
       }]
@@ -47,10 +55,16 @@
   new Chart(ctx2, {
     type: 'line',
     data: {
-      labels: besøkstall_brukere_per_dag.map(par => par[0]),
+      labels: brukere_per_dag.map(par => par[0]),
       datasets: [{
         label: 'Brukere/enheter per dag',
-        data: besøkstall_brukere_per_dag.map(par => par[1]),
+        data: brukere_per_dag.map(par => par[1]),
+        borderWidth: 1,
+        pointRadius: 0
+      },
+      {
+        label: 'Gj.snitt ±3 dager',
+        data: gj_brukere,
         borderWidth: 1,
         pointRadius: 0
       }]
