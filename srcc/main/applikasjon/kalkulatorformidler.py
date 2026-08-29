@@ -29,7 +29,6 @@ from srcc.main.utils.orm._mann_topplag import MannTopplag
 
 from datetime import date
 
-# TODO: uhardkod disse
 løpsøvelser = {"60m": "60", "100m": "100", "200m": "200", "400m": "400", "800m": "800", "1500m": "1500", "3000m": "3000", "5000m": "5000", "10000m": "10000", "3000m hinder": "3000H", "60m hekk": "60h", "100m hekk": "100h", "110m hekk": "110h", "400m hekk": "400h", "3000m kapp.": "3000K", "5000m kapp.": "5000K", "10000m kapp.": "10000K"}
 tekniske_øvelser = {"Høyde": "høyde", "Stav": "stav", "Lengde": "lengde", "Tresteg": "tresteg", "Høyde u.t": "hut", "Lengde u.t": "lut", "Kule": "kule", "Diskos": "diskos", "Slegge": "slegge", "Spyd": "spyd"} 
 øvelser = løpsøvelser | tekniske_øvelser
@@ -37,37 +36,34 @@ tekniske_øvelser = {"Høyde": "høyde", "Stav": "stav", "Lengde": "lengde", "Tr
 class Kalkulatorformidler:
 
     @staticmethod
-    def beregn_oppstilling(resultater,  oppstillingsregler):
+    def beregn_oppstilling(resultater, krav, topplag):
         utøvere = {}
-        for i,(_,_,navn,utøver_id,_) in enumerate(resultater, start=1):
+        for i,(_,_,navn,utøver_id) in enumerate(resultater, start=1):
             if navn not in utøvere:
                 utøvere[navn] = Utøver(utøver_id=utøver_id, navn=f"{navn} ({utøver_id})", fødselsår=None)
 
         øvelser = {}
-        for _,øvelsesnavn,_,_,_ in resultater:
+        for _,øvelsesnavn,_,_ in resultater:
             if øvelsesnavn not in øvelser:
                 øvelser[øvelsesnavn] = Øvelse(øvelseskode=øvelsesnavn, øvelsesnavn=øvelsesnavn)
 
-        råresultater = [(int(poeng), øvelser[øvelsesnavn].øvelseskode, utøvere[navn].utøver_id, kilde) for poeng, øvelsesnavn, navn, _,kilde in resultater]
+        råresultater = [(int(poeng), øvelser[øvelsesnavn].øvelseskode, utøvere[navn].utøver_id) for poeng, øvelsesnavn, navn, _ in resultater]
        
         brukte = set()
         menn_serieresultater = []
         resultater = []
         poenger = {}
-        for i,(poeng, øvelseskode, utøver_id, kilde) in enumerate(sorted(råresultater, reverse=True)):
+        for i,(poeng, øvelseskode, utøver_id) in enumerate(sorted(råresultater, reverse=True)):
             if (utøver_id, øvelseskode) in brukte:
                 continue
             brukte.add((utøver_id, øvelseskode))
             
-            resultater.append(Resultat(resultat_id=i, stevne_id=1, utøver_id=utøver_id, øvelseskode=øvelseskode, prestasjon=kilde, dato=date(2100,1,1), statistikk_resultat_id=i))
+            resultater.append(Resultat(resultat_id=i, stevne_id=1, utøver_id=utøver_id, øvelseskode=øvelseskode, prestasjon="0.0", dato=date(2100,1,1), statistikk_resultat_id=i))
             menn_serieresultater.append(MannSerieresultat(resultat_id=i, fra_og_med=date(2100,1,1), til_og_med=None, poeng=poeng, klubb_id=1, forløp=""))
             poenger[i] = poeng
 
-        oppstillingskrav = [Oppstillingskrav(serieår=2100, divisjon=3, antall_obligatoriske=12, antall_valgfri=8, maks_obligatoriske_løp=9, maks_valgfri_løp=5, maks_resultater_per_utøver=5)]
-        menn_topplag = []
-        for i,regel in enumerate(oppstillingsregler, start=1):
-            oppstillingskrav.append(Oppstillingskrav(serieår=2100, divisjon=i+3, antall_obligatoriske=int(regel[0]), antall_valgfri=int(regel[1]), maks_obligatoriske_løp=int(regel[0])-int(regel[2]), maks_valgfri_løp=int(regel[1])-int(regel[3]), maks_resultater_per_utøver=5))
-            menn_topplag.append(MannTopplag(serieår=2100, klubb_id=1, lagnummer=i, divisjon=i+3))
+        oppstillingskrav = [Oppstillingskrav(serieår=2100, divisjon=k[0], antall_obligatoriske=int(k[1]), antall_valgfri=int(k[2]), maks_obligatoriske_løp=int(k[3]), maks_valgfri_løp=int(k[4]), maks_resultater_per_utøver=k[5]) for k in krav]
+        menn_topplag = [MannTopplag(serieår=2100, klubb_id=1, lagnummer=t[1], divisjon=t[2]) for t in topplag]
         
         serieøvelser_løp = [MannSerieøvelse(serieår=2100, øvelseskode=øvelse, er_obligatorisk=True, er_teknisk=False, prioritet=i) for i,øvelse in enumerate(løpsøvelser, start=1)]
         serieøvelser_tekniske = [MannSerieøvelse(serieår=2100, øvelseskode=øvelse, er_obligatorisk=True, er_teknisk=True, prioritet=i+len(serieøvelser_løp)) for i,øvelse in enumerate(tekniske_øvelser, start=1)]
@@ -75,7 +71,6 @@ class Kalkulatorformidler:
 
         seriedata = (Testdatabygger()
             .med(Serie, [Serie(serieår=2100, fra_og_med=date(2100,1,1), til_og_med=date(2100,12,31))])
-            .med(Oppstillingskrav, oppstillingskrav)
             .med(Utøver, list(utøvere.values()))
             .med(Øvelse, list(øvelser.values()))
             .med(Klubb, [Klubb(klubb_id=1, klubbnavn="123", kjernenavn="123")])
@@ -83,6 +78,7 @@ class Kalkulatorformidler:
             .med(Resultat, resultater)
             .med(MannSerieresultat, menn_serieresultater)
             .med(MannSerieøvelse, menn_serieøvelser)
+            .med(Oppstillingskrav, oppstillingskrav)
             .med(MannTopplag, menn_topplag)
             .bygg()
         )
@@ -115,8 +111,7 @@ class Kalkulatorformidler:
         for laginfo in seriedata.hent(MannLaginfo):
             laginfoer[laginfo.lagnummer] = laginfo.poeng
 
-        lag_usortert = {lagnr: {oppstillingstype: list(map(lambda x: x[:4], list(sorted(lagresultater, key=lambda x: x[4])))) for oppstillingstype, lagresultater in oppstillinger.items()} for lagnr,oppstillinger in alle_lag.items()}
-
+        lag_usortert = {lagnr: {oppstillingstype: list(map(lambda x: x[:3], list(sorted(lagresultater, key=lambda x: x[4])))) for oppstillingstype, lagresultater in oppstillinger.items()} for lagnr,oppstillinger in alle_lag.items()}
         return [(laginfoer[el[0]], el[1]) for el in list(sorted(lag_usortert.items(), key=lambda x: x[0]))]
 
     @staticmethod
@@ -176,7 +171,7 @@ class Kalkulatorformidler:
                 resultatIDer[el] = i
                 i += 1
 
-        berikede_oppstillinger = [Kalkulatorformidler.finn_beriket_oppstilling(oppstillingskrav, forrige, forrige, set(), set(), {})]
+        berikede_oppstillinger = [Kalkulatorformidler.finn_ukas_forbedringer(oppstillingskrav, forrige, forrige, set(), set(), {})]
         for (øvelse, hvem_da, poeng, _, (obl, val)) in forbedringer:
             ny_obl, ny_val = Kalkulatorformidler.oppdater_oppstilling_med_nytt_resultat(oppstillingskrav, obl, val, (poeng, øvelse, hvem_da), obl_øvelser, tek_øvelser, serieøvelser, utøvere)
             
@@ -189,7 +184,7 @@ class Kalkulatorformidler:
                         neste[oppst].append([el[0], øvelser[el[1]], 'kommer', el[2] if el[2] not in utøvere else utøvere[el[2]], '' if el[2] in utøvere or el[2] == '' else "ny", '', '', i])
                         i += 1
 
-            berikede_oppstillinger.append(Kalkulatorformidler.finn_beriket_oppstilling(oppstillingskrav, neste, forrige, set(), set(), {}))
+            berikede_oppstillinger.append(Kalkulatorformidler.finn_ukas_forbedringer(oppstillingskrav, neste, forrige, set(), set(), {}))
 
         oppstillinger = [{
             "OBLIGATORISK": [[e[0], e[2], e[3], e[4], e[5], e[-2], e[6]] for e in b_oppst["OBLIGATORISK"]],
@@ -283,12 +278,11 @@ class Kalkulatorformidler:
             serieresultater[resultat_id] = serieresultat
         oppstillingskrav = Oppstillingskrav(serieår=2100, divisjon=3, antall_obligatoriske=krav[0], antall_valgfri=krav[1], maks_obligatoriske_løp=krav[2], maks_valgfri_løp=krav[3], maks_resultater_per_utøver=krav[4])
 
-        resultater = Liste([Resultattype(res, serieøvelser_per[res.resultat.øvelseskode]) for res in serieresultater.values()])    
-        aktuelle_resultater = Kalkulator.finn_aktuelle_resultater(resultater.sort(reverse=True), oppstillingskrav)
-        for i,resultat in enumerate(aktuelle_resultater, start=1):
+        resultater = Liste([Resultattype(res.resultat, res.poeng, serieøvelser_per[res.resultat.øvelseskode]) for res in serieresultater.values()])    
+        for i,resultat in enumerate(reversed(sorted(resultater)), start=1):
             resultat.sett_resultatindeks(i)
 
-        oppstillingsgenerator = OppstillingsgeneratorForbedringer(oppstillingskrav, aktuelle_resultater)
+        oppstillingsgenerator = OppstillingsgeneratorForbedringer(oppstillingskrav, resultater)
         
         oppstillinger = oppstillingsgenerator.generer()
         return oppstillinger

@@ -2,8 +2,6 @@ from flask import render_template, abort
 from srcc.main.applikasjon.fellesinfo import cache, seriedata, serieår, f_uttrekksdato
 from srcc.main.applikasjon.spørringer import db_hent_klubbkrets, db_hent_klubb_id, db_hent_klubblag, db_hent_klubbresultater_med_overgangsinfo 
 
-from datetime import datetime, timezone
-
 def klubb(klubbnavn):
 
     if klubbnavn not in [e[0] for e in cache.data["klubber"]]:

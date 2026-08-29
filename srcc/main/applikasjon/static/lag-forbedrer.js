@@ -1,51 +1,5 @@
 
-document.getElementById('lagforb-kjønn-venstre').addEventListener('click', function() {
-    kjønn = document.getElementById('lagforb-kjønn');
-    if (kjønn.textContent == "menn") {
-        kjønn.textContent = "kvinner"
-    } else {
-        kjønn.textContent = "menn"
-    }
-});
-
-document.getElementById('lagforb-kjønn-høyre').addEventListener('click', function() {
-    kjønn = document.getElementById('lagforb-kjønn');
-    if (kjønn.textContent == "menn") {
-        kjønn.textContent = "kvinner"
-    } else {
-        kjønn.textContent = "menn"
-    }
-});
-
-function erTomKlubb(klubbValue) {
-    return klubbValue == ""
-}
-
-function erUkjentKlubb(klubbValue) {
-    return !cached_data.klubber.some(pair => pair[0] === klubbValue)
-}
-
-function finn_feilmelding_til_input(klubbValue) {
-    if (erTomKlubb(klubbValue)) return "Klubb må fylles inn."
-    if (erUkjentKlubb(klubbValue)) return "Klubben '" + klubbValue + "' finnes ikke."
-
-    return null
-}
-
 document.getElementById('analyser-lagforbedring').addEventListener('click', function() {
-
-    kjønnValue = document.getElementById('lagforb-kjønn').textContent;
-    klubbValue = document.getElementById('klubbInput').value;
-
-    errorMessage = document.getElementById('error-message');
-    
-    feilmelding = finn_feilmelding_til_input(klubbValue);
-    
-    errorMessage.textContent = "";
-    if (feilmelding !== null) {
-        errorMessage.textContent = feilmelding;
-        return;
-    }
 
     var beregningshjul = document.querySelector('#beregning') 
     if (beregningshjul.style.display == 'block') {
@@ -59,8 +13,8 @@ document.getElementById('analyser-lagforbedring').addEventListener('click', func
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-            kjønn: kjønnValue,
-            klubb: klubbValue,
+            kjønn: kjønn,
+            klubb: klubbnavn,
         }),
     })
     .then(response => response.json())
@@ -70,19 +24,56 @@ document.getElementById('analyser-lagforbedring').addEventListener('click', func
         analysefelt = document.getElementById("analysefelt");
         analysefelt.style.display = "block";
 
-        h2 = document.getElementById("klubb-som-analyseres");
-        h2.textContent = "Analyse av " + klubbValue;
-
         vis_forbedringer(rows);
         sett_oppstilling(rows[1][0])
 
     });
 });
 
-function sett_deloppstilling(id, resultater, oppstillingstype) {
-    tbody = document.getElementById(id);
-    tbody.innerHTML = "";
-    
+function sett_forbedring_deloppstilling(resultater, oppstillingstype) {
+    div = document.getElementById("analyser-lag");
+
+    h6 = document.createElement("h6");
+    h6.textContent = oppstillingstype + " OPPSTILLING";
+    h6.style.color = "rgb(61, 61, 61)";
+    h6.style.margin = "20px 0 8px 10%";
+
+    table = document.createElement("table");
+    table.style.fontSize = "0.8rem";
+    table.style.tableLayout = "fixed";
+    table.classList.add("table");
+    table.classList.add("table-sm");
+
+    thead = document.createElement("thead");
+    thead.classList.add("table-light");
+    tbody = document.createElement("tbody");
+
+    div.appendChild(h6);
+    div.appendChild(table);
+    table.appendChild(thead);
+    table.appendChild(tbody);
+
+    thead_tr = document.createElement("tr");
+    thead_tr.appendChild(document.createElement("th"));
+    thead_tr.appendChild(document.createElement("th"));
+    thead_tr.appendChild(document.createElement("th"));
+    thead_tr.appendChild(document.createElement("th"));
+    thead_tr.appendChild(document.createElement("th"));
+    thead.appendChild(thead_tr)
+
+    thead_tr.children[0].style.width = "3%";
+    thead_tr.children[0].style.visibility = "hidden";
+    thead_tr.children[0].style.border = "none";
+    thead_tr.children[1].style.width = "10%";
+    thead_tr.children[1].textContent = "Poeng";
+    thead_tr.children[2].style.width = "15%";
+    thead_tr.children[2].textContent = "Øvelse";
+    thead_tr.children[3].style.width = "30%";
+    thead_tr.children[3].textContent = "Navn";
+    thead_tr.children[4].style.width = "5%";
+    thead_tr.children[4].style.visibility = "hidden";
+    thead_tr.children[4].style.border = "none";
+
     resultater.forEach(function(resultat) {
         tr = document.createElement("tr");
 
@@ -93,7 +84,7 @@ function sett_deloppstilling(id, resultater, oppstillingstype) {
             if (indeks == 0) {
                 celle = td_med("", verdi == 0 ? "" : (verdi > 0 ? "+"+verdi : verdi));
                 celle.style.textAlign = "end";
-                celle.style.fontSize = "0.8rem"
+                celle.style.fontSize = "0.7rem"
                 celle.style.paddingRight = "5px"
                 celle.style.backgroundColor = "transparent";
                 celle.style.border = "none";
@@ -168,12 +159,21 @@ function td_med(klasse, verdi) {
     return td;
 }
 
-function sett_oppstilling(lagresultater) {
-    sett_deloppstilling("lagforbedrer-oppstilling-obl", lagresultater["OBLIGATORISK"], "OBLIGATORISK")
-    sett_deloppstilling("lagforbedrer-oppstilling-val", lagresultater["VALGFRI"], "VALGFRI")
+function sett_forbedringsoppstilling(lagresultater) {
+    document.getElementById("analyser-lag").innerHTML = "";
+
+    sett_forbedring_deloppstilling(lagresultater["OBLIGATORISK"], "OBLIGATORISK")
+    sett_forbedring_deloppstilling(lagresultater["VALGFRI"], "VALGFRI")
 }
 
 function vis_forbedringer(forbedringsdata) {
+    sett_forbedringsoppstilling(
+        {
+            OBLIGATORISK: lagresultater.OBLIGATORISK.filter(e => !e[10].includes("ut")).map(e => [0, e[2], e[3], e[4], e[5]]),
+            VALGFRI: lagresultater.VALGFRI.filter(e => !e[10].includes("ut")).map(e => [0, e[2], e[3], e[4], e[5]])
+        }
+    )
+
     var forbedringer_tabell = document.querySelector('#forbedringer-tabell');
     forbedringer_tabell.innerHTML = "";
 
@@ -216,8 +216,8 @@ function vis_forbedringer(forbedringsdata) {
             celle.style.whiteSpace = "nowrap";
             celle.style.overflow = "hidden";
             celle.style.textOverflow = "ellipsis";
-            celle.style.paddingTop = "1px";
-            celle.style.paddingBottom = "1px";
+            celle.style.paddingTop = "0px";
+            celle.style.paddingBottom = "0px";
             if (verdi == "hvem som helst" || verdi == "under 5 resultater") {
                 celle.style.fontStyle = "italic";
             }
@@ -228,7 +228,7 @@ function vis_forbedringer(forbedringsdata) {
         tr.style.cursor = "pointer";
 
         tr.addEventListener("click", () => {
-            sett_oppstilling(forbedringsdata[1][indeks+1]);
+            sett_forbedringsoppstilling(forbedringsdata[1][indeks+1]);
             tbody.querySelectorAll("td").forEach(td => td.style.backgroundColor = "white");
             tr.querySelectorAll("td").forEach(td => td.style.backgroundColor = "rgb(251, 247, 231)");
         });
@@ -258,9 +258,7 @@ function vis_forbedringer(forbedringsdata) {
     table.appendChild(tbody);
     table.style.tableLayout = "fixed";
     table.style.marginTop = "12px"
+    table.style.fontSize = "0.9rem";
 
     forbedringer_tabell.appendChild(table);
 }
-
-
-autocomplete(document.getElementById("klubbInput"), cached_data.klubber);

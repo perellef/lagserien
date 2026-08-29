@@ -25,14 +25,20 @@
     </div>
 </div>
 
-<div style="display: flex; flex-wrap: wrap; row-gap: 3px; justify-content: space-evenly; width: 100%;">
-    <button id="klubbinfo-knapp" class="lag-hovedknapp" style="background-color: white;">Klubbinfo</button>
-    <button id="resultater-knapp" class="lag-hovedknapp">Resultater</button>
-    <button id="historikk-knapp" class="lag-hovedknapp"><span style="visibility: hidden">Historikk</span></button>
+<style>
+  #klubb-knapper:hover {
+      overflow-x: auto !important;
+  }
+</style>
+<div style="display: flex; justify-content: center; height: 50px">
+    <div id="klubb-knapper" style="display: flex; flex-wrap: nowrap; max-width: 100%; overflow-x: hidden; transition: overflow 0.3s">
+        <button id="klubbinfo-knapp" style="height: 33px; border-radius: 15px; border: 4px lightgray solid; padding: 0 3vw 0 3vw; background-color: white; margin: 0 3vw 0 3vw">Klubbinfo</button>
+        <button id="resultater-knapp" style="height: 33px; border-radius: 15px; border: 4px lightgray solid; padding: 0 3vw 0 3vw; background-color: rgb(233, 233, 233); margin: 0 3vw 0 3vw">Resultater</button>
+        <button id="samarbeid-knapp" style="height: 33px; border-radius: 15px; border: 4px lightgray solid; padding: 0 3vw 0 3vw; background-color: rgb(233, 233, 233); margin: 0 3vw 0 3vw;"><span style="visibility: hidden;">Samarbeid</span></button>
+    </div>
 </div>
 
 <div id="klubbinfo" style="display: block;">
-    <br>
     <div class="container">
         <div class="row">
             <div class="col-md-6">

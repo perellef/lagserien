@@ -200,6 +200,7 @@ class Oppsettbatch():
             (87,   "Varegg IL"                 , "Varegg"),
             (174,  "Hareid IL"                 , "Hareid"),
             (318,  "Hamar IL"                  , "Hamar"),
+            (6,    "Lambertseter IF"           , "Lambertseter"),       
         ]
 
         klubber = []

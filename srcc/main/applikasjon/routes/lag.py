@@ -2,9 +2,11 @@ from flask import render_template, abort
 
 from srcc.main.applikasjon.kalkulatorformidler import Kalkulatorformidler 
 from srcc.main.applikasjon.fellesinfo import cache, seriedata, serieår, f_uttrekksdato
-from srcc.main.applikasjon.spørringer import db_hent_klubb_id, db_hent_laginfo, db_hent_klubbkrets, db_hent_lagresultater, db_hent_nye_resultater_siste_uke, db_hent_fjernede_resultater_siste_uke, db_hent_noteringer_til_lag, db_hent_ranking, db_hent_ranking_i_krets, db_hent_rekordranking, db_hent_sluttplassering, db_hent_resultatplasseringer_til_klubb, db_hent_lagplassering, db_hent_potensielle_lagresultater
+from srcc.main.applikasjon.spørringer import db_hent_klubb_id, db_hent_laginfo, db_hent_klubbkrets, db_hent_lagresultater, db_hent_nye_resultater_siste_uke, db_hent_fjernede_resultater_siste_uke, db_hent_noteringer_til_lag, db_hent_resultatplasseringer_til_klubb, db_hent_lagplassering, db_hent_potensielle_lagresultater, db_hent_historiske_plasseringer, db_hent_lagutøverdata, db_hent_lagutøverresultater, db_hent_resultater, db_hent_obligatoriske_øvelser, db_hent_løpsøvelser
 
-from datetime import timedelta, datetime, timezone
+from datetime import timedelta
+
+from collections import defaultdict
 
 def lag(kjonn, lagnavn):
     i_dag = f_uttrekksdato()
@@ -15,6 +17,9 @@ def lag(kjonn, lagnavn):
         abort(404)
 
     with seriedata.connect() as peker:
+        obløvelser = db_hent_obligatoriske_øvelser(peker, kjonn, serieår)
+        løpsøvelser = db_hent_løpsøvelser(peker, kjonn, serieår)
+
         nye_resultater = set(db_hent_nye_resultater_siste_uke(peker, kjonn, i_dag))
         fjernede_resultater = set(db_hent_fjernede_resultater_siste_uke(peker, kjonn, serieår, i_dag, klubbnavn, lagnummer))
 
@@ -22,30 +27,44 @@ def lag(kjonn, lagnavn):
         klubbkrets = db_hent_klubbkrets(peker, klubbnavn, i_dag)
         klubb_id = db_hent_klubb_id(peker, klubbnavn)
 
-        rank = db_hent_ranking(peker, kjonn, serieår, klubbnavn, lagnummer)
-        rekordrank,rekordår = db_hent_rekordranking(peker, kjonn, klubbnavn, lagnummer)
-        kretsrank = db_hent_ranking_i_krets(peker, kjonn, serieår, i_dag, klubbnavn, lagnummer)
-        
         lagresultater = db_hent_lagresultater(peker, kjonn, klubbnavn, lagnummer, serieår, i_dag)
         tidligere_lagresultater = db_hent_lagresultater(peker, kjonn, klubbnavn, lagnummer, serieår, i_dag-timedelta(7))
         potensielle_lagresultater = db_hent_potensielle_lagresultater(peker, kjonn, klubbnavn, lagnummer, serieår, i_dag)
 
         resultatplasseringer = db_hent_resultatplasseringer_til_klubb(peker, kjonn, serieår, i_dag, klubbnavn)
 
-        siste_3_år = [
-            [serieår-1, db_hent_sluttplassering(peker, kjonn, serieår-1, klubbnavn, lagnummer)],
-            [serieår-2, db_hent_sluttplassering(peker, kjonn, serieår-2, klubbnavn, lagnummer)],
-            [serieår-3, db_hent_sluttplassering(peker, kjonn, serieår-3, klubbnavn, lagnummer)],
-        ]
-
         noteringer = db_hent_noteringer_til_lag(peker, kjonn, serieår, klubbnavn, lagnummer)
         divisjon, plassering = db_hent_lagplassering(peker, kjonn, serieår, i_dag, klubbnavn, lagnummer)
         
+        utøverdata = db_hent_lagutøverdata(peker, kjonn, serieår, i_dag, i_dag-timedelta(7), klubb_id, lagnummer)
+        utøverresultater = defaultdict(list)
+
+        for r in db_hent_lagutøverresultater(peker, kjonn, serieår, i_dag, klubb_id, lagnummer):
+            utøverresultater[r[0]].append(r)
+
+        utøverdata = [u + [utøverresultater[u[5]]] for u in utøverdata]
+
+        historiske_plasseringer = db_hent_historiske_plasseringer(peker, kjonn, klubb_id, lagnummer, divisjon, plassering, serieår, klubbkrets)
+
         if plassering == None:
             abort(404)
+
+        klubbresultater = db_hent_resultater(peker, kjonn, klubbnavn, serieår, i_dag)
             
     berikede_lagresultater = Kalkulatorformidler.finn_ukas_forbedringer(noteringer, lagresultater, tidligere_lagresultater, nye_resultater, fjernede_resultater, resultatplasseringer)
     berikede_lagforbedringer = Kalkulatorformidler.finn_optimale_forbedringer(kjonn, noteringer, potensielle_lagresultater, lagresultater, resultatplasseringer)
+
+    oppstillingskrav = cache.data["krav"][divisjon]
+
+    krav = {
+        "antall-obl": oppstillingskrav[0],
+        "antall-val": oppstillingskrav[1],
+        "maks-obl-løp": oppstillingskrav[2],
+        "maks-val-løp": oppstillingskrav[3],
+        "maks-resultater-per-utøver": oppstillingskrav[4],
+        "obl-øvelser": obløvelser,
+        "løpsøvelser": løpsøvelser
+    }
 
     return render_template(
         "lag.html",
@@ -57,14 +76,14 @@ def lag(kjonn, lagnavn):
         klubb_id=klubb_id if klubb_id in cache.data["klubblogoer"] else None,
         lagnummer=lagnummer,
         kjønn=kjonn,
+        serieår=serieår,
         klubbkrets=klubbkrets,
-        rank="-" if rank == None else rank,
-        kretsrank="-" if kretsrank == None else kretsrank,
-        rekordrank=rekordrank,
-        rekordår=rekordår,
-        siste_3_år=siste_3_år,
         divisjon=divisjon,
-        plassering=plassering
+        plassering=plassering,
+        historiske_plasseringer=historiske_plasseringer,
+        utøverdata=utøverdata,
+        klubbresultater=klubbresultater,
+        krav=krav,
     )
 
 def utled_klubb_og_lagnummer(lagnavn):

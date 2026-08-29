@@ -1,109 +1,3 @@
-
-function vis_tverrsnitt_lagplasseringer(hovedlagets_plassering) {
-    divisjon = laginfo[1];
-
-    lagplasseringer = cached_data.livetabell[kjønn][divisjon]
-    noteringer = cached_data.noteringer[divisjon]
-
-    tbody = document.getElementById('tverrsnitt-lagplasseringer');
-    while (tbody.firstChild) {
-        tbody.removeChild(tbody.firstChild);
-    }
-
-    var forrige = 100000000
-    lagplasseringer.forEach(function(lagplassering, indeks) {
-            
-        if (indeks+1 < hovedlagets_plassering-2 || indeks+1 > hovedlagets_plassering + 2) {
-            forrige = lagplassering[3];
-            return;
-        } 
-
-        var lag = document.createElement('tr');
-
-        celler = [
-            td_med("plassering-endring", ""),
-            td_med("plassering", lagplassering[1]),
-            td_med("logo", ""),
-            td_med("lag", ""),
-            td_med("seriepoeng", lagplassering[3]),
-            td_med("poengendring", ""),
-            td_med("noteringer", lagplassering[5]+"/"+noteringer),
-            td_med("krets", lagplassering[7]),
-        ]
-
-        if (indeks+1 == hovedlagets_plassering) {
-            celler.forEach(function(celle) {
-                celle.style.backgroundColor = "#e1ffe5";
-            })
-        }
-
-        celler[0].style.fontSize = "0.8rem";
-        celler[4].style.textAlign = "right";
-        celler[5].style.fontSize = "0.85rem";
-        celler[5].style.textAlign = "right";
-        celler[5].style.paddingRight = "10px";
-        celler[6].style.textAlign = "right";
-        celler[7].style.paddingLeft = "20px";
-
-        if (lagplassering[0] > 0) {celler[0].textContent = lagplassering[0] + "▲"; celler[0].style.color = "green";}
-        if (lagplassering[0] < 0) {celler[0].textContent = String(lagplassering[0]).slice(1) + "▼"; celler[0].style.color = "red";} 
-
-        var anchor = document.createElement('a');
-        anchor.href = "/livetabell/" + lagplassering[2] + " ("+ kjønn+")";
-        anchor.textContent = lagplassering[2];
-        celler[3].appendChild(anchor)
-
-        if (lagplassering[4] > 0) {celler[5].textContent = "+" + lagplassering[4]}
-        if (lagplassering[4] < 0) {celler[5].textContent = lagplassering[4]}
-
-        if (cached_data.klubblogoer.includes(lagplassering[8])) {
-            logo = `${window.location.origin}/static/assets/klubblogo/${lagplassering[8]}.png`;
-            var img = document.createElement('img');
-            img.src = logo;
-            img.style.maxHeight = "100%"; 
-            
-            var anchor = document.createElement('a');
-            anchor.href = "/livetabell/" + lagplassering[2].replace(/\s\d\. lag$/, '');
-            anchor.append(img)
-
-            celler[2].appendChild(anchor)
-            celler[2].style.textAlign = "center";
-        }
-
-        celler.forEach((celle, indeks) => {
-            if (divisjon == 3 &&  forrige >= 5000 && celler[4].textContent < 5000) {
-                celle.style.borderTop = "solid 1.5px #777777"
-            }
-
-            if (celler[1].textContent == 4 && (divisjon == 2 || divisjon == 3)) {
-                celle.style.borderBottom = "solid 1px #999999"
-            }
-            if (celler[1].textContent == 10 && (divisjon == 1 || divisjon == 2)) {
-                celle.style.borderBottom = "solid 1px #999999"
-            }
-
-            celle.style.whiteSpace = "nowrap";
-            if (indeks == 3 || indeks == 7) {
-                celle.style.overflow = "hidden";
-                celle.style.textOverflow = "ellipsis";
-            }
-            lag.appendChild(celle);
-        });
-        forrige = celler[4].textContent;
-
-        tbody.appendChild(lag)
-    });
-}
-
-async function fileExists(url) {
-  try {
-    const response = await fetch(url, { method: 'HEAD' }); 
-    return response.ok;
-  } catch (err) {
-    return false;
-  }
-}
-
 function td_med(klasse, verdi) {
     td = document.createElement('td');
     td.className = klasse;
@@ -126,7 +20,6 @@ function sett_deloppstilling(id, oppstillingstype) {
     tbody.innerHTML = "";
     
     vis_endringer_siste_7_dager = document.getElementById('vis-endringer').checked
-
     vis_potensial = window.getComputedStyle(document.getElementById('oppstilling-potensial')).backgroundColor === "rgb(255, 255, 255)"
     
     resultater = vis_potensial ? lagforbedringer[oppstillingstype] : lagresultater[oppstillingstype];
@@ -243,6 +136,34 @@ function sett_deloppstilling(id, oppstillingstype) {
     })
 }
 
+function sett_verktøyoppstilling(id, oppstillingstype) {
+    tbody = document.getElementById(id);
+    
+    lagresultater[oppstillingstype].forEach(function(resultat) {
+        tr = document.createElement("tr");
+
+        if (resultat[10] == "ut" || resultat[10] == "ut-ned" || resultat[10] == "ut-opp") {
+            return;
+        }
+
+        resultat.forEach(function(verdi, indeks) {
+            
+            if (indeks == 0 || indeks == 1|| indeks == 4 || indeks == 6 || indeks == 7 || indeks == 8 || indeks == 9 || indeks == 10 || indeks == 11) {
+                return;
+            }
+            
+            celle = td_med("", verdi);
+            celle.style.whiteSpace = "nowrap";
+            celle.style.overflow = "hidden";
+            celle.style.textOverflow = "ellipsis";
+            celle.style.padding = "0";
+            tr.appendChild(celle);
+        })
+
+        tbody.appendChild(tr);
+    })
+}
+
 function finn_endringsfarge(endringsverdi) {
     if (endringsverdi == "") {
         return "#ffffff"
@@ -284,12 +205,198 @@ function sett_oppstilling() {
     sett_deloppstilling("val-oppstilling-nå", "VALGFRI")
 }
 
-document.getElementById("laginfo-knapp").addEventListener('click', function() {
-    document.getElementById("oppstilling").style.display = "none";
-    document.getElementById("laginfo").style.display = "block";
-    this.style.backgroundColor = "white";
-    document.getElementById("oppstilling-knapp").style.backgroundColor = "rgb(233, 233, 233)";
-});
+function sett_historiske_plasseringer(historiske_plasseringer) {
+    tbody = document.getElementById("tabell-historiske-plasseringer")
+
+    historiske_plasseringer.forEach(rad => {
+        tr = document.createElement("tr");
+        rad.forEach((v,i) => {
+            td = document.createElement("td");
+            if (i == 0) {
+                if (v > 0) {
+                    td.style.fontSize = "0.5rem"
+                    td.textContent = "▲";
+                    td.style.color = "green";
+                } else if (v < 0) {
+                    td.style.fontSize = "0.5rem"
+                    td.textContent = "▼";
+                    td.style.color = "red";
+                } else {
+                    td.style.fontSize = "0.7rem";
+                    td.style.fontWeight = "1000";
+                    td.textContent = "–";
+                    td.style.color = "gray";
+                } 
+            } else {
+                td.textContent = v;
+            }
+            td.style.paddingTop = "2px";
+            td.style.paddingBottom = "2px";
+            tr.appendChild(td);
+        })
+        tbody.appendChild(tr);
+    })
+}
+
+function sett_utøverdata(utøverdata) {
+    const div = document.getElementById("utøvere");
+
+    utøverdata.forEach((rad, r) => {
+        table = document.createElement("table");
+        table.style.fontSize = "0.9rem";
+        table.classList.add("table", "table-sm");
+        table.style.tableLayout = "fixed";
+        table.style.marginBottom = "0px";
+
+        thead = document.createElement("thead");
+        thead.classList.add("table-light");
+        table.appendChild(thead);
+
+        div.appendChild(table);
+        colgroup = document.createElement("colgroup");
+        table.appendChild(colgroup)
+
+        titler = [["", 1], ["Merverdi", 2],  ["Seriepoeng", 2], ["Utøver", 1], ["Født", 1]]
+        kolonner = [5, 5, 5, 5, 7, 35, 15]
+
+        kolonner.forEach(bredde => {
+            col = document.createElement("col");
+            col.style.width = bredde + "%";
+            colgroup.appendChild(col);
+        })
+
+        tr = document.createElement("tr");
+        thead.appendChild(tr);
+        if (r == 0) {
+            titler.forEach(([tittel, colspan]) => {
+                th = document.createElement("th");
+                th.textContent = tittel;
+                th.scope = "col";
+                th.colSpan=colspan;
+                tr.appendChild(th);
+            })
+        }
+
+        tbody = document.createElement("tbody");
+        table.appendChild(tbody)
+
+        tr = document.createElement("tr");
+        tr.style.cursor = "pointer";
+        var chevron = document.createElement('i');
+        chevron.classList.add("bi", "bi-chevron-down");
+        chevron.style.fontSize = "13px"; 
+        chevron.style.lineHeight = "0.4";
+        chevron.style.display = "block";
+        chevron.style.transform = "scaleY(0.6)";
+        td = document.createElement("td");
+        td.appendChild(chevron)
+        tr.appendChild(td)
+
+        tr.onclick = function(event) {
+            if (event.target.tagName === "A") return;
+           utøverres = document.getElementById("utøver-" + r)
+            this.querySelectorAll(":scope > td").forEach(td => {
+                td.style.setProperty("background-color", (utøverres.style.display == "none") ? "#eeeeee" : "white", "important");
+            });
+            utøverres.style.display = (utøverres.style.display == "none") ? "block" : "none";
+
+        }
+
+        tbody.appendChild(tr)
+
+        rad.forEach((v, i) => {
+            if (i == 5 || i == 7) {
+                return;
+            }
+            td = document.createElement("td");
+            td.style.paddingTop = "0";
+            td.style.paddingBottom = "0";
+            td.style.verticalAlign = "middle";
+
+            if (i == 4) {
+                var anchor = document.createElement('a');   
+                anchor.href = "/utovere/" + rad[5];
+                anchor.textContent = v;
+                anchor.style.textDecoration = "none";
+                td.appendChild(anchor)
+            } else {
+                if (i == 1  || i == 3) {
+                    td.style.fontSize = "0.75rem";
+                    td.style.paddingLeft = "15px";
+                    v = v > 0 ? "+"+v : (v == 0 ? "" : v)
+                } else if (i == 0  || i == 2) {
+                    td.style.textAlign = "right";
+                }
+                td.textContent = v;
+            }
+            
+            td.style.whiteSpace = "nowrap";
+            td.style.overflow = "hidden";
+            td.style.textOverflow = "ellipsis";
+
+            tr.appendChild(td);
+        });
+        
+        utøverres = lag_utøverens_resultattabell(rad[7]);
+        utøverres.id = "utøver-" + r;
+        utøverres.style.display = "none";
+                  
+        div.appendChild(utøverres);
+    });
+}
+
+function lag_utøverens_resultattabell(utøverresultater) {
+    table = document.createElement("table");
+
+    table.classList.add("table", "table-sm");
+    table.style.margin = "3px 0 5px 40px";
+    table.style.fontSize = "0.80rem";
+    table.style.tableLayout = "fixed";
+    table.style.width = "80%";
+
+    colgroup = document.createElement("colgroup");
+    table.appendChild(colgroup);
+    kolonner = [5, 5, 5, 5, 5, 5];
+
+    kolonner.forEach(bredde => {
+        col = document.createElement("col");
+        col.style.width = bredde + "%";
+        colgroup.appendChild(col);
+    });
+
+    thead = document.createElement("thead");
+    tbody = document.createElement("tbody");
+    
+    tbody.style.outline = "solid 1px #888888";
+    table.appendChild(thead);
+    table.appendChild(tbody);
+
+    utøverresultater.forEach(rad => {
+        tr = document.createElement("tr")
+        rad.forEach((v,i) => {
+            if (i == 0) {
+                return;
+            }
+            td = document.createElement("td")
+            if (i == 6) {
+                if (v == '1') {
+                    i = document.createElement("i")
+                    i.classList += "bi bi-diamond-fill";
+                    i.style.fontSize = "0.55rem"
+                    i.style.color = "rgba(0, 89, 255, 0.6)";
+                    td.appendChild(i)
+                }
+            } else {
+                td.textContent = v;
+            }
+            td.style.paddingTop = "0";
+            td.style.paddingBottom = "0";
+            tr.appendChild(td);
+        })
+        tbody.appendChild(tr);
+    })
+    return table;
+}
 
 document.getElementById('oppstilling-nå').addEventListener("click", function () {
     if (window.getComputedStyle(this).backgroundColor === "rgb(255, 255, 255)") {
@@ -317,18 +424,30 @@ document.getElementById('vis-endringer').addEventListener('change', function () 
     sett_oppstilling();
 });
 
-document.getElementById("oppstilling-knapp").addEventListener('click', function() {
-    document.getElementById("laginfo").style.display = "none";
-    document.getElementById("oppstilling").style.display = "block";
-    this.style.backgroundColor = "white";
-    document.getElementById("laginfo-knapp").style.backgroundColor = "rgb(233, 233, 233)";
-});
+hovedvisninger = ["oppstilling", "utøvere", "historikk", "verktøy"];
+hovedvisninger.forEach((visning) => {
+    document.getElementById(visning+"-knapp").addEventListener('click', function() {
+        hovedvisninger.forEach((v) => {
+            document.getElementById(v).style.display = "none";
+            document.getElementById(v+"-knapp").style.backgroundColor = "rgb(233, 233, 233)";
+        })
+        document.getElementById(visning).style.display = "block";
+        this.style.backgroundColor = "white";
+    });
+})
 
-if (laginfo[2][0] == "(") {
-    plassering = parseInt(laginfo[2].slice(1, -1))
-} else {
-    plassering = parseInt(laginfo[2])
-}
+verktøy = ["sammenlikner", "oppstiller", "utforsker", "forbedrer"]
+verktøy.forEach((verkt) => {
+    document.getElementById("verktøy-"+verkt+"-knapp").addEventListener('click', function() {
+        verktøy.forEach((v) => {
+            document.getElementById("verktøy-"+v).style.display = "none";
+            document.getElementById("verktøy-"+v+"-knapp").style.backgroundColor = "rgb(233, 233, 233)";
+        })
+        document.getElementById("verktøy-"+verkt).style.display = "block";
+        this.style.backgroundColor = "white";
+    });
+})
 
-vis_tverrsnitt_lagplasseringer(plassering)
 sett_oppstilling()
+sett_historiske_plasseringer(historiske_plasseringer)
+sett_utøverdata(utøverdata)

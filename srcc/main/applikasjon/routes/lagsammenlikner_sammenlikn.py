@@ -1,18 +1,18 @@
 from flask import request, jsonify
 from srcc.main.applikasjon.kalkulatorformidler import Kalkulatorformidler 
-from srcc.main.applikasjon.fellesinfo import seriedata
+from srcc.main.applikasjon.fellesinfo import seriedata, serieår, f_uttrekksdato
 from srcc.main.applikasjon.spørringer import db_hent_laginfo, db_hent_lagresultater, db_hent_noteringer_til_lag
 
 
 def lagsammenlikner_sammenlikn():
     kjønn1 = request.json.get('kjønn1', [])
     serieår1 = request.json.get('serieår1', [])
-    uttrekksdato1 = request.json.get('uttrekksdato1', [])
+    uttrekksdato1 = f_uttrekksdato()
     klubb1 = request.json.get('klubb1', [])
     lag1 = request.json.get('lag1', [])
     kjønn2 = request.json.get('kjønn2', [])
     serieår2 = request.json.get('serieår2', [])
-    uttrekksdato2 = request.json.get('uttrekksdato2', [])
+    uttrekksdato2 = f_uttrekksdato()
     klubb2 = request.json.get('klubb2', [])
     lag2 = request.json.get('lag2', [])
 
@@ -34,8 +34,8 @@ def lagsammenlikner_sammenlikn():
     lagtittel1, lagtittel2 = lagtitler(lagnavn1, lagnavn2, kjønn1, kjønn2, serieår1, serieår2, uttrekksdato1, uttrekksdato2)
 
     data = [
-        [lagtittel1, laginfo1[1:]] + sammenlikning[0],
         [lagtittel2, laginfo2[1:]] + sammenlikning[1],
+        [lagtittel1, laginfo1[1:]] + sammenlikning[0],
     ]
 
     return jsonify(data)

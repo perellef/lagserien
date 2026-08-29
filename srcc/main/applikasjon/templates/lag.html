@@ -27,122 +27,23 @@
     </div>
 </div>
 
-<div style="display: flex; flex-wrap: wrap; justify-content: space-evenly; width: 100%; row-gap: 3px;">
-    <div style="display: flex; justify-content: space-evenly; flex: 1; margin-right: -10px;">
-        <button id="laginfo-knapp" class="lag-hovedknapp" style="background-color: white;">Laginfo</button>
-        <button id="oppstilling-knapp" class="lag-hovedknapp">Oppstilling</button>
-    </div>
-    <div style="display: flex; justify-content: space-evenly; flex: 1; margin-left: -10px;">
-        <button class="lag-hovedknapp"><span style="visibility: hidden;">Utøverbidrag</span></button>
-        <button class="lag-hovedknapp"><span style="visibility: hidden;">Utvikling</span></button>
+
+<style>
+  #lag-knapper:hover {
+      overflow-x: auto !important;
+  }
+</style>
+<div style="display: flex; justify-content: center; height: 50px">
+    <div id="lag-knapper" style="display: flex; flex-wrap: nowrap; max-width: 100%; overflow-x: hidden; transition: overflow 0.3s">
+        <button id="oppstilling-knapp" style="height: 33px; border-radius: 15px; border: 4px lightgray solid; padding: 0 3vw 0 3vw; background-color: white; margin: 0 1.5vw 0 1.5vw">Oppstilling</button>
+        <button id="utøvere-knapp" style="height: 33px; border-radius: 15px; border: 4px lightgray solid; padding: 0 3vw 0 3vw; background-color: rgb(233, 233, 233); margin: 0 1.5vw 0 1.5vw">Utøvere</button>
+        <button id="historikk-knapp" style="height: 33px; border-radius: 15px; border: 4px lightgray solid; padding: 0 3vw 0 3vw; background-color: rgb(233, 233, 233); margin: 0 1.5vw 0 1.5vw">Historikk</button>
+        <button id="verktøy-knapp" style="height: 33px; border-radius: 15px; border: 4px lightgray solid; padding: 0 3vw 0 3vw; background-color: rgb(233, 233, 233); margin: 0 1.5vw 0 1.5vw">Verktøy</button>
     </div>
 </div>
 
-<br>
 <div style="border: 1px lightgray solid; background-color: white;">
-    <div id="laginfo" style="font-size: 0.9rem; padding: 10px 30px 10px 30px">
-        <div style="display: flex; border: 3px #6c8eBf solid; padding: 5px;">
-            <div style="text-align: center">
-                
-                <div style="border: 1.5px lightgray solid; padding: 0 5px 0 5px; display: flex; flex-direction: column; justify-content: space-between;">
-                    <div style="width: 60px; height: 60px; margin: 0 auto;">
-                        {% if klubb_id is not none %}
-                        <a href="/livetabell/{{klubbnavn}}">
-                            <img src="{{ url_for('static', filename='assets/klubblogo/' ~ klubb_id ~ '.png') }}" style="max-width: 100%; max-height: 100%;"/>
-                        </a>
-                        {% endif %}
-                    </div>
-                
-                    <div style="font-weight: 500; font-size: 0.8rem; line-height: 15px; margin-bottom: 6px;">
-                        Lag {{ lagnummer }}
-                    </div>
-                </div>
-                <div>
-                    <a href="/livetabell/{{ klubbnavn }}" style="color: black; font-size: 0.8rem;">Se flere lag</a>
-                </div>
-            </div>
-
-            <div style="flex: 1; display: flex; justify-content: space-between; align-items: center; margin-left: 10px; padding: 5px 10px 5px 20px;">
-              <div>
-                <span style="font-size: 0.9rem; color: gray;">Profil</span>
-                <div style="font-size: 1.3rem; font-weight: 500;">
-                    <div style="display: flex; flex-wrap: wrap; column-gap: 10px;">
-                        <div>
-                            <span class="dashed-underline" data-toggle="tooltip" data-placement="top" title="Rangering av lag er basert på serieplasseringen de siste 5 årene.">Rank</span> <span style="color: rgb(222, 144, 0); font-weight: bold;">{{ rank }}</span>
-                        </div>
-                        <div>
-                            {% if rekordrank is not none %}
-                                <span style="margin-left: 5px; font-size: 0.9rem; color:#222222">
-                                (rekord: <span style="color: rgb(222, 144, 0); font-weight: bold;">{{rekordrank}}</span> fra {{rekordår}})
-                                </span>
-                            {% endif %}
-                        </div>
-                    </div>
-                    <span style="font-size: 1rem;">
-                        {% if kretsrank == 1 %}
-                        Beste lag i {{klubbkrets}}
-                        {% else %}
-                        <span style="color: blue;">{{ kretsrank }}.</span> beste lag i {{klubbkrets}}
-                        {% endif %}
-                    </span>
-                    <br>
-                </div>
-              </div>
-              <div style="margin-left: 20px; padding-left: 20px; border-left: 1px lightgray solid;">
-                <span style="text-decoration: underline;">Siste 3 år:</span><br>
-                - <span style="font-weight: 500;">{{siste_3_år[0][0]}}</span>: 
-                {% if siste_3_år[0][1] is not none %}
-                    {{siste_3_år[0][1][1]}}. plass i {{siste_3_år[0][1][0]}}. divisjon <span style="font-size: 0.85rem; display: none;">({{siste_3_år[0][1][2]}}p)</span>
-                {% endif %}
-                <br>
-                - <span style="font-weight: 500;">{{siste_3_år[1][0]}}</span>:
-                {% if siste_3_år[1][1] is not none %}
-                {{siste_3_år[1][1][1]}}. plass i {{siste_3_år[1][1][0]}}. divisjon <span style="font-size: 0.85rem; display: none;">({{siste_3_år[1][1][2]}}p)</span>
-                {% endif %}
-                <br>
-                - <span style="font-weight: 500;">{{siste_3_år[2][0]}}</span>:
-                {% if siste_3_år[2][1] is not none %}
-                {{siste_3_år[2][1][1]}}. plass i {{siste_3_år[2][1][0]}}. divisjon <span style="font-size: 0.85rem; display: none;">({{siste_3_år[2][1][2]}}p)</span>
-                {% endif %}
-                <br>
-            </div>
-            </div>
-          </div>
-        <br>
-        <br>
-
-        <h4>Foreløpig plassering</h4>
-        <div style="width: 100%; max-width: 520px;">
-            <table class="table table-sm divisjonstabell" style="table-layout: fixed">   
-                <thead class="table-light">
-                    <colgroup>
-                        <col style="width: 5%; white-space: nowrap;">
-                        <col style="width: 7%; white-space: nowrap;">
-                        <col style="width: 5%; white-space: nowrap;">
-                        <col style="width: 20%; white-space: nowrap;">
-                        <col style="width: 8%; white-space: nowrap;">
-                        <col style="width: 12%; white-space: nowrap;">
-                        <col style="width: 12%; white-space: nowrap;">
-                        <col style="width: 21%; white-space: nowrap;">
-                    </colgroup>
-                    <tr>
-                        <th scope="col"></th>
-                        <th scope="col"></th>
-                        <th scope="col"></th>
-                        <th scope="col">Lag</th>
-                        <th scope="col" colspan="2">Poeng</th>
-                        <th scope="col">Noteringer</th>
-                        <th scope="col" style="padding-left: 20px;">Krets</th>
-                    </tr>
-                </thead>
-                <tbody id="tverrsnitt-lagplasseringer">
-                </tbody>
-            </table>
-        </div>
-
-    </div>
-
-    <div id="oppstilling" style="background-color: white; display: none;">
+    <div id="oppstilling">
           
         <div style="display: flex;">
             <div id="oppstilling-nå" class="enkeltknapp" style="width: 50%; text-align: center; background-color: white; border: 1px solid #cccccc; cursor: pointer;">Nåværende oppstilling</div>
@@ -204,6 +105,299 @@
             </div>
         </div>
     </div>
+
+    <div id="utøvere" style="background-color: white; display: none">
+    </div>
+
+    <div id="historikk" style="background-color: white; display: none; padding: 20px 10px;">
+        <table class="table table-sm" style="font-size: 15px">
+            <thead class="table-light">
+                <tr>
+                    <th style="padding-top: 2px; padding-bottom: 2px;"></th>
+                    <th style="padding-top: 2px; padding-bottom: 2px;">År</th>
+                    <th style="padding-top: 2px; padding-bottom: 2px;">Divisjon</th>
+                    <th style="padding-top: 2px; padding-bottom: 2px;">Plassering</th>
+                    <th style="padding-top: 2px; padding-bottom: 2px;">Poeng</th>
+                    <th style="padding-top: 2px; padding-bottom: 2px;">Krets</th>
+                    <th style="padding-top: 2px; padding-bottom: 2px;">Rangering i krets</th>
+                </tr>
+            </thead>
+            <tbody id="tabell-historiske-plasseringer">
+
+            </tbody>
+        </table>
+    </div>
+
+    <div id="verktøy" style="background-color: white; display: none">
+                
+        <div style="display: flex; flex-wrap: wrap; justify-content: space-evenly; width: 100%; row-gap: 3px; margin-top: 3px;">
+            <button id="verktøy-sammenlikner-knapp" style="background-color: (233, 233, 233)">
+                <i class="bi bi-arrow-left-right"></i>
+            </button>
+            <button id="verktøy-oppstiller-knapp" style="background-color: (233, 233, 233)">
+                <i class="bi bi-pencil-square"></i>
+            </button>
+            <button id="verktøy-utforsker-knapp" style="background-color: (233, 233, 233)">
+                <i class="bi bi-zoom-in"></i>
+            </button>
+            <button id="verktøy-forbedrer-knapp" style="background-color: (233, 233, 233)">
+                <i class="bi bi-clipboard2-data-fill"></i>
+            </button>
+        </div>
+        
+        <div id="verktøy-sammenlikner" style="background-color: white; display: none">
+            <div class="tekst">
+                <h3>Lagsammenlikner</h3>
+                Sammenlikn laget mot andre lag. Hvor står laget sterkt og hvor tapes det terreng?
+                <br>
+                <div style="width: fit-content;">
+                    <div style="border: #6c8eBf solid 2px; padding: 5px 20px 5px 5px;">
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <td style="font-size: 14px;">Kjønn:</td>
+                                    <td>
+                                        <div class="verdifelt">
+                                            <div class="sideknapp" id="lagsam-kjønn-venstre1"><</div>
+                                            <div class="verdi" id="lagsam-kjønn1">menn</div>
+                                            <div class="sideknapp" id="lagsam-kjønn-høyre1">></div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="font-size: 14px;">Serieår:</td>
+                                    <td>
+                                        <div class="verdifelt">
+                                            <div class="sideknapp" id="lagsam-serieår-venstre1"><</div>
+                                            <div class="verdi" id="lagsam-serieår1"></div>
+                                            <div class="sideknapp" id="lagsam-serieår-høyre1">></div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="font-size: 14px;">Klubb:</td>
+                                    <td>
+                                        <div style="position:relative;">
+                                        <input id="klubbInput1" style="padding: 0 10px 0 9px; font-size: 0.9rem; line-height: 1.7; border: 1px solid #ccc" type="text" name="input" autocomplete="off">
+                                        <div id="autocompleteList" class="autocomplete-items"></div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="font-size: 14px;">Lagnummer:</td>
+                                    <td>
+                                        <div class="verdifelt">
+                                            <div class="sideknapp" id="lagsam-lag-venstre1"><</div>
+                                            <div class="verdi" id="lagsam-lag1">1</div>
+                                            <div class="sideknapp" id="lagsam-lag-høyre1">></div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div id="error-message1" style="color: red; display: block; font-size: 14px;"></div>
+                </div>
+                
+                <button id="sammenliknBtn" class="knapp" style="background-color: #3972c8; color: white; border: none; padding: 1px 10px 3px 10px; margin-top: 15px;">Sammenlikn</button>
+
+                <hr>
+                <br>
+            </div>
+
+            <div id="panel-sammenlikning" style="display: flex; width: 100%;">
+            </div>
+        </div>
+
+        
+        <div id="verktøy-oppstiller" style="background-color: white; display: none">
+            <div class="tekst">
+                <h3>Lagoppstiller</h3>
+
+                Forslag til oppstilling? Sjekk den her.
+            </div>
+
+            <div>
+                <div style="width: 100%;">
+                    <div id="oppstillingsfeil" style="margin: 5px; padding: 5px; border: 1px gray solid; white-space: pre-line; font-size: 0.9rem;"></div>
+                    <div id="poengoppsummering" style="margin: 5px; padding: 5px; background-color: #cedfff; border: 1px gray solid; font-size: 0.9rem; white-space: pre-line"></div>
+                    <div id="verifiser-verktøy"></div>
+                </div>
+                <div style="display: flex">
+                    <div style="width: 50%; margin: 5px 5px 5px 0; border: 1px solid transparent;">
+                        <h5 style="color: rgb(61, 61, 61); margin: 20px 0 5px 0;">Ubrukte resultater</h5>
+                        <label style="margin: 12px 0 0 5px">
+                            <input type="checkbox" id="vis-beste-per-øvelse">
+                            <span style="font-size: 0.8rem; line-height: 0.8rem;">
+                                Vis kun første resultat i hver øvelse
+                            </span>
+                        </label><br>
+                        <label style="margin: 0 0 0 5px">
+                            <input type="checkbox" id="vis-fjernede-resultater">
+                            <span style="font-size: 0.8rem; line-height: 0.8rem;">
+                                Vis fjernede resultater
+                            </span>
+                        </label>
+                        <br>
+                        <table style="width: 100%; font-size: 0.8rem; table-layout: fixed; padding: 5px">
+                            <thead>
+                                <tr>
+                                    <th style="width: 1.5%; visibility: hidden;"></th>
+                                    <th style="width: 9%">Poeng</th>
+                                    <th style="width: 12%">Øvelse</th>
+                                    <th style="width: 24%">Navn</th>
+                                    <th style="width: 4%"></th>
+                                </tr>
+                            </thead>
+                            <tbody id="verktøy-lag-oppstiller-reserve">
+                            </tbody>
+                        </table>
+                    </div>
+                    <div style="width: 50%; border: 1px solid rgba(62, 99, 179, 0.313);">
+                        <div style="margin: 5px 5px 5px 0; border: 1px solid transparent;">
+                            <h5 style="color: rgb(61, 61, 61); margin: 20px 0 15px 12px;">Obligatorisk oppstilling</h5>
+                            <table style="width: 100%; font-size: 0.8rem; table-layout: fixed; padding: 5px">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 1.5%; visibility: hidden;"></th>
+                                        <th style="width: 9%">Poeng</th>
+                                        <th style="width: 12%">Øvelse</th>
+                                        <th style="width: 24%">Navn</th>
+                                        <th style="width: 8%"></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="verktøy-lag-oppstiller-obl">
+                                </tbody>
+                            </table>
+                        </div>
+                        <div style="margin: 5px 5px 5px 0; border: 1px solid transparent;">
+                            <h5 style="color: rgb(61, 61, 61); margin: 30px 0 15px 12px;">Valgfri oppstilling</h5>
+                            <table style="width: 100%; font-size: 0.8rem; table-layout: fixed;">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 1.5%; visibility: hidden;"></th>
+                                        <th style="width: 9%">Poeng</th>
+                                        <th style="width: 12%">Øvelse</th>
+                                        <th style="width: 24%">Navn</th>
+                                        <th style="width: 8%"></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="verktøy-lag-oppstiller-val">
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="verktøy-utforsker" style="background-color: white; display: none">
+            <div class="tekst">
+                <h3>Lagutforsker</h3>
+                    
+                Utforsk hvordan lagene blir seende ut med nye resultater.
+            </div>
+            <hr>
+            
+            <div style="display: flex;">
+                <div style="width: 50%; margin-left: 5px; margin-right: 5px;">
+                            
+                    <div>
+                        <h5 style="font-size: 1.05rem; color: #406aa7">Nytt resultat</h5>
+                        <div id="boks2" style="border: #6c8eBf solid 2px; padding: 5px 20px 5px 5px; display: flex; align-items: center;">
+                            <table>
+                                <tbody>
+                                    <tr>
+                                        <td style="font-size: 14px;">Utøver:</td>
+                                        <td>
+                                            <div style="position:relative;">
+                                            <input id="utøverInput" style="box-sizing: border-box; max-width: 100%; padding: 0 10px 0 9px; font-size: 0.9rem; line-height: 1.7; border: 1px solid #ccc" type="text" name="input" autocomplete="off">
+                                            <div id="autocompleteList" class="autocomplete-items"></div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="font-size: 14px;">Øvelse:</td>
+                                        <td>
+                                            <div style="position:relative;">
+                                            <input id="øvelseInput" style="box-sizing: border-box; padding: 0 10px 0 9px; font-size: 0.9rem; line-height: 1.7; border: 1px solid #ccc;" type="text" name="input" autocomplete="off">
+                                            <div id="autocompleteList" class="autocomplete-items"></div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="font-size: 14px;">Poeng:</td>
+                                        <td>
+                                            <div style="position:relative;">
+                                            <input id="poengInput" style="padding: 0 10px 0 9px; font-size: 0.9rem; line-height: 1.7; width: 70px; border: 1px solid #ccc" type="text" name="input" autocomplete="off">
+                                            <div id="autocompleteList" class="autocomplete-items"></div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div id="error-message2" style="color: red; display: block;"></div>
+                        <button id="nytt-resultat-knapp" class="knapp" style="background-color: #53a2cd; font-size: 0.82rem; color: white; border: none; padding: 1px 10px 1px 5px; margin: 5px 0 20px 0;">Legg til</button>
+                    </div>
+
+                    <div>
+                        <h5 id="mine-resultater-tittel" style="font-size: 1.2rem">Mine resultater (0)</h5>
+                        <div style="max-height: 300px;overflow-y: auto; border: 1px lightgray solid; font-size: 0.9rem;">
+                            <table id="gridTable" class="table table-sm" style="table-layout: fixed">    
+                                <thead id="mitt-lag-header" class="table-light">
+                                </thead>
+                                <tbody id="mitt-lag">
+                                    <!-- Rows will be added here dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div id="error-message" style="color: red; display: block;"></div>
+                    <button id="utforsker-knapp" class="knapp" style="background-color: gray; color: white; border: none; padding: 1px 10px 3px 10px; margin-top: 15px;">Beregn lag</button>
+                    <img src="{{ url_for('static', filename='loading.gif') }}" alt="My Image" id="beregning" style="height:10px; display:none">
+                    <hr>
+
+                    <br>
+                    <div id="lag" style="display: flex; flex-direction: column; margin-bottom: 20px;">
+                        <!-- Lag legges til her -->
+                    </div>
+
+                </div>
+                <div id="utforsker-lag" style="width: 50%;  margin-left: 5px; margin-right: 5px; border: 1px solid rgba(62, 99, 179, 0.313);">
+                </div>
+            </div>
+        </div>
+
+        
+        <div id="verktøy-forbedrer" style="background-color: white; display: none">
+            <div class="tekst">
+                <h3>Lagforbedrer</h3>
+
+                Undersøk hva som skal til for å forbedre laget.<br>
+                <button id="analyser-lagforbedring" class="knapp" style="background-color: #e19e39; color: white; border: none; padding: 1px 10px 3px 10px; margin-top: 15px;">Analyser forbedringer</button>
+            </div>
+            <hr>
+
+            <div style="display: flex;">
+                <div style="width: 50%;">
+
+                    <img src="{{ url_for('static', filename='loading.gif') }}" alt="My Image" id="beregning" style="height:10px; display:none">
+
+                    <div id="analysefelt" style="display: none">
+                        <div id="dobbeltfelt">
+                            <span style="font-size: 14px;">Trykk på resultatet for å se hvordan laget forbedres.</span>
+                            <br>
+                            <br>
+                            <div style="display: flex">
+                                <div id="forbedringer-tabell">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="analyser-lag" style="width: 50%; background-color: #fbfbfb; border: 1px solid rgba(62, 99, 179, 0.313);">
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script>
@@ -251,19 +445,30 @@
 </script>
 
 <script>
-    var kjønn = {{ kjønn | tojson }};
+    const klubbnavn = {{ klubbnavn | tojson}};
+    const kjønn = {{ kjønn | tojson }};
+    const serieår = {{ serieår | tojson }};
     var lagresultater = {{ lagresultater | tojson }};
     var lagforbedringer = {{ lagforbedringer | tojson }};
-    var lagnummer = {{ lagnummer }};
+    const lagnummer = {{ lagnummer | tojson }};
     var laginfo = {{ laginfo | tojson }};
-    
+    var historiske_plasseringer = {{ historiske_plasseringer | tojson}}
+    var utøverdata = {{ utøverdata | tojson}}
+    var klubbresultater = {{ klubbresultater | tojson }};
+    var krav = {{ krav | tojson }};
+
     ikoner = ["sprint", "løp", "kappgang", "hekk", "lengde", "tresteg", "høyde", "stav", "lut", "hut", "kule", "spyd", "slegge", "diskos"];
     
     var øvelsesikoner = {};
     ikoner.forEach(øvelse => {
         øvelsesikoner[øvelse] = `${window.location.origin}/static/assets/øvelser/${øvelse}.png`;
     });
+
 </script>
 
 <script src="{{ url_for('static', filename='lag.js') }}"></script>
+<script src="{{ url_for('static', filename='lag-sammenlikner.js') }}"></script>
+<script src="{{ url_for('static', filename='lag-forbedrer.js') }}"></script>
+<script src="{{ url_for('static', filename='lag-utforsker.js') }}"></script>
+<script src="{{ url_for('static', filename='lag-oppstiller.js') }}"></script>
 {% endblock %}

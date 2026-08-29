@@ -15,18 +15,12 @@ from srcc.main.applikasjon.routes.produser_exceloppsett import produser_excelopp
 from srcc.main.applikasjon.routes.forside import forside
 from srcc.main.applikasjon.routes.livetabell import livetabell
 from srcc.main.applikasjon.routes.tidligere_år import tidligere_år
-from srcc.main.applikasjon.routes.verktøy import verktøy
 from srcc.main.applikasjon.routes.om_serien import om_serien
 from srcc.main.applikasjon.routes.utøver import utøver
 from srcc.main.applikasjon.routes.klubb import klubb
 from srcc.main.applikasjon.routes.lag import lag
-from srcc.main.applikasjon.routes.poengkalkulator import poengkalkulator
-from srcc.main.applikasjon.routes.lagoppstiller import lagoppstiller
-from srcc.main.applikasjon.routes.lagsammenlikner import lagsammenlikner
-from srcc.main.applikasjon.routes.lagforbedrer import lagforbedrer
 from srcc.main.applikasjon.routes.lagsammenlikner_sammenlikn import lagsammenlikner_sammenlikn
-from srcc.main.applikasjon.routes.lagoppstiller_hent_resultater import lagoppstiller_hent_resultater
-from srcc.main.applikasjon.routes.lagoppstiller_oppstill_lag import lagoppstiller_oppstill_lag
+from srcc.main.applikasjon.routes.lagoppstiller_utforsk_lag import lagoppstiller_utforsk_lag
 from srcc.main.applikasjon.routes.lagforbedrer_analyser import lagforbedrer_analyser
 
 import logging
@@ -49,11 +43,6 @@ def create_app():
     app.route("/livetabell/<path:klubbnavn>") (klubb)
     app.route("/livetabell/<path:lagnavn> (<kjonn>)") (lag)
     app.route("/tidligere_år") (tidligere_år)
-    app.route("/verktøy") (verktøy)
-    app.route("/verktøy/poengkalkulator") (poengkalkulator)
-    app.route("/verktøy/lagoppstiller") (lagoppstiller)
-    app.route("/verktøy/lagsammenlikner") (lagsammenlikner)
-    app.route("/verktøy/lagforbedrer") (lagforbedrer)
     app.route("/om_serien") (om_serien)
     app.route(f"/adminside/{ADMIN_NØKKEL}") (adminside)
     app.route(f"/adminside/{ADMIN_NØKKEL}/administrer_varsler") (administrer_varsler)
@@ -64,8 +53,7 @@ def create_app():
     app.route(f"/adminside/{ADMIN_NØKKEL}/bestill_kjoring") (bestill_kjøring)
     app.route(f"/adminside/{ADMIN_NØKKEL}/produser_exceloppsett") (produser_exceloppsett)
 
-    app.route('/verktøy/lagoppstiller/hent_resultater', methods=['POST']) (lagoppstiller_hent_resultater)
-    app.route("/verktøy/lagoppstiller/beregn", methods=['POST']) (lagoppstiller_oppstill_lag)
+    app.route("/verktøy/lagoppstiller/beregn", methods=['POST']) (lagoppstiller_utforsk_lag)
     app.route("/verktøy/lagsammenlikner/sammenlikn", methods=['POST']) (lagsammenlikner_sammenlikn)
     app.route("/verktøy/lagforbedrer/analyser", methods=['POST']) (lagforbedrer_analyser)
     app.route(f"/adminside/{ADMIN_NØKKEL}/analyser_data/utfor", methods=['POST']) (analyser_data_utfør)

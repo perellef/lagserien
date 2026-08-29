@@ -9,9 +9,6 @@ from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
 
 import time
 from functools import cache
-from collections import defaultdict
-from datetime import datetime
-
 
 class Kalkulator:
     
