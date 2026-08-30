@@ -700,7 +700,7 @@ resultater = klubbresultater.map(r => [r[0], r[1], r[3]])
 const obl = lagresultater["OBLIGATORISK"].filter(e => !e[10].startsWith("ut")).map(e => [(e[2] == 0 ? "‎" : e[2]), e[3], e[5]]);
 const val = lagresultater["VALGFRI"].filter(e => !e[10].startsWith("ut")).map(e => [(e[2] == 0 ? "‎" : e[2]), e[3], e[5]]);
 
-const reserver = resultater.filter(e => !obl.some(o => e[0]==o[0] && e[1]==o[1] && e[2]==o[2]) && !val.some(o => e[0]==o[0] && e[1]==o[1] && e[2]==o[2]))
+const reserver = resultater.filter(e => !obl.some(o => e[0]==o[0] && e[1]==o[1] && e[2]==o[2]) && !val.some(o => e[0]==o[0] && e[1]==o[1] && e[2]==o[2])).reverse()
 
 antall_obl = krav["antall-obl"]
 antall_val = krav["antall-val"]

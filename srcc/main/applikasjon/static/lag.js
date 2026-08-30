@@ -387,6 +387,9 @@ function lag_utøverens_resultattabell(utøverresultater) {
                     td.appendChild(i)
                 }
             } else {
+                if (i == 5) {
+                    v = datoNormalform(v);
+                }
                 td.textContent = v;
             }
             td.style.paddingTop = "0";
