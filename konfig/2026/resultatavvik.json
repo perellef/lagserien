@@ -20,8 +20,9 @@
     ],    
 
     "utøvere unntatt overbygning": [
-        {"id": 30465, "navn": "Johannes Hopland",    "moderklubb": [143, "Aks-77"]},
-        {"id": 17166, "navn": "Johannes Sandvik Bø", "moderklubb": [182,"Fitjar"]}
+        {"id": 30465,    "navn": "Johannes Hopland",     "moderklubb": [143, "Aks-77"]},
+        {"id": 10007719, "navn": "Nellie Cecilia Taule", "moderklubb": [143, "Aks-77"]},
+        {"id": 17166,    "navn": "Johannes Sandvik Bø",  "moderklubb": [182,"Fitjar"]}
     ],
 
     "rullestolutøvere": [
