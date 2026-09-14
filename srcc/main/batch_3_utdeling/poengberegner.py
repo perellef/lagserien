@@ -19,6 +19,8 @@ tillegg_ved_manuell_tid = {
 
 poengsteg = 50 
 
+er_løpsøvelse = lambda x: x[0].isdigit()
+
 class Poengberegner:
 
     @staticmethod
@@ -75,7 +77,10 @@ class Poengberegner:
         return float(resultat)
 
     @staticmethod
-    def til_lesveennlig_format(prestasjon):
+    def til_lesveennlig_format(prestasjon, øvelse):
+        if not er_løpsøvelse(øvelse):
+            return f"{str(prestasjon).split('.')[0]}.{str(prestasjon).split('.')[1].ljust(2, '0')}"
+
         if prestasjon > 3600:
             return f"{int(prestasjon)//3600},{(int(prestasjon)%3600)//60},{str((int(prestasjon)%60)//1).zfill(2)},{100*(prestasjon % 1):.0f}"
         if prestasjon > 60:
@@ -121,4 +126,4 @@ class Poengberegner:
         over = grenser[poeng//50+1]
 
         prestasjon = math.ceil(100*(under+(over-under)*(poeng/50-poeng//50)))/100
-        return Poengberegner.til_lesveennlig_format(prestasjon)
+        return Poengberegner.til_lesveennlig_format(prestasjon, øvelse)

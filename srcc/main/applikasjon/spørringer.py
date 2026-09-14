@@ -368,7 +368,7 @@ def db_hent_besøksdata_klokkeslett(peker, serieår):
             OR side LIKE '%stevnestatus%'
             OR side LIKE '%om_serien%'
         )
-        AND SUBSTR(CAST(tidspunkt AS TEXT), 1, 4) = {{placeholder}}
+        AND EXTRACT(YEAR FROM tidspunkt) = {{placeholder}}
         GROUP BY SUBSTR(CAST(tidspunkt AS TEXT), 12, 2)
         ORDER BY SUBSTR(CAST(tidspunkt AS TEXT), 12, 2);
     ''', (serieår,))
@@ -1476,6 +1476,37 @@ def db_hent_historiske_plasseringer(peker, kjønn, klubb_id, lagnummer, divisjon
         else:
             plasseringer_ekstra.append((0, serieår, div, pl, p, krets, kretspl))
     return plasseringer_ekstra
+
+@timeit
+def db_hent_sluttplasseringer(peker):
+    sluttplasseringer = execute(peker, f'''
+        SELECT *
+        FROM (
+            SELECT 'menn' AS kjønn, året.*, fjoråret.plassering AS fjorår
+            FROM "rapport.arkiv_menn_sluttplasseringer" AS året
+                JOIN "rapport.arkiv_menn_sluttplasseringer" AS fjoråret ON (året.serieår = fjoråret.serieår + 1 AND året.klubb_id = fjoråret.klubb_id AND året.lagnummer = fjoråret.lagnummer)
+            UNION
+            SELECT 'kvinner' AS kjønn, året.*, fjoråret.plassering AS fjorår
+            FROM "rapport.arkiv_kvinner_sluttplasseringer" AS året
+                JOIN "rapport.arkiv_kvinner_sluttplasseringer" AS fjoråret ON (året.serieår = fjoråret.serieår + 1 AND året.klubb_id = fjoråret.klubb_id AND året.lagnummer = fjoråret.lagnummer)
+            ) AS a
+        ORDER BY serieår desc, divisjon, plassering
+
+    ''', ())
+
+    tidligere_år = {}
+    for pl in sluttplasseringer:
+        if pl[1] not in tidligere_år:
+            tidligere_år[pl[1]] = {
+                "menn 1": [],
+                "menn 2": [],
+                "menn 3": [],
+                "kvinner 1": [],
+                "kvinner 2": [],
+                "kvinner 3": [],
+            }
+        tidligere_år[pl[1]][f"{pl[0]} {pl[2]}"].append(pl)
+    return tidligere_år
 
 @timeit
 def db_hent_lagutøverdata(peker, kjønn, serieår, i_dag, forrige_uke, klubb_id, lagnummer):
