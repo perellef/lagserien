@@ -120,7 +120,7 @@ class Poengberegner:
         grenser = grenseverdier[kjønn][øvelse]
 
         if poeng % 50 == 0:
-            return Poengberegner.til_lesveennlig_format(math.ceil(100*grenser[poeng//50])/100)
+            return Poengberegner.til_lesveennlig_format(math.ceil(100*grenser[poeng//50])/100, øvelse)
 
         under = grenser[poeng//50]
         over = grenser[poeng//50+1]
