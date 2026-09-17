@@ -68,7 +68,7 @@ class OptimalLagoppstilling:
         return len(self.__obl) + len(self.__val)
 
     def utøvere(self):
-        return tuple(sorted((res.utøver for res in set(self.__obl+self.__val)), key=lambda x: x.utøver_id))
+        return tuple(sorted(set(res.utøver for res in set(self.__obl+self.__val)), key=lambda x: x.utøver_id))
     
     def antall_deltakere(self):
         return len(self.utøvere())

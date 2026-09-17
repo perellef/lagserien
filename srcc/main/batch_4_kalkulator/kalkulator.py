@@ -244,7 +244,7 @@ class Kalkulator:
         Kalkulerer beste serieoppstillinger. Det kan være flere serieoppstillinger dersom
         flere oppstillinger gir samme høyeste seriepoeng. 
         """
-        for i,resultat in enumerate(resultater, start=0):
+        for i,resultat in enumerate(sorted(resultater, reverse=True), start=0):
             resultat.sett_resultatindeks(i)
 
         oppstillingsgenerator = Oppstillingsgenerator(krav, resultater)
