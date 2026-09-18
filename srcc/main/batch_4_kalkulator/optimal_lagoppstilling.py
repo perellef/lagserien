@@ -67,8 +67,11 @@ class OptimalLagoppstilling:
     def antall_notasjoner(self):
         return len(self.__obl) + len(self.__val)
 
+    def poeng_av(self, utøver):
+        return sum(res.poeng for res in self.__obl+self.__val if res.utøver == utøver)
+
     def utøvere(self):
-        return tuple(sorted(set(res.utøver for res in set(self.__obl+self.__val)), key=lambda x: x.utøver_id))
+        return tuple(sorted(set(res.utøver for res in self.__obl+self.__val), key=lambda x: x.utøver_id))
     
     def antall_deltakere(self):
         return len(self.utøvere())

@@ -116,7 +116,11 @@ class Kalkulator:
                 ikke_utøvers_resultater = gjenværende_resultater.filter(lambda x: x.utøver != utøver)
                 like_lag = cls.beregn_like_lagoppstillinger(ikke_utøvers_resultater, krav)
 
-                merverdier[utøver.utøver_id] = lagoppstilling.poeng() - like_lag.first().poeng()
+                merverdi = lagoppstilling.poeng() - like_lag.first().poeng()
+
+                assert merverdi <= lagoppstilling.poeng_av(utøver), f"FEIL: Det skal ikke være mulig å ha mer merverdi enn seriepoeng, men {utøver.navn} har merverdi {merverdi} og {lagoppstilling.poeng_av(utøver)} seriepoeng."
+
+                merverdier[utøver.utøver_id] = merverdi
                 Kalkulator.beregn_like_lagoppstillinger.cache_clear()
             
             forbedringspotensial = cls.beregn_forbedringsmuligheter(gjenværende_resultater, krav, serieøvelser, lagoppstilling, lagoppstilling.poeng())
